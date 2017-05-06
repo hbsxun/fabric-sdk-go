@@ -53,17 +53,34 @@ func (setup *BaseSetupImpl) Initialize() error {
 	}
 
 	// Initialize bccsp factories before calling get client
+	/*
+		err := bccspFactory.InitFactories(&bccspFactory.FactoryOpts{
+			ProviderName: "SW",
+			SwOpts: &bccspFactory.SwOpts{
+				HashFamily: config.GetSecurityAlgorithm(),
+				SecLevel:   config.GetSecurityLevel(),
+				FileKeystore: &bccspFactory.FileKeystoreOpts{
+					KeyStorePath: config.GetKeyStorePath(),
+				},
+				Ephemeral: false,
+			},
+		})
+	*/
 	err := bccspFactory.InitFactories(&bccspFactory.FactoryOpts{
-		ProviderName: "SW",
-		SwOpts: &bccspFactory.SwOpts{
+		ProviderName: "PKCS11",
+		Pkcs11Opts: &bccspFactory.PKCS11Opts{
 			HashFamily: config.GetSecurityAlgorithm(),
 			SecLevel:   config.GetSecurityLevel(),
 			FileKeystore: &bccspFactory.FileKeystoreOpts{
 				KeyStorePath: config.GetKeyStorePath(),
 			},
 			Ephemeral: false,
+			Library:   "/usr/lib/softhsm/libsofthsm2.so",
+			Pin:       "1234",
+			Label:     "forfabric",
 		},
 	})
+
 	if err != nil {
 		return fmt.Errorf("Failed getting ephemeral software-based BCCSP [%s]", err)
 	}
