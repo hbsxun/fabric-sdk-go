@@ -25,7 +25,10 @@ import (
 	"testing"
 
 	fabricClient "github.com/hyperledger/fabric-sdk-go/fabric-client"
+	"github.com/op/go-logging"
 )
+
+var logger = logging.MustGetLogger("ledger query")
 
 func TestChainQueries(t *testing.T) {
 
@@ -41,6 +44,7 @@ func TestChainQueries(t *testing.T) {
 	}
 
 	chain := testSetup.Chain
+	client := testSetup.Client
 
 	if err := testSetup.InstallAndInstantiateExampleCC(); err != nil {
 		t.Fatalf("InstallAndInstantiateExampleCC return error: %v", err)
@@ -73,9 +77,9 @@ func TestChainQueries(t *testing.T) {
 
 	testQueryBlock(t, chain)
 
-	testQueryChannels(t, chain)
+	testQueryChannels(t, chain, client)
 
-	testInstalledChaincodes(t, chain)
+	testInstalledChaincodes(t, chain, client)
 
 	testQueryByChaincode(t, chain)
 
@@ -120,6 +124,8 @@ func testQueryTransaction(t *testing.T, chain fabricClient.Chain, txID string) {
 	if err != nil {
 		t.Fatalf("QueryTransaction return error: %v", err)
 	}
+	//print the query transaction
+	logger.Debugf("transaction [%s]\n%v", txID, processedTransaction)
 
 	if processedTransaction.TransactionEnvelope == nil {
 		t.Fatalf("QueryTransaction failed to return transaction envelope")
@@ -146,6 +152,8 @@ func testQueryBlock(t *testing.T, chain fabricClient.Chain) {
 	if err != nil {
 		t.Fatalf("QueryBlockByHash return error: %v", err)
 	}
+	//print the current block
+	logger.Debugf("\nbci\n%v\nblock\n%v", bci, block)
 
 	if block.Data == nil {
 		t.Fatalf("QueryBlockByHash block data is nil")
@@ -175,12 +183,12 @@ func testQueryBlock(t *testing.T, chain fabricClient.Chain) {
 
 }
 
-func testQueryChannels(t *testing.T, chain fabricClient.Chain) {
+func testQueryChannels(t *testing.T, chain fabricClient.Chain, client fabricClient.Client) {
 
 	// Our target will be primary peer on this channel
 	target := chain.GetPrimaryPeer()
 	fmt.Printf("****QueryChannels for %s\n", target.GetURL())
-	channelQueryResponse, err := testSetup.Client.QueryChannels(target)
+	channelQueryResponse, err := client.QueryChannels(target)
 	if err != nil {
 		t.Fatalf("QueryChannels return error: %v", err)
 	}
@@ -191,14 +199,14 @@ func testQueryChannels(t *testing.T, chain fabricClient.Chain) {
 
 }
 
-func testInstalledChaincodes(t *testing.T, chain fabricClient.Chain) {
+func testInstalledChaincodes(t *testing.T, chain fabricClient.Chain, client fabricClient.Client) {
 
 	// Our target will be primary peer on this channel
 	target := chain.GetPrimaryPeer()
 
 	fmt.Printf("****QueryInstalledChaincodes for %s\n", target.GetURL())
 	// Test Query Installed chaincodes for target (primary)
-	chaincodeQueryResponse, err := testSetup.Client.QueryInstalledChaincodes(target)
+	chaincodeQueryResponse, err := client.QueryInstalledChaincodes(target)
 	if err != nil {
 		t.Fatalf("QueryInstalledChaincodes return error: %v", err)
 	}
