@@ -42,6 +42,7 @@ type Services interface {
 	Reenroll(user fabricclient.User) ([]byte, []byte, error)
 	Register(registrar fabricclient.User, request *RegistrationRequest) (string, error)
 	Revoke(registrar fabricclient.User, request *RevocationRequest) error
+	EnrollWithCSR(enrolReq *api.EnrollmentRequest) ([]byte, []byte, error)
 }
 
 type services struct {
@@ -149,6 +150,34 @@ func (fabricCAServices *services) Enroll(enrollmentID string, enrollmentSecret s
 		Secret: enrollmentSecret,
 	}
 	enrollmentResponse, err := fabricCAServices.fabricCAClient.Enroll(req)
+	if err != nil {
+		return nil, nil, fmt.Errorf("Enroll failed: %s", err)
+	}
+	return enrollmentResponse.Identity.GetECert().Key(), enrollmentResponse.Identity.GetECert().Cert(), nil
+}
+
+// EnrollWithCSR ...
+/**
+ * EnrollWithCSR a registered user in order to receive a signed X509 certificate
+ * @param {string} enrollmentID The registered ID to use for enrollment
+ * @param {string} enrollmentSecret The secret associated with the enrollment ID
+ * @returns {[]byte} X509 certificate
+ * @returns {[]byte} private key
+ */
+func (fabricCAServices *services) EnrollWithCSR(enrolReq *api.EnrollmentRequest) ([]byte, []byte, error) {
+	if enrolReq.Name == "" {
+		return nil, nil, fmt.Errorf("enrollmentID is empty")
+	}
+	if enrolReq.Secret == "" {
+		return nil, nil, fmt.Errorf("enrollmentSecret is empty")
+	}
+	/*
+		req := &api.EnrollmentRequest{
+			Name:   enrollmentID,
+			Secret: enrollmentSecret,
+		}
+	*/
+	enrollmentResponse, err := fabricCAServices.fabricCAClient.Enroll(enrolReq)
 	if err != nil {
 		return nil, nil, fmt.Errorf("Enroll failed: %s", err)
 	}
