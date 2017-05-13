@@ -52,7 +52,7 @@ type services struct {
 // RegistrationRequest defines the attributes required to register a user with the CA
 type RegistrationRequest struct {
 	// Name is the unique name of the identity
-	Name string
+	Name string `json:"name"`
 	// Type of identity being registered (e.g. "peer, app, user")
 	Type string
 	// MaxEnrollments is the number of times the secret can  be reused to enroll.

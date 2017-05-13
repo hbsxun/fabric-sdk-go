@@ -5,56 +5,111 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/hyperledger/fabric-ca/api"
 	fabricCAClient "github.com/hyperledger/fabric-sdk-go/fabric-ca-client"
 	sdkIgn "github.com/hyperledger/fabric-sdk-go/test/integration"
 	"github.com/op/go-logging"
 )
 
+const ()
+
 var logger = logging.MustGetLogger("Fabric-SDK-Server")
 
-type Model struct {
+type Asset struct {
 	Owner  string
 	Name   string
 	Source string
 }
-type Enrollment struct {
+type RegisterResp struct {
 	name, secret string
 }
+type EnrollResp struct {
+	key, cert string
+}
 
-func registerUser(conn net.Conn) {
+//RegisterUser
+func RegisterUser(conn net.Conn) {
 	remote := conn.RemoteAddr().String()
 	for {
 		buf := make([]byte, 512)
 		size, err := conn.Read(buf)
 		if err != nil {
-			logger.Debugf("Read err [%s]", err)
+			logger.Errorf("Read err [%s]", err)
+			return
+		}
+		logger.Debugf("Receive from client [%s] is [%s]\n", remote, string(buf[:size]))
+		//req RegistrationRequst: Name Type MaxEnrollments Affiliation Attribute
+		var req fabricCAClient.RegistrationRequest
+		err = json.Unmarshal(buf[:size], &req)
+		if err != nil {
+			logger.Errorf("Unmarshal err [%v]", err)
+		}
+		logger.Debugf("Unmarshal return:", req)
+
+		//register user
+		admin := sdkIgn.NewMember()
+		nm, srt, err := admin.RegisterUser(req)
+		if err != nil {
+			logger.Errorf("registerUser err %v", err)
+			return
+		}
+
+		//response secret
+		resp := &RegisterResp{nm, srt}
+		respJson, err := json.Marshal(resp)
+		if err != nil {
+			logger.Errorf("RegistrationResponse err %v", err)
+		}
+		conn.Write(respJson)
+		conn.Close()
+		break
+	}
+	logger.Debugf("RegisterUser success!")
+}
+
+//UserEnroll
+func UserEnroll(conn net.Conn) {
+	remote := conn.RemoteAddr().String()
+	for {
+		buf := make([]byte, 512)
+		size, err := conn.Read(buf)
+		if err != nil {
+			logger.Errorf("Read err [%s]", err)
 			return
 		}
 		logger.Debugf("Receive from client [%s] is [%s]\n", remote, string(buf[:size]))
 
-		var req fabricCAClient.RegistrationRequest
+		//req EnrollmentRequest: Name Secret Hosts Profile Label *CSR
+		var req api.EnrollmentRequest
 		err = json.Unmarshal(buf[:size], &req)
 		if err != nil {
-			logger.Debugf("Unmarshal err [%v]", err)
+			logger.Errorf("Unmarshal err [%v]", err)
 		}
 		logger.Debugf("Unmarshal return:", req)
 
+		//register user
 		admin := sdkIgn.NewMember()
-		id, otp, err := admin.RegisterUser(req)
+		key, cert, err := admin.UserEnroll(req.Name, req.Secret)
+		//key, cert, err := admin.UserEnrollWithCSR(req)
 		if err != nil {
-			logger.Debugf("registerUser err %v", err)
+			logger.Errorf("UserEnroll err %v", err)
 			return
 		}
 
-		resp := &Enrollment{name, secret}
-
-		conn.Write([]byte("Response OK!"))
+		//response key cert
+		resp := &EnrollResp{string(key), string(cert)}
+		respJson, err := json.Marshal(resp)
+		if err != nil {
+			logger.Errorf("EnrollmentResponse err %v", err)
+		}
+		conn.Write(respJson)
 		conn.Close()
 		break
 	}
+	logger.Debugf("UserEnroll Success!")
 
 }
-func dealModel(conn net.Conn) {
+func dealAsset(conn net.Conn) {
 	remote := conn.RemoteAddr().String()
 	fmt.Println(remote, "connected!")
 	for {
@@ -78,6 +133,15 @@ func dealModel(conn net.Conn) {
 	}
 }
 
+//handleClient
+func handleClient(conn net.Conn) {
+	//identity certificate
+
+	//asset management
+
+	//ledger query
+}
+
 func main() {
 	fmt.Println("Starting the server")
 	listener, err := net.Listen("tcp", "0.0.0.0:8080")
@@ -91,6 +155,6 @@ func main() {
 			fmt.Printf("Accept err [%s]\n", err)
 			continue
 		}
-		go dealModel(conn)
+		go handleClient(conn)
 	}
 }

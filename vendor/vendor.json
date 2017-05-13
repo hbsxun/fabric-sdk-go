@@ -276,6 +276,12 @@
 			"revisionTime": "2017-03-15T19:19:41Z"
 		},
 		{
+			"checksumSHA1": "mBATy6H4rmvi9BeEf4ecaJU66Ac=",
+			"path": "github.com/gislu/goSocket/server/utils",
+			"revision": "d04e8494eacdd2e53712c3161a1ad9f32a3d1b94",
+			"revisionTime": "2017-02-18T15:03:07Z"
+		},
+		{
 			"checksumSHA1": "++NbuL6/cpFR712EXGnWusURqC0=",
 			"origin": "github.com/hyperledger/fabric-ca/vendor/github.com/go-sql-driver/mysql",
 			"path": "github.com/go-sql-driver/mysql",
@@ -462,6 +468,12 @@
 			"path": "github.com/hyperledger/fabric-ca/util",
 			"revision": "4651512e4e85728e6ecaf21b8cba52f51ed16633",
 			"revisionTime": "2017-03-23T17:55:40Z"
+		},
+		{
+			"checksumSHA1": "7Clo7uCYLsL0hOe7+xZFKhqJVH0=",
+			"path": "github.com/hyperledger/fabric-sdk-go/fabric-client/util",
+			"revision": "9db19fddef2d9530eb59b97fc2ce2685ba11b4b3",
+			"revisionTime": "2017-05-10T11:08:58Z"
 		},
 		{
 			"checksumSHA1": "nQCS/1ymeW+6UYa2vOXtxcvj2mY=",
