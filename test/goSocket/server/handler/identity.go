@@ -9,6 +9,8 @@ import (
 	sdkIgn "github.com/hyperledger/fabric-sdk-go/test/integration"
 )
 
+var admin *sdkIgn.Member
+
 const (
 	REGISTER = "register"
 	ENROLL   = "enroll"
@@ -45,7 +47,6 @@ func (this *RegisterController) Excute(msg utils.Msg) []byte {
 	}
 	utils.Log("RegistrationRequest struct\n", req)
 
-	admin := sdkIgn.NewMember()
 	name, secret, err := admin.RegisterUser(&req)
 	if err != nil {
 		utils.LogErr("registerUser err ", err)
@@ -84,7 +85,6 @@ func (this *EnrollController) Excute(msg utils.Msg) []byte {
 	}
 	utils.Log("EnrollmentRequest struct\n", req)
 
-	admin := sdkIgn.NewMember()
 	key, cert, err := admin.UserEnrollWithCSR(&req)
 	if err != nil {
 		utils.LogErr("UserEnrollWithCSR err ", err)
@@ -123,4 +123,5 @@ func init() {
 		return false
 	}, &enroll)
 
+	admin = sdkIgn.NewMember()
 }

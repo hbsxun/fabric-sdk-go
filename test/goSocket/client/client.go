@@ -13,8 +13,10 @@ import (
 )
 
 const (
-	REGISTER = "register"
-	ENROLL   = "enroll"
+	REGISTER   = "register"
+	ENROLL     = "enroll"
+	ADDASSET   = "addAsset"
+	QUERYASSET = "queryAsset"
 )
 
 type Msg struct {
@@ -41,9 +43,93 @@ func main() {
 	IdentityTest(conn)
 	//chaincode test
 
-	//ChaincodeTest(conn)
+	//	ChaincodeTest(conn)
 	//ledger test
 	//LedgerTest(conn)
+}
+func ChaincodeTest(conn net.Conn) {
+	txId, err := AddModel(conn)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	fmt.Println("txId:", txId)
+
+	modelId := "M1"
+	modelInfo, err := QueryModel(modelId, conn)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	fmt.Println("Owner#Name#Source#etc...:", modelInfo)
+}
+
+//QueryModel
+func QueryModel(modelId string, conn net.Conn) (interface{}, error) {
+	message := &Msg{
+		Meta: map[string]interface{}{
+			"meta": QUERYASSET,
+			//"ID":        strconv.Itoa(i),
+			"TimeStamp": time.Now().Format("2006-01-02 15:04:05"), //must be this time, 123456 2006
+		},
+		Content: map[string]interface{}{
+			"name": "M1",
+		},
+	}
+	//send
+	result, _ := json.Marshal(message)
+	conn.Write(utils.Enpack((result)))
+	time.Sleep(1 * time.Second)
+	//fmt.Println("send over")
+
+	//receive
+	var buf = make([]byte, 512)
+	size, _ := conn.Read(buf)
+	fmt.Println("receive: ", string(buf[:size]))
+
+	//parse
+	var recMap = make(map[string]interface{})
+	err := json.Unmarshal(buf[:size], &recMap)
+	if err != nil {
+		return nil, fmt.Errorf("Receive data cannot be Unmarshal")
+	}
+	return recMap, nil
+
+}
+
+//AddModel
+func AddModel(conn net.Conn) (interface{}, error) {
+	message := &Msg{
+		Meta: map[string]interface{}{
+			"meta": ADDASSET,
+			//"ID":        strconv.Itoa(i),
+			"TimeStamp": time.Now().Format("2006-01-02 15:04:05"), //must be this time, 123456 2006
+		},
+		Content: map[string]interface{}{
+			"owner":  "alice",
+			"name":   "M1",
+			"source": "Something....",
+		},
+	}
+	//send
+	result, _ := json.Marshal(message)
+	conn.Write(utils.Enpack((result)))
+	time.Sleep(1 * time.Second)
+	//fmt.Println("send over")
+
+	//receive
+	var buf = make([]byte, 512)
+	size, _ := conn.Read(buf)
+	fmt.Println("receive: ", string(buf[:size]))
+
+	//parse
+	var recMap = make(map[string]interface{})
+	err := json.Unmarshal(buf[:size], &recMap)
+	if err != nil {
+		return nil, fmt.Errorf("Receive data cannot be Unmarshal")
+	}
+	return recMap, nil
+
 }
 
 //IdentityTest user identity management

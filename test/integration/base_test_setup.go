@@ -22,7 +22,6 @@ package integration
 import (
 	"fmt"
 	"os"
-	"path"
 
 	"github.com/hyperledger/fabric-sdk-go/config"
 	"github.com/hyperledger/fabric-sdk-go/fabric-client/events"
@@ -160,8 +159,10 @@ func (setup *BaseSetupImpl) InstallCC(chainCodeID string, chainCodePath string, 
 
 // GetDeployPath ..
 func (setup *BaseSetupImpl) GetDeployPath() string {
-	pwd, _ := os.Getwd()
-	return path.Join(pwd, "../fixtures")
+	return os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/test/fixtures"
+
+	//pwd, _ := os.Getwd()
+	//return path.Join(pwd, "../fixtures")
 }
 
 // Query ...
