@@ -9,6 +9,12 @@ import (
 	fabricClient "github.com/hyperledger/fabric-sdk-go/fabric-client"
 )
 
+type Model struct {
+	Owner  string `json:"owner"`
+	Name   string `json:"name"`
+	Source string `json:"source"`
+}
+
 // InstallAndInstantiateExampleCC ..
 func (setup *BaseSetupImpl) InstallAndInstantiateModelCC() error {
 
@@ -30,11 +36,11 @@ func (setup *BaseSetupImpl) InstallAndInstantiateModelCC() error {
 }
 
 // QueryModel ...
-func (setup *BaseSetupImpl) QueryModel() (string, error) {
+func (setup *BaseSetupImpl) QueryModel(modelId string) (string, error) {
 
 	var args []string
 	args = append(args, "readModel")
-	args = append(args, "M1")
+	args = append(args, modelId)
 	return setup.Query(setup.ChainID, setup.ChainCodeID, args)
 }
 
@@ -73,13 +79,13 @@ func (setup *BaseSetupImpl) TransferModel() (string, error) {
 }
 
 // AddModel ...
-func (setup *BaseSetupImpl) AddModel() (string, error) {
+func (setup *BaseSetupImpl) AddModel(model *Model) (string, error) {
 
 	var args []string
 	args = append(args, "initModel")
-	args = append(args, "Alice")
-	args = append(args, "M1")
-	args = append(args, "M1 desc: blablabala")
+	args = append(args, model.Owner)
+	args = append(args, model.Name)
+	args = append(args, model.Source)
 
 	transientDataMap := make(map[string][]byte)
 	transientDataMap["result"] = []byte("Transient data in add model...")

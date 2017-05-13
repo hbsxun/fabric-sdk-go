@@ -45,6 +45,21 @@ type BaseSetupImpl struct {
 	ChannelConfig   string
 }
 
+func NewBaseSetupImpl(prefix string) *BaseSetupImpl {
+	testSetup := &BaseSetupImpl{
+		ConfigFile:      prefix + "/fixtures/config/config_test.yaml",
+		ChainID:         "testchannel",
+		ChannelConfig:   prefix + "/fixtures/channel/testchannel.tx",
+		ConnectEventHub: true,
+	}
+
+	if err := testSetup.Initialize(); err != nil {
+		panic("BaseSetupImpl Initialize failed...")
+		return nil
+	}
+	return testSetup
+}
+
 // Initialize reads configuration from file and sets up client, chain and event hub
 func (setup *BaseSetupImpl) Initialize() error {
 

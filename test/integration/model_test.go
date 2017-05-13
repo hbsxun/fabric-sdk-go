@@ -26,30 +26,38 @@ import (
 
 func TestModelCCInvoke(t *testing.T) {
 
-	testSetup := BaseSetupImpl{
-		ConfigFile:      "../fixtures/config/config_test.yaml",
-		ChainID:         "testchannel",
-		ChannelConfig:   "../fixtures/channel/testchannel.tx",
-		ConnectEventHub: true,
-	}
+	/*
+		testSetup := BaseSetupImpl{
+			ConfigFile:      "../fixtures/config/config_test.yaml",
+			ChainID:         "testchannel",
+			ChannelConfig:   "../fixtures/channel/testchannel.tx",
+			ConnectEventHub: true,
+		}
 
-	if err := testSetup.Initialize(); err != nil {
-		t.Fatalf(err.Error())
-	}
+		if err := testSetup.Initialize(); err != nil {
+			t.Fatalf(err.Error())
+		}
+	*/
+	testSetup := NewBaseSetupImpl("/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/test")
 
 	if err := testSetup.InstallAndInstantiateModelCC(); err != nil {
 		t.Fatalf("InstallAndInstantiateModelCC return error: %v", err)
 	}
 
 	//add Model
-	_, err := testSetup.AddModel()
+	model := &Model{
+		Owner:  "Alice",
+		Name:   "M1",
+		Source: "blabla",
+	}
+	_, err := testSetup.AddModel(model)
 	if err != nil {
 		t.Fatalf("Add Model return error: %v", err)
 		return
 	}
 
 	//query Model
-	modelInfo, err := testSetup.QueryModel()
+	modelInfo, err := testSetup.QueryModel(model.Name)
 	if err != nil {
 		t.Errorf("getModel info return error: %v", err)
 		return
