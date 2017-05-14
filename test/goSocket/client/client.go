@@ -43,7 +43,7 @@ func main() {
 	IdentityTest(conn)
 	//chaincode test
 
-	//	ChaincodeTest(conn)
+	//ChaincodeTest(conn)
 	//ledger test
 	//LedgerTest(conn)
 }

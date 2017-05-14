@@ -24,25 +24,22 @@ import (
 	"testing"
 )
 
-func TestModelCCInvoke(t *testing.T) {
+const (
+	prefix = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/test"
+)
 
-	/*
-		testSetup := BaseSetupImpl{
-			ConfigFile:      "../fixtures/config/config_test.yaml",
-			ChainID:         "testchannel",
-			ChannelConfig:   "../fixtures/channel/testchannel.tx",
-			ConnectEventHub: true,
-		}
-
-		if err := testSetup.Initialize(); err != nil {
-			t.Fatalf(err.Error())
-		}
-	*/
-	testSetup := NewBaseSetupImpl("/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/test")
+func TestModel(t *testing.T) {
+	testSetup := NewBaseSetupImpl(prefix)
 
 	if err := testSetup.InstallAndInstantiateModelCC(); err != nil {
 		t.Fatalf("InstallAndInstantiateModelCC return error: %v", err)
 	}
+
+	testModel_CC(testSetup, t)
+}
+
+//test chaincode invoke
+func testModel_CC(testSetup *BaseSetupImpl, t *testing.T) {
 
 	//add Model
 	model := &Model{

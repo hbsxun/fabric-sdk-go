@@ -44,6 +44,7 @@ type BaseSetupImpl struct {
 	ChannelConfig   string
 }
 
+//NewBaseSetupImpl return an instance of setup
 func NewBaseSetupImpl(prefix string) *BaseSetupImpl {
 	testSetup := &BaseSetupImpl{
 		ConfigFile:      prefix + "/fixtures/config/config_test.yaml",
