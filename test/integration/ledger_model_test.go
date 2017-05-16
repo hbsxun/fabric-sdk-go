@@ -27,9 +27,10 @@ func TestLedgerQueries(t *testing.T) {
 
 	chain := testSetup.Chain
 	//client := testSetup.Client
-
-	txId := "e8f34c0b1ee88b72974147cf7ca7772cf370cac9c191be7a988f34babd596768"
 	accBook := NewLedger()
-	accBook.QueryTrans(chain, txId)
-	//accBook.QueryBlock(chain)
+
+	//txId := "aff5c462b89d9ab2ec8eb86640a16fe1289aa8700f31fd252af05ae5375e1c3d"
+	//accBook.QueryTrans(chain, txId)
+	accBook.QueryBlock(chain)
+	//accBook.QueryGenesisBlock(chain)
 }
