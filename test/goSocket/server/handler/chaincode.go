@@ -12,8 +12,6 @@ var setup *sdkIgn.BaseSetupImpl
 var prefix = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/test"
 
 const (
-	INIT       = "init"
-	INVOKE     = "invoke"
 	ADDASSET   = "addAsset"
 	QUERYASSET = "queryAsset"
 )

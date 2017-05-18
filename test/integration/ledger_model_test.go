@@ -19,7 +19,10 @@ limitations under the License.
 
 package integration
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestLedgerQueries(t *testing.T) {
 
@@ -27,10 +30,14 @@ func TestLedgerQueries(t *testing.T) {
 
 	chain := testSetup.Chain
 	//client := testSetup.Client
-	accBook := NewLedger()
+	accBook := NewLedger(chain)
 
-	//txId := "aff5c462b89d9ab2ec8eb86640a16fe1289aa8700f31fd252af05ae5375e1c3d"
-	//accBook.QueryTrans(chain, txId)
-	accBook.QueryBlock(chain)
-	//accBook.QueryGenesisBlock(chain)
+	txId := "9f3de24ca5ba728db5e902d09dd472c589921b2aae996358a5886e5c6da6a137"
+	txInfo, err := accBook.QueryTrans(txId)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(txInfo)
+	//accBook.QueryBlock()
+	//accBook.QueryGenesisBlock()
 }

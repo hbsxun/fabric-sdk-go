@@ -52,6 +52,7 @@ func handleConnection(conn net.Conn, timeout int) {
 			return
 		}
 
+		utils.Log(string(buffer[:n]))
 		tmpBuffer = utils.Depack(append(tmpBuffer, buffer[:n]...))
 		utils.Log("receive data string:", string(tmpBuffer))
 		utils.TaskDeliver(tmpBuffer, conn)

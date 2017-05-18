@@ -21,7 +21,10 @@ package integration
 
 import (
 	"encoding/base64"
+	"errors"
+	"fmt"
 	"log"
+	"math/big"
 
 	"github.com/golang/protobuf/proto"
 	fabricClient "github.com/hyperledger/fabric-sdk-go/fabric-client"
@@ -32,22 +35,42 @@ import (
 
 var logger = logging.MustGetLogger("Fabric Ledger Query")
 
-type ledger struct {
+type TxInfo struct {
+	txId           string
+	signature      string
+	creator, nonce string
+	endorsers      []string
+	detail         string
 }
 
-func NewLedger() *ledger {
-	return &ledger{}
+func (t *TxInfo) String() string {
+	return fmt.Sprintf("Transaction ID: %s \nCreator Signature: %s \nCreator Identity: %s \nTransaction Nonce: %s \nEndorsers: %v \nTransaction Content: %s \n", t.txId, t.signature, t.creator, t.nonce, t.endorsers, t.detail)
 }
 
-func (this *ledger) QueryTrans(chain fabricClient.Chain, txID string) {
+type BlockInfo struct {
+	blockNumber      int
+	preHash, curHash string
+	txNumber         int
+	txHashs          []string
+}
 
+type Ledger struct {
+	chain fabricClient.Chain
+}
+
+func NewLedger(chain fabricClient.Chain) *Ledger {
+	return &Ledger{chain}
+}
+
+func (this *Ledger) QueryTrans(txID string) (tx *TxInfo, err error) {
+	chain := this.chain
 	// Test Query Transaction -- verify that valid transaction has been processed
 	processedTransaction, err := chain.QueryTransaction(txID)
 	if err != nil {
-		log.Fatalf("QueryTransaction return error: %v", err)
+		return nil, fmt.Errorf("QueryTransaction return error: %v", err)
 	}
 	if processedTransaction.TransactionEnvelope == nil {
-		log.Fatalf("QueryTransaction failed to return transaction envelope")
+		return nil, errors.New("QueryTransaction failed to return transaction envelope")
 	}
 
 	//common Envelope{payload, Signature}
@@ -56,7 +79,7 @@ func (this *ledger) QueryTrans(chain fabricClient.Chain, txID string) {
 	//signedData is a slice which length is 1
 	signedData, err := processedTransaction.GetTransactionEnvelope().AsSignedData()
 	if err != nil {
-		log.Fatalf("envolope.AsSignedData error [%s]", err)
+		return nil, fmt.Errorf("envolope.AsSignedData error [%s]", err)
 	}
 	//logger.Debugf("signedData payload %v\n ", signedData[0].Data)
 	logger.Debugf("signedData Signature %v\n ", base64.StdEncoding.EncodeToString(signedData[0].Signature))
@@ -66,18 +89,30 @@ func (this *ledger) QueryTrans(chain fabricClient.Chain, txID string) {
 	var payload common.Payload
 	err = proto.Unmarshal(signedData[0].Data, &payload)
 	if err != nil {
-		log.Fatalf("processedTransaction Unmarshal failed, can't get payload")
+		return nil, errors.New("processedTransaction Unmarshal failed, can't get payload")
 	}
 
 	//parse header
-	this.parseHeader(&payload)
+	//this.parseHeader(&payload)
 
 	//parse body
-	this.parseBody(&payload)
+	creator, nonce, spec, endorsers, err := this.parseBody(&payload)
+	if err != nil {
+		return nil, err
+	}
+	_ = creator
+	return &TxInfo{
+		txId:      txID,
+		signature: base64.StdEncoding.EncodeToString(signedData[0].Signature),
+		creator:   string(signedData[0].Identity),
+		nonce:     new(big.Int).SetBytes(nonce).String(),
+		detail:    spec,
+		endorsers: endorsers,
+	}, nil
 }
 
 //parseHeader parse the processedTransaction header
-func (this *ledger) parseHeader(payload *common.Payload) {
+func (this *Ledger) parseHeader(payload *common.Payload) {
 	//header
 	var header *common.Header
 	var chanHeader common.ChannelHeader
@@ -92,53 +127,82 @@ func (this *ledger) parseHeader(payload *common.Payload) {
 }
 
 //parseBody parse the processedTransaction data (that is Transaction)
-func (this *ledger) parseBody(payload *common.Payload) {
+func (this *Ledger) parseBody(payload *common.Payload) (creator, nonce []byte, spec string, endorsers []string, err error) {
 	//body
 	var trans pb.Transaction
-	proto.Unmarshal(payload.Data, &trans)
-	for _, action := range trans.GetActions() {
-		this.parseTxActionHeader(action.Header)
-		this.parseTxActionPayload(action.Payload)
+	err = proto.Unmarshal(payload.Data, &trans)
+	if err != nil {
+		return
 	}
+	/*
+		for _, action := range trans.GetActions() {
+			this.parseTxActionHeader(action.Header)
+			this.parseTxActionPayload(action.Payload)
+		}
+	*/
+	creator, nonce, err = this.parseTxActionHeader(trans.GetActions()[0].Header)
+	spec, endorsers, err = this.parseTxActionPayload(trans.GetActions()[0].Payload)
+	return
 }
 
 //parseActionHeader parse the transaction Header
-func (this *ledger) parseTxActionHeader(buf []byte) {
+func (this *Ledger) parseTxActionHeader(buf []byte) (creator, nonce []byte, err error) {
 	var sigHeader common.SignatureHeader
-	proto.Unmarshal(buf, &sigHeader)
+	err = proto.Unmarshal(buf, &sigHeader)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	//sigHeader: creator, nonce
 	logger.Debug(sigHeader.String())
+
+	return sigHeader.Creator, sigHeader.Nonce, nil
 }
 
 //parseActionPayload parse the transaction body
-func (this *ledger) parseTxActionPayload(buf []byte) {
+func (this *Ledger) parseTxActionPayload(buf []byte) (string, []string, error) {
 	var ccActionPl pb.ChaincodeActionPayload
-	proto.Unmarshal(buf, &ccActionPl)
+	err := proto.Unmarshal(buf, &ccActionPl)
 
 	//ccActionPl: ChaincodeProposalPayload, Actions
 	logger.Debug(ccActionPl.String())
 
-	//this.parseProposal(ccActionPl.ChaincodeProposalPayload)
-	//this.parseEndorsedAction(ccActionPl.GetAction())
+	spec, err := this.parseProposal(ccActionPl.ChaincodeProposalPayload)
+	if err != nil {
+		return "", nil, err
+	}
+	endorsers, err := this.parseEndorsedAction(ccActionPl.GetAction())
+	if err != nil {
+		return "", nil, err
+	}
+	return spec, endorsers, nil
 }
 
 //parseProposal end
-func (this *ledger) parseProposal(buf []byte) {
+func (this *Ledger) parseProposal(buf []byte) (string, error) {
 	var proposal pb.ChaincodeProposalPayload
-	proto.Unmarshal(buf, &proposal)
+	err := proto.Unmarshal(buf, &proposal)
+	if err != nil {
+		return "", err
+	}
 
 	//conclude: the proposal.Input is a ChaincodeXXXXSpec
 	var spec pb.ChaincodeInvocationSpec
-	proto.Unmarshal(proposal.Input, &spec)
+	err = proto.Unmarshal(proposal.Input, &spec)
+	if err != nil {
+		return "", err
+	}
+
 	logger.Debugf("Proposal Input: %v\n", spec.String())
+
+	return spec.String(), nil
 }
 
 //parseEndorsedAction end
-func (this *ledger) parseEndorsedAction(action *pb.ChaincodeEndorsedAction) {
+func (this *Ledger) parseEndorsedAction(action *pb.ChaincodeEndorsedAction) (endorsers []string, err error) {
 	//Endorsement
 	for _, endorsement := range action.GetEndorsements() {
-		logger.Debugf("Endorser[%s] \nSignature[%s] \n", string(endorsement.Endorser), base64.StdEncoding.EncodeToString(endorsement.Signature))
+		endorsers = append(endorsers, string(endorsement.Endorser))
 	}
 	//Proposal Response
 	var responsePayload pb.ProposalResponsePayload
@@ -147,11 +211,16 @@ func (this *ledger) parseEndorsedAction(action *pb.ChaincodeEndorsedAction) {
 	proto.Unmarshal(responsePayload.Extension, &ccAction)
 
 	logger.Debugf("Result %s\n", ccAction.String())
+
+	if len(endorsers) <= 0 {
+		return endorsers, errors.New("No endorserment on this transaction")
+	}
+	return endorsers, nil
 }
 
 //QueryBlock
-func (this *ledger) QueryBlock(chain fabricClient.Chain) {
-
+func (this *Ledger) QueryBlock() {
+	chain := this.chain
 	// Retrieve current blockchain info
 	bci, err := chain.QueryInfo()
 	if err != nil {
@@ -167,7 +236,7 @@ func (this *ledger) QueryBlock(chain fabricClient.Chain) {
 		//print the current block
 		logger.Debugf("%s\n\n%s\n\n%s\n\n", block.GetHeader().String(), block.GetData().String(), block.GetMetadata().String())
 	*/
-	for i := bci.Height - 1; i >= 0; i-- {
+	for i := bci.Height - 1; i > 0; i-- {
 		block, err := chain.QueryBlock(int(i))
 		if err != nil {
 			logger.Fatalf("QueryBlock return error [%s]", err)
@@ -178,7 +247,8 @@ func (this *ledger) QueryBlock(chain fabricClient.Chain) {
 	}
 
 }
-func (this *ledger) QueryGenesisBlock(chain fabricClient.Chain) {
+func (this *Ledger) QueryGenesisBlock() {
+	chain := this.chain
 	i := 0
 	block, err := chain.QueryBlock(i)
 	if err != nil {
@@ -187,5 +257,5 @@ func (this *ledger) QueryGenesisBlock(chain fabricClient.Chain) {
 	curHash := base64.StdEncoding.EncodeToString(block.GetHeader().Hash())
 	preHash := base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash)
 	logger.Debugf("Height [%d] \nCurrentBlockHash [%s] \nPreviousBlockHash [%s]\n\n", i, curHash, preHash)
-	logger.Debugf("%s\n\n%s\n\n%s\n\n", block.GetHeader().String(), block.GetData().String(), block.GetMetadata().String())
+	//logger.Debugf("%s\n\n%s\n\n%s\n\n", block.GetHeader().String(), block.GetData().String(), block.GetMetadata().String())
 }

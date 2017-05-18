@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,10 +14,12 @@ import (
 )
 
 const (
-	REGISTER   = "register"
-	ENROLL     = "enroll"
-	ADDASSET   = "addAsset"
-	QUERYASSET = "queryAsset"
+	REGISTER         = "register"
+	ENROLL           = "enroll"
+	ADDASSET         = "addAsset"
+	QUERYASSET       = "queryAsset"
+	QUERYBLOCK       = "queryBlock"       //on ledger
+	QUERYTRANSACTION = "queryTransaction" //on ledger
 )
 
 type Msg struct {
@@ -25,42 +28,32 @@ type Msg struct {
 }
 
 func main() {
-	server := "localhost:1024"
+	server := "localhost:9999"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		os.Exit(1)
-	}
+	CheckError(err)
 
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		os.Exit(1)
-	}
+	CheckError(err)
 
-	fmt.Println("connect success")
+	fmt.Printf("connect [%s] success\n", server)
 	//identity test
-	IdentityTest(conn)
-	//chaincode test
+	//IdentityTest(conn)
 
-	//ChaincodeTest(conn)
+	//chaincode test
+	ChaincodeTest(conn)
+
 	//ledger test
 	//LedgerTest(conn)
 }
+
 func ChaincodeTest(conn net.Conn) {
 	txId, err := AddModel(conn)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
-	}
+	CheckError(err)
 	fmt.Println("txId:", txId)
 
 	modelId := "M1"
 	modelInfo, err := QueryModel(modelId, conn)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
-	}
+	CheckError(err)
 	fmt.Println("Owner#Name#Source#etc...:", modelInfo)
 }
 
@@ -69,32 +62,12 @@ func QueryModel(modelId string, conn net.Conn) (interface{}, error) {
 	message := &Msg{
 		Meta: map[string]interface{}{
 			"meta": QUERYASSET,
-			//"ID":        strconv.Itoa(i),
-			"TimeStamp": time.Now().Format("2006-01-02 15:04:05"), //must be this time, 123456 2006
 		},
 		Content: map[string]interface{}{
-			"name": "M1",
+			"name": modelId,
 		},
 	}
-	//send
-	result, _ := json.Marshal(message)
-	conn.Write(utils.Enpack((result)))
-	time.Sleep(1 * time.Second)
-	//fmt.Println("send over")
-
-	//receive
-	var buf = make([]byte, 512)
-	size, _ := conn.Read(buf)
-	fmt.Println("receive: ", string(buf[:size]))
-
-	//parse
-	var recMap = make(map[string]interface{})
-	err := json.Unmarshal(buf[:size], &recMap)
-	if err != nil {
-		return nil, fmt.Errorf("Receive data cannot be Unmarshal")
-	}
-	return recMap, nil
-
+	return send(message, conn)
 }
 
 //AddModel
@@ -102,50 +75,24 @@ func AddModel(conn net.Conn) (interface{}, error) {
 	message := &Msg{
 		Meta: map[string]interface{}{
 			"meta": ADDASSET,
-			//"ID":        strconv.Itoa(i),
-			"TimeStamp": time.Now().Format("2006-01-02 15:04:05"), //must be this time, 123456 2006
 		},
 		Content: map[string]interface{}{
 			"owner":  "alice",
-			"name":   "M1",
-			"source": "Something....",
+			"name":   "asset1",
+			"source": "Description",
 		},
 	}
-	//send
-	result, _ := json.Marshal(message)
-	conn.Write(utils.Enpack((result)))
-	time.Sleep(1 * time.Second)
-	//fmt.Println("send over")
-
-	//receive
-	var buf = make([]byte, 512)
-	size, _ := conn.Read(buf)
-	fmt.Println("receive: ", string(buf[:size]))
-
-	//parse
-	var recMap = make(map[string]interface{})
-	err := json.Unmarshal(buf[:size], &recMap)
-	if err != nil {
-		return nil, fmt.Errorf("Receive data cannot be Unmarshal")
-	}
-	return recMap, nil
-
+	return send(message, conn)
 }
 
 //IdentityTest user identity management
 func IdentityTest(conn net.Conn) {
 	enrollArgs, err := Register(conn)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
-	}
+	CheckError(err)
 	fmt.Println("Name#Secret:", enrollArgs)
 
 	certInfo, err := Enroll(enrollArgs, conn)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
-	}
+	CheckError(err)
 	fmt.Println("Key#Cert:", certInfo)
 
 	defer conn.Close()
@@ -162,8 +109,7 @@ func Enroll(args interface{}, conn net.Conn) (interface{}, error) {
 	}
 	message := &Msg{
 		Meta: map[string]interface{}{
-			"meta":      ENROLL,
-			"TimeStamp": time.Now().Format("2006-01-02 15:04:05"),
+			"meta": ENROLL,
 		},
 		Content: map[string]interface{}{
 			"name":    argsMap["name"],
@@ -174,24 +120,7 @@ func Enroll(args interface{}, conn net.Conn) (interface{}, error) {
 			//"csr":     "*CSRInfo",
 		},
 	}
-	//send
-	result, _ := json.Marshal(message)
-	conn.Write(utils.Enpack((result)))
-	time.Sleep(1 * time.Second)
-
-	//receive
-	var buf = make([]byte, 4096)
-	size, _ := conn.Read(buf)
-	fmt.Println("receive: ", string(buf[:size]))
-
-	//parse
-	var recMap = make(map[string]interface{})
-	err := json.Unmarshal(buf[:size], &recMap)
-	if err != nil {
-		return nil, fmt.Errorf("Receive data cannot be Unmarshal")
-	}
-
-	return recMap, nil
+	return send(message, conn)
 }
 
 //Register user
@@ -199,8 +128,6 @@ func Register(conn net.Conn) (interface{}, error) {
 	message := &Msg{
 		Meta: map[string]interface{}{
 			"meta": REGISTER,
-			//"ID":        strconv.Itoa(i),
-			"TimeStamp": time.Now().Format("2006-01-02 15:04:05"), //must be this time, 123456 2006
 		},
 		Content: map[string]interface{}{
 			"name":           GetSession(),
@@ -210,8 +137,23 @@ func Register(conn net.Conn) (interface{}, error) {
 			//"Attribute":["id","test"],
 		},
 	}
+	return send(message, conn)
+}
+
+//send
+func send(message *Msg, conn net.Conn) (interface{}, error) {
 	//send
 	result, _ := json.Marshal(message)
+	pack := utils.Enpack(result)
+	/*
+		fmt.Println("Send: ", string(pack))
+		msgLen := utils.BytesToInt(pack[10:14])
+		fmt.Println("Header+4+MsgLen: ", len(pack))
+		fmt.Println("MessageLen: ", msgLen)
+		fmt.Println("Message: ", string(pack[14:]))
+	*/
+	fmt.Println(hex.Dump(pack))
+
 	conn.Write(utils.Enpack((result)))
 	time.Sleep(1 * time.Second)
 	//fmt.Println("send over")
@@ -224,14 +166,21 @@ func Register(conn net.Conn) (interface{}, error) {
 	//parse
 	var recMap = make(map[string]interface{})
 	err := json.Unmarshal(buf[:size], &recMap)
-	if err != nil {
-		return nil, fmt.Errorf("Receive data cannot be Unmarshal")
-	}
-	return recMap, nil
+	CheckError(err)
+
+	return recMap, err
 }
 
+//GetSession based-on time
 func GetSession() string {
 	gs1 := time.Now().Unix()
 	gs2 := strconv.FormatInt(gs1, 10)
 	return gs2
+}
+
+func CheckError(err error) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+		os.Exit(1)
+	}
 }
