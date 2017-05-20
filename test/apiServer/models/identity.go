@@ -39,7 +39,3 @@ func Register(req *fabricCAClient.RegistrationRequest) (*RegisterResponse, error
 	}
 	return &RegisterResponse{name, secret}, nil
 }
-
-func init() {
-	admin = sdkIgn.NewMember()
-}

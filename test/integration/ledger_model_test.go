@@ -32,12 +32,16 @@ func TestLedgerQueries(t *testing.T) {
 	//client := testSetup.Client
 	accBook := NewLedger(chain)
 
-	txId := "9f3de24ca5ba728db5e902d09dd472c589921b2aae996358a5886e5c6da6a137"
-	txInfo, err := accBook.QueryTrans(txId)
-	if err != nil {
-		t.Fatal(err)
-	}
-	fmt.Println(txInfo)
-	//accBook.QueryBlock()
+	/*
+		txId := "9f3de24ca5ba728db5e902d09dd472c589921b2aae996358a5886e5c6da6a137"
+		txInfo, err := accBook.QueryTrans(txId)
+		if err != nil {
+			t.Fatal(err)
+		}
+		fmt.Println(txInfo)
+	*/
+	blockHeaders, _ := accBook.QueryBlock()
+	fmt.Println(blockHeaders)
+
 	//accBook.QueryGenesisBlock()
 }

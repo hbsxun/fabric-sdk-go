@@ -7,12 +7,15 @@ import (
 	fabricCAClient "github.com/hyperledger/fabric-sdk-go/fabric-ca-client"
 )
 
+var prefix = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/test"
+
 func Test_RegisterUser(t *testing.T) {
-	admin := NewMember()
-	//	err := admin.AdminEnroll("admin", "adminpw")
+
+	testSetup := NewBaseSetupImpl(prefix)
+	admin := NewMember(testSetup.Client)
 
 	reqReq := &fabricCAClient.RegistrationRequest{
-		Name:           "bob",
+		Name:           "billhxy",
 		Type:           "user", //"user, app, peer"
 		MaxEnrollments: 0,
 		Affiliation:    "org1.department1",

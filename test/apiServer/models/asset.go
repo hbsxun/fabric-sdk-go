@@ -3,17 +3,9 @@ package models
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"os"
 
 	sdkIgn "github.com/hyperledger/fabric-sdk-go/test/integration"
-	"github.com/op/go-logging"
 )
-
-var log = logging.MustGetLogger("Models  Asset")
-
-var setup *sdkIgn.BaseSetupImpl
-var prefix = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/test"
 
 type Asset struct {
 	DocType string `json:"docType"`
@@ -22,7 +14,7 @@ type Asset struct {
 	Desc    string `json:"desc"`
 }
 
-func AddAsset(a Asset) string {
+func AddAsset(a Asset) (string, error) {
 	var req sdkIgn.Model
 	//req.DocType = a.DocType
 	req.Name = a.Name
@@ -30,22 +22,20 @@ func AddAsset(a Asset) string {
 	req.Desc = a.Desc
 	txId, err := setup.AddModel(&req)
 	if err != nil {
-		log.Errorf("AddAsset failed [%s]", err)
+		return "", err
 	}
-	return txId
+	return txId, nil
 }
 
 func GetAsset(assetId string) (a *Asset, err error) {
 	assetInfo, err := setup.QueryModel(assetId)
-	fmt.Println(assetInfo)
+	logger.Debug(assetInfo)
 	if err != nil {
-		log.Errorf("QueryAsset failed [%s]", err)
 		return nil, err
 	}
 	var ass Asset
 	err = json.Unmarshal([]byte(assetInfo), &ass)
 	if err != nil {
-		log.Errorf("Marshal Asset failed [%s]", err)
 		return nil, err
 	}
 	return &ass, nil
@@ -64,13 +54,4 @@ func Login(name, password string) bool {
 }
 
 func DeleteAsset(uid string) {
-}
-
-func init() {
-	setup = sdkIgn.NewBaseSetupImpl(prefix)
-	err := setup.InstallAndInstantiateModelCC()
-	if err != nil {
-		log.Errorf("InstallAndInstantiateModelCC failed ", err)
-		os.Exit(-1)
-	}
 }

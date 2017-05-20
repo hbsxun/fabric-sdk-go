@@ -26,6 +26,13 @@ func init() {
 				),
 			),
 		),
+		beego.NSNamespace("/ledger",
+			beego.NSNamespace("/trans",
+				beego.NSInclude(
+					&controllers.LedgerController{},
+				),
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

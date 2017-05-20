@@ -25,8 +25,12 @@ func (u *AssetController) Post() {
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
 	}
-	uid := models.AddAsset(asset)
-	u.Data["json"] = map[string]string{"uid": uid}
+	uid, err := models.AddAsset(asset)
+	if err != nil {
+		u.Data["json"] = err
+	} else {
+		u.Data["json"] = map[string]string{"uid": uid}
+	}
 	u.ServeJSON()
 }
 

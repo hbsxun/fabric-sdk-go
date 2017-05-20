@@ -23,7 +23,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"log"
 	"math/big"
 
 	"github.com/golang/protobuf/proto"
@@ -36,22 +35,27 @@ import (
 var logger = logging.MustGetLogger("Fabric Ledger Query")
 
 type TxInfo struct {
-	txId           string
-	signature      string
-	creator, nonce string
-	endorsers      []string
-	detail         string
+	TxId      string   `json:"txId"`
+	Signature string   `json:"signature"`
+	Creator   string   `json:"creator"`
+	Nonce     string   `json:"nonce"`
+	Endorsers []string `json:"endorsers"`
+	Detail    string   `json:"detail"`
 }
 
 func (t *TxInfo) String() string {
-	return fmt.Sprintf("Transaction ID: %s \nCreator Signature: %s \nCreator Identity: %s \nTransaction Nonce: %s \nEndorsers: %v \nTransaction Content: %s \n", t.txId, t.signature, t.creator, t.nonce, t.endorsers, t.detail)
+	return fmt.Sprintf("Transaction ID: %s \nCreator Signature: %s \nCreator Identity: %s \nTransaction Nonce: %s \nEndorsers: %v \nTransaction Content: %s \n", t.TxId, t.Signature, t.Creator, t.Nonce, t.Endorsers, t.Detail)
 }
 
-type BlockInfo struct {
-	blockNumber      int
-	preHash, curHash string
-	txNumber         int
-	txHashs          []string
+type BlockHeaderInfo struct {
+	Height   int    `json:"height"`
+	PreHash  string `json:"preHash"`
+	CurHash  string `json:"curHash"`
+	DataHash string `json:"dataHash"`
+}
+
+func (t *BlockHeaderInfo) String() string {
+	return fmt.Sprintf("Height: %d \nPreHash: %s \nCurHash: %s \nDataHash: %s \n", t.Height, t.PreHash, t.CurHash, t.DataHash)
 }
 
 type Ledger struct {
@@ -102,12 +106,12 @@ func (this *Ledger) QueryTrans(txID string) (tx *TxInfo, err error) {
 	}
 	_ = creator
 	return &TxInfo{
-		txId:      txID,
-		signature: base64.StdEncoding.EncodeToString(signedData[0].Signature),
-		creator:   string(signedData[0].Identity),
-		nonce:     new(big.Int).SetBytes(nonce).String(),
-		detail:    spec,
-		endorsers: endorsers,
+		TxId:      txID,
+		Signature: base64.StdEncoding.EncodeToString(signedData[0].Signature),
+		Creator:   base64.StdEncoding.EncodeToString(signedData[0].Identity),
+		Nonce:     new(big.Int).SetBytes(nonce).String(),
+		Detail:    spec,
+		Endorsers: endorsers,
 	}, nil
 }
 
@@ -219,12 +223,12 @@ func (this *Ledger) parseEndorsedAction(action *pb.ChaincodeEndorsedAction) (end
 }
 
 //QueryBlock
-func (this *Ledger) QueryBlock() {
+func (this *Ledger) QueryBlock() (blockHeaers []*BlockHeaderInfo, err error) {
 	chain := this.chain
 	// Retrieve current blockchain info
 	bci, err := chain.QueryInfo()
 	if err != nil {
-		log.Fatalf("QueryInfo return error: %v", err)
+		return nil, fmt.Errorf("QueryInfo return error: %v", err)
 	}
 	logger.Debugf("%s\n\n", bci.String())
 	/*
@@ -239,14 +243,23 @@ func (this *Ledger) QueryBlock() {
 	for i := bci.Height - 1; i > 0; i-- {
 		block, err := chain.QueryBlock(int(i))
 		if err != nil {
-			logger.Fatalf("QueryBlock return error [%s]", err)
+			return nil, fmt.Errorf("QueryBlock return error [%s]", err)
 		}
 		curHash := base64.StdEncoding.EncodeToString(block.GetHeader().Hash())
 		preHash := base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash)
-		logger.Debugf("Height [%d] \nCurrentBlockHash [%s] \nPreviousBlockHash [%s]\n\n", i, curHash, preHash)
+		dataHash := base64.StdEncoding.EncodeToString(block.GetHeader().DataHash)
+		number := int(block.GetHeader().Number)
+		//logger.Debugf("Height [%d] \nCurrentBlockHash [%s] \nPreviousBlockHash [%s] \nDataHash [%s] \nNumber [%d]\n", i, curHash, preHash, dataHash, number)
+		blockHeaers = append(blockHeaers, &BlockHeaderInfo{
+			Height:   number,
+			PreHash:  preHash,
+			CurHash:  curHash,
+			DataHash: dataHash,
+		})
 	}
-
+	return blockHeaers, nil
 }
+
 func (this *Ledger) QueryGenesisBlock() {
 	chain := this.chain
 	i := 0
