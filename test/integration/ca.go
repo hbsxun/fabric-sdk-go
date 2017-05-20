@@ -156,7 +156,7 @@ func (t *Member) RegisterUser(regReq *fabricCAClient.RegistrationRequest) (name,
 	*/
 	enrolmentSecret, err := t.caClient.Register(t.adminUser, regReq)
 	if err != nil {
-		return regReq.Name, "", fmt.Errorf("Error from Register: %s", err)
+		return regReq.Name, "", fmt.Errorf("Register failed: %s", err)
 	}
 	//fmt.Printf("Registered User: %s, Secret: %s\n", userName, enrolmentSecret)
 

@@ -10,9 +10,10 @@ import (
 )
 
 type Model struct {
-	Owner  string `json:"owner"`
-	Name   string `json:"name"`
-	Source string `json:"source"`
+	//DocType string `json:"docType"`
+	Owner string `json:"owner"`
+	Name  string `json:"name"`
+	Desc  string `json:"desc"`
 }
 
 // InstallAndInstantiateExampleCC ..
@@ -83,9 +84,10 @@ func (setup *BaseSetupImpl) AddModel(model *Model) (string, error) {
 
 	var args []string
 	args = append(args, "initModel")
+	//args = append(args, model.DocType)
 	args = append(args, model.Owner)
 	args = append(args, model.Name)
-	args = append(args, model.Source)
+	args = append(args, model.Desc)
 
 	transientDataMap := make(map[string][]byte)
 	transientDataMap["result"] = []byte("Transient data in add model...")

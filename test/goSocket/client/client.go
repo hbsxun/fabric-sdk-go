@@ -28,7 +28,7 @@ type Msg struct {
 }
 
 func main() {
-	server := "localhost:9999"
+	server := "localhost:8080"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", server)
 	CheckError(err)
 

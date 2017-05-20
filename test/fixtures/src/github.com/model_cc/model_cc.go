@@ -36,7 +36,7 @@ type ModelChaincode struct {
 type model struct {
 	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
 	Name       string `json:"name"`    //the fieldtags are needed to keep case from bouncing around
-	Source     []byte `json:"source"`
+	Desc       []byte `json:"desc"`
 	Owner      string `json:"owner"`
 }
 
@@ -94,7 +94,7 @@ func (t *ModelChaincode) initModel(stub shim.ChaincodeStubInterface, args []stri
 	var err error
 
 	//   0       1       2
-	// "Owner", "Name", "Source"
+	// "Owner", "Name", "desc"
 	if len(args) != 3 {
 		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
@@ -112,7 +112,7 @@ func (t *ModelChaincode) initModel(stub shim.ChaincodeStubInterface, args []stri
 	}
 	owner := strings.ToLower(args[0])
 	modelName := args[1]
-	source := args[2]
+	desc := args[2]
 
 	// ==== Check if model already exists ====
 	modelAsBytes, err := stub.GetState(modelName)
@@ -125,7 +125,7 @@ func (t *ModelChaincode) initModel(stub shim.ChaincodeStubInterface, args []stri
 
 	// ==== Create model object and marshal to JSON ====
 	objectType := "model"
-	model := &model{objectType, modelName, []byte(source), owner}
+	model := &model{objectType, modelName, []byte(desc), owner}
 	modelJSONasBytes, err := json.Marshal(model)
 	if err != nil {
 		return shim.Error(err.Error())

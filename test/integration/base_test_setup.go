@@ -54,6 +54,7 @@ func NewBaseSetupImpl(prefix string) *BaseSetupImpl {
 	}
 
 	if err := testSetup.Initialize(); err != nil {
+		fmt.Println(err)
 		panic("BaseSetupImpl Initialize failed...")
 		return nil
 	}
