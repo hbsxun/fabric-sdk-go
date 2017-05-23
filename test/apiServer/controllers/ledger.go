@@ -12,16 +12,17 @@ type LedgerController struct {
 	beego.Controller
 }
 
-// @Title Get
-// @Description get ledger by uid
-// @Param	uid		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Ledger
+// @Title GetTransaction
+// @Description Get transaction from ledger
+// @Param	uid		path 	string	true		"The key for transaction"
+// @Success 200 {object} models.Transaction
 // @Failure 403 :uid is empty
 // @router /:uid [get]
 func (u *LedgerController) Get() {
 	uid := u.GetString(":uid")
 	fmt.Println("uid: ", uid)
 	if uid != "" {
+		var txInfo *models.Transaction
 		txInfo, err := models.GetTx(uid)
 		if err != nil {
 			u.Data["json"] = err.Error()

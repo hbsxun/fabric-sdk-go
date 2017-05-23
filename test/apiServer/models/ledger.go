@@ -8,13 +8,30 @@ import (
 
 var ledger *sdkIgn.Ledger
 
-func GetTx(txId string) (a *sdkIgn.TxInfo, err error) {
+type Transaction struct {
+	TxId      string   `json:"txId"`
+	Nonce     string   `json:"nonce"`
+	Creator   string   `json:"creator"`
+	Signature string   `json:"signature"`
+	Endorsers []string `json:"endorsers"`
+	Detail    string   `json:"detail"`
+}
+
+func GetTx(txId string) (trans *Transaction, err error) {
 	txInfo, err := ledger.QueryTrans(txId)
 	fmt.Println(txInfo)
 	if err != nil {
 		return nil, err
 	}
-	return txInfo, nil
+	trans = &Transaction{
+		TxId:      txInfo.TxId,
+		Nonce:     txInfo.Nonce,
+		Creator:   txInfo.Creator,
+		Signature: txInfo.Signature,
+		Endorsers: txInfo.Endorsers,
+		Detail:    txInfo.Detail,
+	}
+	return trans, nil
 }
 
 func GetBlock() {

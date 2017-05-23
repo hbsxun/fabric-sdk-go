@@ -13,10 +13,10 @@ type AssetController struct {
 	beego.Controller
 }
 
-// @Title CreateAsset
+// @Title AddAsset
 // @Description create assets
 // @Param	body		body 	models.Asset	true		"body for asset content"
-// @Success 200 {int} models.Asset.Id
+// @Success 200 {string} txId
 // @Failure 403 body is empty
 // @router / [post]
 func (u *AssetController) Post() {
