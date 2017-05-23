@@ -15,15 +15,15 @@ type Transaction struct {
 	Signature string   `json:"signature"`
 	Endorsers []string `json:"endorsers"`
 	Detail    string   `json:"detail"`
+	Payload   string   `json:"payload"`
 }
 type Block struct {
-	Number       int64  `json:"number"`
+	Number       int    `json:"number"`
 	PreviousHash string `json:"previousHash"`
 	CurrentHash  string `json:"currentHash"`
 	DataHash     string `json:"dataHash"`
+	Payload      string `json:"payload"`
 }
-
-var BlockList []*Blockw
 
 func GetTx(txId string) (trans *Transaction, err error) {
 	txInfo, err := ledger.QueryTrans(txId)
@@ -38,10 +38,49 @@ func GetTx(txId string) (trans *Transaction, err error) {
 		Signature: txInfo.Signature,
 		Endorsers: txInfo.Endorsers,
 		Detail:    txInfo.Detail,
+		Payload:   txInfo.Payload,
 	}
 	return trans, nil
 }
 
-func GetBlocks() {
-	//ledger.QueryBlock()
+func GetBlockByNumber(i int) (*Block, error) {
+	block, err := ledger.QueryBlockByNumber(i)
+	if err != nil {
+		return nil, err
+	}
+	return &Block{
+		Number:       block.Number,
+		PreviousHash: block.PreHash,
+		CurrentHash:  block.CurHash,
+		DataHash:     block.DataHash,
+		Payload:      block.Payload,
+	}, nil
+}
+
+func GetBlocks() ([]*Block, error) {
+	blockchain, err := ledger.QueryBlockChain()
+	if err != nil {
+		return nil, err
+	}
+	var blocks []*Block
+	for i := int(blockchain.Height - 1); i > 0; i-- {
+		b, err := GetBlockByNumber(i)
+		if err != nil {
+			return nil, fmt.Errorf("QueryBlock [%d] err [%s]", i, err)
+		}
+		blocks = append(blocks, b)
+	}
+
+	gesisBlock, err := ledger.QueryBlockByNumber(0)
+	if err != nil {
+		return nil, fmt.Errorf("Query Genesis Block [%d] err [%s]", 0, err)
+	}
+
+	return append(blocks, &Block{
+		Number:       gesisBlock.Number,
+		PreviousHash: gesisBlock.PreHash,
+		CurrentHash:  gesisBlock.CurHash,
+		DataHash:     gesisBlock.DataHash,
+		Payload:      gesisBlock.Payload,
+	}), nil
 }

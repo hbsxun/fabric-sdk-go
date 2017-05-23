@@ -57,6 +57,53 @@
                 }
             }
         },
+        "/asset/login": {
+            "get": {
+                "tags": [
+                    "asset"
+                ],
+                "description": "Logs asset into the system",
+                "operationId": "AssetController.Login",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "assetname",
+                        "description": "The username for login",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "password",
+                        "description": "The password for login",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} login success"
+                    },
+                    "403": {
+                        "description": "asset not exist"
+                    }
+                }
+            }
+        },
+        "/asset/logout": {
+            "get": {
+                "tags": [
+                    "asset"
+                ],
+                "description": "Logs out current logged in asset session",
+                "operationId": "AssetController.logout",
+                "responses": {
+                    "200": {
+                        "description": "{string} logout success"
+                    }
+                }
+            }
+        },
         "/asset/{uid}": {
             "get": {
                 "tags": [
@@ -81,6 +128,110 @@
                     },
                     "403": {
                         "description": ":uid is empty"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "asset"
+                ],
+                "description": "update the asset",
+                "operationId": "AssetController.Update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The uid you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for asset content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Asset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.Asset"
+                        }
+                    },
+                    "403": {
+                        "description": ":uid is not int"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "asset"
+                ],
+                "description": "delete the asset",
+                "operationId": "AssetController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The uid you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "uid is empty"
+                    }
+                }
+            }
+        },
+        "/blocks/": {
+            "get": {
+                "tags": [
+                    "blocks"
+                ],
+                "description": "get all Blocks",
+                "operationId": "BlockController.GetAll",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.Block"
+                        }
+                    }
+                }
+            }
+        },
+        "/blocks/{number}": {
+            "get": {
+                "tags": [
+                    "blocks"
+                ],
+                "description": "get block by number",
+                "operationId": "BlockController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "number",
+                        "description": "The key for block",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.Block"
+                        }
+                    },
+                    "403": {
+                        "description": ":number is out of bound"
                     }
                 }
             }
@@ -205,6 +356,28 @@
                 }
             }
         },
+        "models.Block": {
+            "title": "Block",
+            "type": "object",
+            "properties": {
+                "currentHash": {
+                    "type": "string"
+                },
+                "dataHash": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "payload": {
+                    "type": "string"
+                },
+                "previousHash": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CSRInfo": {
             "title": "CSRInfo",
             "type": "object",
@@ -293,6 +466,9 @@
                 "nonce": {
                     "type": "string"
                 },
+                "payload": {
+                    "type": "string"
+                },
                 "signature": {
                     "type": "string"
                 },
@@ -318,6 +494,10 @@
         {
             "name": "transaction",
             "description": "Operations about Ledgers\n"
+        },
+        {
+            "name": "blocks",
+            "description": "Operations about Blocks\n"
         }
     ]
 }
