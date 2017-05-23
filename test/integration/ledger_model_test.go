@@ -40,8 +40,15 @@ func TestLedgerQueries(t *testing.T) {
 		}
 		fmt.Println(txInfo)
 	*/
-	blockHeaders, _ := accBook.QueryBlock()
-	fmt.Println(blockHeaders)
+	blocks, err := accBook.QueryBlocks()
+	if err != nil {
+		t.Fatalf("QueryBlocks failed [%s]\n", err)
+	}
+	fmt.Println(blocks)
 
-	//accBook.QueryGenesisBlock()
+	genesisBlock, err := accBook.QueryBlockByNumber(0)
+	if err != nil {
+		t.Fatalf("Query Genesis Block failed [%s]\n", err)
+	}
+	fmt.Println(genesisBlock)
 }

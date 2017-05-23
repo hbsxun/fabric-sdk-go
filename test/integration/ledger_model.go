@@ -41,29 +41,33 @@ type TxInfo struct {
 	Nonce     string   `json:"nonce"`
 	Endorsers []string `json:"endorsers"`
 	Detail    string   `json:"detail"`
+	Payload   string   `json:"payload"`
 }
 
-func (t *TxInfo) String() string {
-	return fmt.Sprintf("Transaction ID: %s \nCreator Signature: %s \nCreator Identity: %s \nTransaction Nonce: %s \nEndorsers: %v \nTransaction Content: %s \n", t.TxId, t.Signature, t.Creator, t.Nonce, t.Endorsers, t.Detail)
-}
-
-type BlockHeaderInfo struct {
-	Height   int    `json:"height"`
+type BlockInfo struct {
+	Number   int    `json:"number"`
 	PreHash  string `json:"preHash"`
 	CurHash  string `json:"curHash"`
 	DataHash string `json:"dataHash"`
+	Payload  string `json:"payload"`
 }
 
-func (t *BlockHeaderInfo) String() string {
-	return fmt.Sprintf("Height: %d \nPreHash: %s \nCurHash: %s \nDataHash: %s \n", t.Height, t.PreHash, t.CurHash, t.DataHash)
-}
-
+//Ledger
 type Ledger struct {
 	chain fabricClient.Chain
 }
 
+//NewLedger returns an instance of Ledger
 func NewLedger(chain fabricClient.Chain) *Ledger {
 	return &Ledger{chain}
+}
+
+func (t *TxInfo) String() string {
+	return fmt.Sprintf("Transaction ID: %s \nCreator Signature: %s \nCreator Identity: %s \nTransaction Nonce: %s \nEndorsers: %v \nTransaction Content: %s \npayload %s\n", t.TxId, t.Signature, t.Creator, t.Nonce, t.Endorsers, t.Detail, t.Payload)
+}
+
+func (t *BlockInfo) String() string {
+	return fmt.Sprintf("Number: %d \nPreHash: %s \nCurHash: %s \nDataHash: %s \npayload %s\n", t.Number, t.PreHash, t.CurHash, t.DataHash, t.Payload)
 }
 
 func (this *Ledger) QueryTrans(txID string) (tx *TxInfo, err error) {
@@ -112,6 +116,7 @@ func (this *Ledger) QueryTrans(txID string) (tx *TxInfo, err error) {
 		Nonce:     new(big.Int).SetBytes(nonce).String(),
 		Detail:    spec,
 		Endorsers: endorsers,
+		Payload:   processedTransaction.String(),
 	}, nil
 }
 
@@ -222,53 +227,60 @@ func (this *Ledger) parseEndorsedAction(action *pb.ChaincodeEndorsedAction) (end
 	return endorsers, nil
 }
 
-//QueryBlock
-func (this *Ledger) QueryBlock() (blockHeaers []*BlockHeaderInfo, err error) {
-	chain := this.chain
+//QueryBlockChain {Height, CurrentHash, PreviousHash}
+func (this *Ledger) QueryBlockChain() (*common.BlockchainInfo, error) {
 	// Retrieve current blockchain info
-	bci, err := chain.QueryInfo()
+	bci, err := this.chain.QueryInfo()
 	if err != nil {
 		return nil, fmt.Errorf("QueryInfo return error: %v", err)
 	}
-	logger.Debugf("%s\n\n", bci.String())
-	/*
-		// Query Block by Hash - retrieve current block by hash
-		block, err := chain.QueryBlockByHash(bci.CurrentBlockHash)
-		if err != nil {
-			log.Fatalf("QueryBlockByHash return error: %v", err)
-		}
-		//print the current block
-		logger.Debugf("%s\n\n%s\n\n%s\n\n", block.GetHeader().String(), block.GetData().String(), block.GetMetadata().String())
-	*/
-	for i := bci.Height - 1; i > 0; i-- {
-		block, err := chain.QueryBlock(int(i))
-		if err != nil {
-			return nil, fmt.Errorf("QueryBlock return error [%s]", err)
-		}
-		curHash := base64.StdEncoding.EncodeToString(block.GetHeader().Hash())
-		preHash := base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash)
-		dataHash := base64.StdEncoding.EncodeToString(block.GetHeader().DataHash)
-		number := int(block.GetHeader().Number)
-		//logger.Debugf("Height [%d] \nCurrentBlockHash [%s] \nPreviousBlockHash [%s] \nDataHash [%s] \nNumber [%d]\n", i, curHash, preHash, dataHash, number)
-		blockHeaers = append(blockHeaers, &BlockHeaderInfo{
-			Height:   number,
-			PreHash:  preHash,
-			CurHash:  curHash,
-			DataHash: dataHash,
-		})
-	}
-	return blockHeaers, nil
+	return bci, nil
 }
 
-func (this *Ledger) QueryGenesisBlock() {
-	chain := this.chain
-	i := 0
-	block, err := chain.QueryBlock(i)
+//QueryBlockByNumber
+func (this *Ledger) QueryBlockByNumber(number int) (*BlockInfo, error) {
+	block, err := this.chain.QueryBlock(number)
 	if err != nil {
-		logger.Fatalf("QueryBlock return error [%s]", err)
+		return nil, fmt.Errorf("QueryBlock return error [%s]", err)
 	}
-	curHash := base64.StdEncoding.EncodeToString(block.GetHeader().Hash())
-	preHash := base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash)
-	logger.Debugf("Height [%d] \nCurrentBlockHash [%s] \nPreviousBlockHash [%s]\n\n", i, curHash, preHash)
-	//logger.Debugf("%s\n\n%s\n\n%s\n\n", block.GetHeader().String(), block.GetData().String(), block.GetMetadata().String())
+
+	return &BlockInfo{
+		Number:   int(block.GetHeader().Number),
+		CurHash:  base64.StdEncoding.EncodeToString(block.GetHeader().Hash()),
+		PreHash:  base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash),
+		DataHash: base64.StdEncoding.EncodeToString(block.GetHeader().DataHash),
+		Payload:  block.String(),
+	}, nil
+}
+
+//QueryBlockByHash
+func (this *Ledger) QueryBlockByHash(hash []byte) (*BlockInfo, error) {
+	block, err := this.chain.QueryBlockByHash(hash)
+	if err != nil {
+		return nil, fmt.Errorf("QueryBlockByHash return error [%s]", err)
+	}
+
+	return &BlockInfo{
+		Number:   int(block.GetHeader().Number),
+		CurHash:  base64.StdEncoding.EncodeToString(block.GetHeader().Hash()),
+		PreHash:  base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash),
+		DataHash: base64.StdEncoding.EncodeToString(block.GetHeader().DataHash),
+		Payload:  block.String(),
+	}, nil
+}
+
+//QueryBlocks
+func (this *Ledger) QueryBlocks() (blocks []*BlockInfo, err error) {
+	blockchain, err := this.QueryBlockChain()
+	if err != nil {
+		return nil, err
+	}
+	for i := blockchain.Height - 1; i > 0; i-- {
+		block, err := this.QueryBlockByNumber(int(i))
+		if err != nil {
+			return nil, err
+		}
+		blocks = append(blocks, block)
+	}
+	return blocks, nil
 }

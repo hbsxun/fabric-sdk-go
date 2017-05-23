@@ -16,6 +16,14 @@ type Transaction struct {
 	Endorsers []string `json:"endorsers"`
 	Detail    string   `json:"detail"`
 }
+type Block struct {
+	Number       int64  `json:"number"`
+	PreviousHash string `json:"previousHash"`
+	CurrentHash  string `json:"currentHash"`
+	DataHash     string `json:"dataHash"`
+}
+
+var BlockList []*Blockw
 
 func GetTx(txId string) (trans *Transaction, err error) {
 	txInfo, err := ledger.QueryTrans(txId)
@@ -34,6 +42,6 @@ func GetTx(txId string) (trans *Transaction, err error) {
 	return trans, nil
 }
 
-func GetBlock() {
+func GetBlocks() {
 	//ledger.QueryBlock()
 }
