@@ -22,7 +22,8 @@ type Block struct {
 	PreviousHash string `json:"previousHash"`
 	CurrentHash  string `json:"currentHash"`
 	DataHash     string `json:"dataHash"`
-	Payload      string `json:"payload"`
+	Data         string `json:"data"`
+	Metadata     string `json:"metadata"`
 }
 
 func GetTx(txId string) (trans *Transaction, err error) {
@@ -53,7 +54,8 @@ func GetBlockByNumber(i int) (*Block, error) {
 		PreviousHash: block.PreHash,
 		CurrentHash:  block.CurHash,
 		DataHash:     block.DataHash,
-		Payload:      block.Payload,
+		Data:         block.Data,
+		Metadata:     block.Metadata,
 	}, nil
 }
 
@@ -81,6 +83,7 @@ func GetBlocks() ([]*Block, error) {
 		PreviousHash: gesisBlock.PreHash,
 		CurrentHash:  gesisBlock.CurHash,
 		DataHash:     gesisBlock.DataHash,
-		Payload:      gesisBlock.Payload,
+		Data:         gesisBlock.Data,
+		Metadata:     gesisBlock.Metadata,
 	}), nil
 }

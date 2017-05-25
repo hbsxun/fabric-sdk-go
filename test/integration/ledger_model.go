@@ -49,7 +49,8 @@ type BlockInfo struct {
 	PreHash  string `json:"preHash"`
 	CurHash  string `json:"curHash"`
 	DataHash string `json:"dataHash"`
-	Payload  string `json:"payload"`
+	Data     string `json:"data"`
+	Metadata string `json:"metadata"`
 }
 
 //Ledger
@@ -67,7 +68,7 @@ func (t *TxInfo) String() string {
 }
 
 func (t *BlockInfo) String() string {
-	return fmt.Sprintf("Number: %d \nPreHash: %s \nCurHash: %s \nDataHash: %s \npayload %s\n", t.Number, t.PreHash, t.CurHash, t.DataHash, t.Payload)
+	return fmt.Sprintf("Number: %d \nPreHash: %s \nCurHash: %s \nDataHash: %s \nData %s \nMetaData\n", t.Number, t.PreHash, t.CurHash, t.DataHash, t.Data, t.Metadata)
 }
 
 func (this *Ledger) QueryTrans(txID string) (tx *TxInfo, err error) {
@@ -249,7 +250,8 @@ func (this *Ledger) QueryBlockByNumber(number int) (*BlockInfo, error) {
 		CurHash:  base64.StdEncoding.EncodeToString(block.GetHeader().Hash()),
 		PreHash:  base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash),
 		DataHash: base64.StdEncoding.EncodeToString(block.GetHeader().DataHash),
-		Payload:  block.String(),
+		Data:     block.GetData().String(),
+		Metadata: block.GetMetadata().String(),
 	}, nil
 }
 
@@ -265,7 +267,8 @@ func (this *Ledger) QueryBlockByHash(hash []byte) (*BlockInfo, error) {
 		CurHash:  base64.StdEncoding.EncodeToString(block.GetHeader().Hash()),
 		PreHash:  base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash),
 		DataHash: base64.StdEncoding.EncodeToString(block.GetHeader().DataHash),
-		Payload:  block.String(),
+		Data:     block.GetData().String(),
+		Metadata: block.GetMetadata().String(),
 	}, nil
 }
 

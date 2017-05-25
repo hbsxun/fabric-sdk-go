@@ -43,11 +43,21 @@ func testModel_CC(testSetup *BaseSetupImpl, t *testing.T) {
 
 	//add Model
 	model := &Model{
-		Owner:  "alice",
-		Name:   "M1",
-		Source: "blabla",
+		Owner: "alice",
+		Name:  "M1",
+		Desc:  "blabla",
 	}
 	_, err := testSetup.AddModel(model)
+	if err != nil {
+		t.Fatalf("Add Model return error: %v", err)
+		return
+	}
+	model2 := &Model{
+		Owner: "alice",
+		Name:  "M2",
+		Desc:  "233333",
+	}
+	_, err = testSetup.AddModel(model2)
 	if err != nil {
 		t.Fatalf("Add Model return error: %v", err)
 		return
@@ -62,14 +72,14 @@ func testModel_CC(testSetup *BaseSetupImpl, t *testing.T) {
 	fmt.Printf("***Model info: %s\n", modelInfo)
 
 	//transfer Model
-	_, err = testSetup.TransferModel("M1", "bob")
+	_, err = testSetup.TransferModel(model.Name, "bob")
 	if err != nil {
 		t.Fatalf("TransferModel return error: %v", err)
 		return
 	}
 
 	//query Model
-	modelInfo, err = testSetup.QueryModelByOwner("alice")
+	modelInfo, err = testSetup.QueryModelByOwner(model.Owner)
 	if err != nil {
 		t.Errorf("getModel info return error: %v", err)
 		return
@@ -83,7 +93,7 @@ func testModel_CC(testSetup *BaseSetupImpl, t *testing.T) {
 	fmt.Printf("***Model info after transfer: %s\n", modelInfo)
 
 	//query Model history
-	history, err := testSetup.GetHistoryForModel()
+	history, err := testSetup.GetHistoryForModel(model.Name)
 	if err != nil {
 		t.Fatalf("GetHistoryForModel return error: %v", err)
 		return
