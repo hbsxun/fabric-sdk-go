@@ -43,7 +43,7 @@ func testModel_CC(testSetup *BaseSetupImpl, t *testing.T) {
 
 	//add Model
 	model := &Model{
-		Owner:  "Alice",
+		Owner:  "alice",
 		Name:   "M1",
 		Source: "blabla",
 	}
@@ -62,7 +62,7 @@ func testModel_CC(testSetup *BaseSetupImpl, t *testing.T) {
 	fmt.Printf("***Model info: %s\n", modelInfo)
 
 	//transfer Model
-	_, err = testSetup.TransferModel()
+	_, err = testSetup.TransferModel("M1", "bob")
 	if err != nil {
 		t.Fatalf("TransferModel return error: %v", err)
 		return

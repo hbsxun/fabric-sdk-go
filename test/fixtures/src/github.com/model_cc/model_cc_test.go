@@ -61,34 +61,29 @@ func Test_Invoke(t *testing.T) {
 	//	checkInit(t, stub, nil)
 	checkInvoke(t, stub, [][]byte{
 		[]byte("initModel"),
-		[]byte("programer1"),
-		[]byte("match-1"),
-		[]byte("Java"),
+		[]byte("alice"),
+		[]byte("Model1"),
+		[]byte("for healthcare"),
 	})
 	checkInvoke(t, stub, [][]byte{
 		[]byte("initModel"),
-		[]byte("programer2"),
-		[]byte("match-2"),
-		[]byte("Go"),
+		[]byte("bob"),
+		[]byte("Model2"),
+		[]byte("for supply chain"),
 	})
-	checkInvoke(t, stub, [][]byte{
-		[]byte("initModel"),
-		[]byte("programer1"),
-		[]byte("match-1-2"),
-		[]byte("C++"),
-	})
+
 	model := &model{
-		Name:       "match-1",
+		Name:       "Model1",
 		ObjectType: "model",
-		Owner:      "programer1",
-		Source:     []byte("Java"),
+		Owner:      "alice",
+		Desc:       []byte("for healthcare"),
 	}
 	modelAsJson, err := json.Marshal(model)
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()
 	}
-	checkQuery(t, stub, "match-1", string(modelAsJson))
+	checkQuery(t, stub, "Model1", string(modelAsJson))
 	//Mock not implemented
 	/*
 		checkInvoke(t, stub, [][]byte{

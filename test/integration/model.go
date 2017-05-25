@@ -46,12 +46,12 @@ func (setup *BaseSetupImpl) QueryModel(modelId string) (string, error) {
 }
 
 // TransferModel ...
-func (setup *BaseSetupImpl) TransferModel() (string, error) {
+func (setup *BaseSetupImpl) TransferModel(modelName, newOwner string) (string, error) {
 
 	var args []string
 	args = append(args, "transferModel")
-	args = append(args, "M1")
-	args = append(args, "Bob")
+	args = append(args, modelName)
+	args = append(args, newOwner)
 
 	transientDataMap := make(map[string][]byte)
 	transientDataMap["result"] = []byte("Transient data in transfer model...")
@@ -126,10 +126,10 @@ func (setup *BaseSetupImpl) QueryModelByOwner(owner string) (string, error) {
 }
 
 //GetHistoryForModel ...
-func (setup *BaseSetupImpl) GetHistoryForModel() (string, error) {
+func (setup *BaseSetupImpl) GetHistoryForModel(modelName string) (string, error) {
 
 	var args []string
 	args = append(args, "getHistoryForModel")
-	args = append(args, "M1")
+	args = append(args, modelName)
 	return setup.Query(setup.ChainID, setup.ChainCodeID, args)
 }

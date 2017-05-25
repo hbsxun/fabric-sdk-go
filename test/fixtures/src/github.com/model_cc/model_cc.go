@@ -60,7 +60,7 @@ func (t *ModelChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 // ========================================
 func (t *ModelChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
-	fmt.Println("************************invoke is running " + function + "*********************************************")
+
 	if len(args) < 1 {
 		return shim.Error("The number of args must greater than 1. The first is  function name")
 	}
