@@ -15,7 +15,7 @@ func Test_RegisterUser(t *testing.T) {
 	admin := NewMember(testSetup.Client)
 
 	reqReq := &fabricCAClient.RegistrationRequest{
-		Name:           "billhxy",
+		Name:           "xxx",
 		Type:           "user", //"user, app, peer"
 		MaxEnrollments: 0,
 		Affiliation:    "org1.department1",
