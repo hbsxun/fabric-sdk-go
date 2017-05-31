@@ -20,28 +20,6 @@ client:
       # Certificate location absolute path
       certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/peers/peer1/ca-cert.pem"
       serverHostOverride: "peer1"
-          # # peer 2
-          #  - host: "localhost"
-          #    port: 8051
-          #    eventHost: "localhost"
-          #    eventPort: 8053
-          #    primary: false
-          #    tls:
-          #      # Certificate location absolute path
-          #      certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/peers/peer2/ca-cert.pem"
-          #      serverHostOverride: "peer2"
-          # # peer 3
-          #  - host: "localhost"
-          #    port: 8056
-          #    eventHost: "localhost"
-          #    eventPort: 8058
-          #    primary: false
-          #    tls:
-          #      # Certificate location absolute path
-          #      certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/peers/peer3/ca-cert.pem"
-          #      serverHostOverride: "peer3"
-          #
-
 
  tls:
   enabled: true
