@@ -12,6 +12,8 @@ services:
       - ./channel/crypto-config/peerOrganizations/peerOrg1/ca/:/etc/hyperledger/fabric-ca-server-config
       - ./fabricca/tlsOrg1:/etc/hyperledger/fabric-ca-server
     container_name: ca_peerOrg1
+    extra_hosts:
+      ca0: 192.168.50.147
 
   orderer0:
     container_name: orderer0
@@ -38,6 +40,8 @@ services:
         - ./channel/crypto-config/ordererOrganizations/ordererOrg1/orderers/ordererOrg1orderer1/:/etc/hyperledger/msp/orderer
         - ./tls/orderer:/etc/hyperledger/tls/orderer
         - ./tls/peers:/etc/hyperledger/tls/peers
+    extra_hosts:
+      orderer0: 192.168.50.147
 
   couchdb0:
     container_name: couchdb0
@@ -83,6 +87,8 @@ services:
     depends_on:
       - orderer0
       - couchdb0
+    extra_hosts:
+      peer0: 192.168.50.147
  
   couchdb1:
     container_name: couchdb1
@@ -128,4 +134,5 @@ services:
       - orderer0
       - peer0
       - couchdb1
-
+    extra_hosts:
+      peer1: 192.168.50.147
