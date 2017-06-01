@@ -1,25 +1,5 @@
 client:
  peers:
-  # peer0
-  - host: "192.168.50.147"
-    port: 7051
-    eventHost: "192.168.50.147"
-    eventPort: 7053
-    primary: true
-    tls:
-      # Certificate location absolute path
-      certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/peers/peer0/ca-cert.pem"
-      serverHostOverride: "peer0"
-  # peer 1
-  - host: "192.168.50.147"
-    port: 7056
-    eventHost: "192.168.50.147"
-    eventPort: 7058
-    primary: false
-    tls:
-      # Certificate location absolute path
-      certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/peers/peer1/ca-cert.pem"
-      serverHostOverride: "peer1"
  # peer 2
   - host: "localhost"
     port: 8051
@@ -69,7 +49,7 @@ client:
  fabricCA:
   tlsEnabled: true
   id: "Org2MSP"
-  serverURL: "http://localhost:7054"
+  serverURL: "http://localhost:8054"
   certfiles :
     - "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/root.pem"
   client:
