@@ -12,8 +12,6 @@ services:
       - ./channel/crypto-config/peerOrganizations/peerOrg2/ca/:/etc/hyperledger/fabric-ca-server-config
       - ./fabricca/tlsOrg2:/etc/hyperledger/fabric-ca-server
     container_name: ca_peerOrg2
-    extra_hosts:
-      ca1: 192.168.50.216
 
   couchdb2:
     container_name: couchdb2
@@ -24,6 +22,8 @@ services:
   peer2:
     container_name: peer2
     image: hyperledger/fabric-peer
+    extra_hosts:
+      - "orderer0: 192.168.50.216"
     environment:
       - CORE_PEER_COMMITTER_LEDGER_ORDERER=192.168.50.216:7050
       - CORE_NEXT=true
@@ -58,8 +58,6 @@ services:
         - ./tls/peers/peer2:/etc/hyperledger/tls
     depends_on:
       - couchdb2
-    extra_hosts:
-      peer2: 192.168.50.216
 
   couchdb3:
     container_name: couchdb3
@@ -70,6 +68,8 @@ services:
   peer3:
     container_name: peer3
     image: hyperledger/fabric-peer
+    extra_hosts:
+      - "orderer0: 192.168.50.216"
     environment:
       - CORE_PEER_COMMITTER_LEDGER_ORDERER=192.168.50.216:7050
       - CORE_NEXT=true
@@ -105,5 +105,3 @@ services:
     depends_on:
       - peer2
       - couchdb3
-    extra_hosts:
-      peer3: 192.168.50.216
