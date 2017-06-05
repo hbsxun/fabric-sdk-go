@@ -21,16 +21,15 @@ package integration
 
 import (
 	"fmt"
-	"strconv"
+	"log"
+	"os"
 	"testing"
-	"time"
-
-	fcUtil "github.com/hyperledger/fabric-sdk-go/fabric-client/helpers"
 )
 
-func TestChainCodeInvoke(t *testing.T) {
+var testSetup BaseSetupImpl
 
-	testSetup := BaseSetupImpl{
+func TestMain(m *testing.M) {
+	testSetup = BaseSetupImpl{
 		ConfigFile:      "../fixtures/config/config_test.yaml",
 		ChainID:         "testchannel",
 		ChannelConfig:   "../fixtures/channel/testchannel.tx",
@@ -38,12 +37,21 @@ func TestChainCodeInvoke(t *testing.T) {
 	}
 
 	if err := testSetup.Initialize(); err != nil {
-		t.Fatalf(err.Error())
+		log.Fatalf(err.Error())
 	}
 
 	if err := testSetup.InstallAndInstantiateExampleCC(); err != nil {
-		t.Fatalf("InstallAndInstantiateExampleCC return error: %v", err)
+		log.Fatalf("InstallAndInstantiateExampleCC return error: %v", err)
 	}
+
+	//runtime.GOMAXPROCS(runtime.NumCPU())
+
+	log.Println("[TestMain] before run()")
+	os.Exit(m.Run())
+	log.Println("[TestMain] after run()")
+}
+
+func TestChainCodeInvoke(t *testing.T) {
 
 	// Get Query value before invoke
 	value, err := testSetup.QueryAsset()
@@ -52,23 +60,10 @@ func TestChainCodeInvoke(t *testing.T) {
 	}
 	fmt.Printf("*** QueryValue before invoke %s\n", value)
 
-	eventID := "test([a-zA-Z]+)"
-
-	// Register callback for chaincode event
-	done, rce := fcUtil.RegisterCCEvent(testSetup.ChainCodeID, eventID, testSetup.EventHub)
-
 	_, err = testSetup.MoveFunds()
 	if err != nil {
 		t.Fatalf("Move funds return error: %v", err)
 	}
-
-	select {
-	case <-done:
-	case <-time.After(time.Second * 20):
-		t.Fatalf("Did NOT receive CC for eventId(%s)\n", eventID)
-	}
-
-	testSetup.EventHub.UnregisterChaincodeEvent(rce)
 
 	valueAfterInvoke, err := testSetup.QueryAsset()
 	if err != nil {
@@ -76,12 +71,15 @@ func TestChainCodeInvoke(t *testing.T) {
 		return
 	}
 	fmt.Printf("*** QueryValue after invoke %s\n", valueAfterInvoke)
+}
 
-	valueInt, _ := strconv.Atoi(value)
-	valueInt = valueInt + 1
-	valueAfterInvokeInt, _ := strconv.Atoi(valueAfterInvoke)
-	if valueInt != valueAfterInvokeInt {
-		t.Fatalf("SendTransaction didn't change the QueryValue")
+func BenchmarkQuery(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		testSetup.QueryAsset()
 	}
-
+}
+func BenchmarkInvoke(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		testSetup.MoveFunds()
+	}
 }

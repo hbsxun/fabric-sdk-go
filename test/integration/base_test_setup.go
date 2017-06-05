@@ -184,7 +184,7 @@ func (setup *BaseSetupImpl) MoveFunds() (string, error) {
 	args = append(args, "move")
 	args = append(args, "a")
 	args = append(args, "b")
-	args = append(args, "1")
+	args = append(args, "10")
 
 	transientDataMap := make(map[string][]byte)
 	transientDataMap["result"] = []byte("Transient data in move funds...")
@@ -200,7 +200,7 @@ func (setup *BaseSetupImpl) MoveFunds() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("CreateAndSendTransaction return error: %v", err)
 	}
-	fmt.Println(txResponse)
+	_ = txResponse
 	select {
 	case <-done:
 	case <-fail:
