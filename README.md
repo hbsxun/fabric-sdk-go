@@ -52,3 +52,10 @@ go test
 This client was last tested and found to be compatible with the following Hyperledger Fabric commit levels:
 - fabric: v1.0.0-alpha
 - fabric-ca: v1.0.0-alpha
+
+
+## fabric-cli
+fabric-cli is a command line tool to test the functions of fabric-sdk-go, including fabric-client and fabric-ca-client
+
+## apiServer
+apiServer is a web server based on beego, it supplies a restful interface to support the application.
