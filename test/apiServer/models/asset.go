@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"errors"
 
 	sdkIgn "github.com/hyperledger/fabric-sdk-go/test/integration"
 )
@@ -41,6 +40,7 @@ func GetAsset(assetId string) (a *Asset, err error) {
 	return &ass, nil
 }
 
+/*
 func GetAllAssets() map[string]*Asset {
 	return nil
 }
@@ -55,3 +55,4 @@ func Login(name, password string) bool {
 
 func DeleteAsset(uid string) {
 }
+*/

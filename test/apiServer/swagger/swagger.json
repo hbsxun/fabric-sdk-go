@@ -16,20 +16,6 @@
     "basePath": "/fabric",
     "paths": {
         "/asset/": {
-            "get": {
-                "tags": [
-                    "asset"
-                ],
-                "description": "get all Assets",
-                "operationId": "AssetController.GetAll",
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "$ref": "#/definitions/models.Asset"
-                        }
-                    }
-                }
-            },
             "post": {
                 "tags": [
                     "asset"
@@ -53,53 +39,6 @@
                     },
                     "403": {
                         "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/asset/login": {
-            "get": {
-                "tags": [
-                    "asset"
-                ],
-                "description": "Logs asset into the system",
-                "operationId": "AssetController.Login",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "assetname",
-                        "description": "The username for login",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "password",
-                        "description": "The password for login",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} login success"
-                    },
-                    "403": {
-                        "description": "asset not exist"
-                    }
-                }
-            }
-        },
-        "/asset/logout": {
-            "get": {
-                "tags": [
-                    "asset"
-                ],
-                "description": "Logs out current logged in asset session",
-                "operationId": "AssetController.logout",
-                "responses": {
-                    "200": {
-                        "description": "{string} logout success"
                     }
                 }
             }
@@ -128,65 +67,6 @@
                     },
                     "403": {
                         "description": ":uid is empty"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "asset"
-                ],
-                "description": "update the asset",
-                "operationId": "AssetController.Update",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "uid",
-                        "description": "The uid you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for asset content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Asset"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "$ref": "#/definitions/models.Asset"
-                        }
-                    },
-                    "403": {
-                        "description": ":uid is not int"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "asset"
-                ],
-                "description": "delete the asset",
-                "operationId": "AssetController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "uid",
-                        "description": "The uid you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "403": {
-                        "description": "uid is empty"
                     }
                 }
             }
@@ -363,15 +243,18 @@
                 "currentHash": {
                     "type": "string"
                 },
+                "data": {
+                    "type": "string"
+                },
                 "dataHash": {
+                    "type": "string"
+                },
+                "metadata": {
                     "type": "string"
                 },
                 "number": {
                     "type": "integer",
                     "format": "int64"
-                },
-                "payload": {
-                    "type": "string"
                 },
                 "previousHash": {
                     "type": "string"
