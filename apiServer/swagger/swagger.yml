@@ -47,6 +47,24 @@ paths:
           description: '{string}'
         "403":
           description: body is empty
+  /instantiate/:
+    post:
+      tags:
+      - instantiate
+      description: Instantiate chaincode on peers
+      operationId: InstantiateController.Instantiate
+      parameters:
+      - in: body
+        name: body
+        description: body for chaincode Description
+        required: true
+        schema:
+          $ref: '#/definitions/chaincode.InstantiateArgs'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: body is empty
   /queryInstalled/{peerURL}:
     get:
       tags:
@@ -75,6 +93,13 @@ definitions:
         type: string
       chaincodeVersion:
         type: string
+  chaincode.InstantiateArgs:
+    title: InstantiateArgs
+    type: object
+    properties:
+      Args: {}
+      chaincodeId:
+        type: string
 tags:
 - name: enroll
   description: |
@@ -85,3 +110,6 @@ tags:
 - name: install
   description: |
     Operations about InstallCC
+- name: instantiate
+  description: |
+    Operations about Instantiate

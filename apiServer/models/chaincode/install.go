@@ -44,7 +44,7 @@ func NewInstallAction(flags *pflag.FlagSet) (*installAction, error) {
 	return action, err
 }
 
-func (action *installAction) InstallCC() error {
+func (action *installAction) Invoke() error {
 	fmt.Printf("Installing chaincode %s on peers:\n", common.ChaincodeID)
 	for _, peer := range action.Peers() {
 		fmt.Printf("-- %s\n", peer.GetURL())

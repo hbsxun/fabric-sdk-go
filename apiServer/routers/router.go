@@ -9,24 +9,32 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/cert"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/chaincode"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/query"
 )
 
 func init() {
 	ns := beego.NewNamespace("/fabric",
 		beego.NSNamespace("/enroll",
 			beego.NSInclude(
-				&controllers.EnrollController{},
+				&cert.EnrollController{},
 			),
 		),
 		beego.NSNamespace("/queryInstalled",
 			beego.NSInclude(
-				&controllers.QueryInstalledController{},
+				&query.QueryInstalledController{},
 			),
 		),
 		beego.NSNamespace("/install",
 			beego.NSInclude(
-				&controllers.InstallCCController{},
+				&chaincode.InstallCCController{},
+			),
+		),
+
+		beego.NSNamespace("/instantiate",
+			beego.NSInclude(
+				&chaincode.InstantiateController{},
 			),
 		),
 	)

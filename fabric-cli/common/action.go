@@ -75,6 +75,8 @@ const (
 	loggerName          = "fabriccli"
 	defaultConfigFile   = "fixtures/config/config_test.yaml"
 	defaultCertificate  = "fixtures/tls/orderer/ca-cert.pem"
+	defaultOrderURL     = "localhost:7050"
+	defaultPeerURL      = "localhost:7051"
 )
 
 var Logger = logging.MustGetLogger(loggerName)
@@ -86,7 +88,8 @@ var ChaincodeID string
 var CCPathPrefix string = "github.com/hyperledger/fabric-sdk-go/test/fixtures/src/github.com/"
 var ChaincodePath string
 var ChaincodeVersion = defaultCCVersion
-var OrdererURL string
+var OrdererURL string = defaultOrderURL
+var PeerURL string = defaultPeerURL
 var Args = getEmptyArgs()
 var PrettyPrint = true
 var Iterations = 1
@@ -328,6 +331,14 @@ func getEmptyArgs() string {
 	argBytes, err := json.Marshal(&ArgStruct{})
 	if err != nil {
 		panic(fmt.Errorf("error marshaling empty args struct: %v", err))
+	}
+	return string(argBytes)
+}
+
+func GetMarshalArgs(args ArgStruct) string {
+	argBytes, err := json.Marshal(args)
+	if err != nil {
+		panic(fmt.Errorf("error marshaling args struct: %v", err))
 	}
 	return string(argBytes)
 }
