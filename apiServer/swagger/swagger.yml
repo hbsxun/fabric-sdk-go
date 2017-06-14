@@ -29,6 +29,23 @@ paths:
           description: '{string}'
         "403":
           description: body is empty
+  /queryInstalled/{peerURL}:
+    get:
+      tags:
+      - queryInstalled
+      description: QueryInstalled Chaincodes installed on the peerURL
+      operationId: QueryInstalledController.QueryInstalledChaincodes
+      parameters:
+      - in: peerURL
+        name: peerURL
+        description: The URL of peer to query
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
 definitions:
   cert.EnrollReq:
     type: object
@@ -36,3 +53,6 @@ tags:
 - name: enroll
   description: |
     Operations about Enroll
+- name: queryInstalled
+  description: |
+    Operations about QueryInstalled

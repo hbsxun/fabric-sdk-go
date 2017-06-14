@@ -31,6 +31,12 @@ func init() {
 				&controllers.EnrollController{},
 			),
 		),
+		beego.NSNamespace("/queryInstalled",
+			beego.NSInclude(
+				&controllers.QueryInstalledController{},
+			),
+		),
+
 		/*
 			beego.NSNamespace("/transaction",
 				beego.NSInclude(
