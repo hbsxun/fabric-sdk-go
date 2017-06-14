@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/astaxie/beego"
-	_ "github.com/hyperledger/fabric-sdk-go/test/apiServer/routers"
+	_ "github.com/hyperledger/fabric-sdk-go/apiServer/routers"
 )
 
 func main() {

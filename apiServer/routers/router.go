@@ -9,36 +9,40 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers"
 )
 
 func init() {
 	ns := beego.NewNamespace("/fabric",
-		beego.NSNamespace("/asset",
-			beego.NSInclude(
-				&controllers.AssetController{},
+		/*
+			beego.NSNamespace("/asset",
+				beego.NSInclude(
+					&controllers.AssetController{},
+				),
 			),
-		),
-		beego.NSNamespace("/register",
-			beego.NSInclude(
-				&controllers.RegisterController{},
+			beego.NSNamespace("/register",
+				beego.NSInclude(
+					&controllers.RegisterController{},
+				),
 			),
-		),
+		*/
 		beego.NSNamespace("/enroll",
 			beego.NSInclude(
 				&controllers.EnrollController{},
 			),
 		),
-		beego.NSNamespace("/transaction",
-			beego.NSInclude(
-				&controllers.LedgerController{},
+		/*
+			beego.NSNamespace("/transaction",
+				beego.NSInclude(
+					&controllers.LedgerController{},
+				),
 			),
-		),
-		beego.NSNamespace("/blocks",
-			beego.NSInclude(
-				&controllers.BlockController{},
+			beego.NSNamespace("/blocks",
+				beego.NSInclude(
+					&controllers.BlockController{},
+				),
 			),
-		),
+		*/
 	)
 	beego.AddNamespace(ns)
 }

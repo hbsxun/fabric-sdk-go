@@ -22,6 +22,7 @@ package common
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/hyperledger/fabric-sdk-go/config"
 	fabricClient "github.com/hyperledger/fabric-sdk-go/fabric-client"
@@ -89,8 +90,8 @@ var Args = getEmptyArgs()
 var PrettyPrint = true
 var Iterations = 1
 var SleepTime int64
-var ConfigFile = defaultConfigFile
-var Certificate = defaultCertificate
+var ConfigFile = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/fabric-cli/" + defaultConfigFile
+var Certificate = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/fabric-cli/" + defaultCertificate
 var PrintFormat string
 
 // ArgStruct is used for marshalling arguments to chaincode invocations
@@ -120,6 +121,7 @@ type ActionImpl struct {
 
 // Initialize initializes the action using the given flags
 func (action *ActionImpl) Initialize(flags *pflag.FlagSet) error {
+	fmt.Println(ConfigFile, Certificate)
 	if err := config.InitConfig(ConfigFile); err != nil {
 		return err
 	}

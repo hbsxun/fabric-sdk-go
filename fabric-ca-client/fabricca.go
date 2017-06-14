@@ -96,7 +96,6 @@ func NewFabricCAClient() (Services, error) {
 	if err != nil {
 		return nil, fmt.Errorf("New fabricCAClient failed: %s", err)
 	}
-
 	certFile := config.GetFabricCAClientCertFile()
 	keyFile := config.GetFabricCAClientKeyFile()
 	serverCertFiles := config.GetServerCertFiles()
