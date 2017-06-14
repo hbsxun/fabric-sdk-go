@@ -14,16 +14,14 @@ type QueryInstalledController struct {
 	beego.Controller
 }
 
-// @Title Get
+// @Title QueryInstalledChaincodes
 // @Description Query Chaincodes installed on the peerURL
 // @Param	peerURL		path 	string		true	"The URL of peer to query"
 // @Success 200 {string} string
 // @Failure 403 body is empty
 // @router /:peerURL [get]
-
-//the peerURL is empty, fixme, TODO
 func (u *QueryInstalledController) Get() {
-	peerURL := u.GetString("peerURL")
+	peerURL := u.GetString("peerURL") //the peerURL is empty, fixme, TODO
 	fmt.Println("peerURL:", peerURL)
 	if peerURL == "" {
 		peerURL = "localhost:7051"

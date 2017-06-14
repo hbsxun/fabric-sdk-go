@@ -43,16 +43,44 @@
                 }
             }
         },
+        "/install/": {
+            "post": {
+                "tags": [
+                    "install"
+                ],
+                "description": "InstallCC on peers",
+                "operationId": "InstallCCController.InstallCC",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chaincode.InstallCCArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/queryInstalled/{peerURL}": {
             "get": {
                 "tags": [
                     "queryInstalled"
                 ],
-                "description": "QueryInstalled Chaincodes installed on the peerURL",
+                "description": "Query Chaincodes installed on the peerURL",
                 "operationId": "QueryInstalledController.QueryInstalledChaincodes",
                 "parameters": [
                     {
-                        "in": "peerURL",
+                        "in": "path",
                         "name": "peerURL",
                         "description": "The URL of peer to query",
                         "required": true,
@@ -73,6 +101,18 @@
     "definitions": {
         "cert.EnrollReq": {
             "type": "object"
+        },
+        "chaincode.InstallCCArgs": {
+            "title": "InstallCCArgs",
+            "type": "object",
+            "properties": {
+                "chaincodeName": {
+                    "type": "string"
+                },
+                "chaincodeVersion": {
+                    "type": "string"
+                }
+            }
         }
     },
     "tags": [
@@ -83,6 +123,10 @@
         {
             "name": "queryInstalled",
             "description": "Operations about QueryInstalled\n"
+        },
+        {
+            "name": "install",
+            "description": "Operations about InstallCC\n"
         }
     ]
 }

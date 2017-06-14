@@ -83,6 +83,7 @@ var Password = defaultPassword
 var LoggingLevel = defaultLoggingLevel
 var ChannelID = defaultChannelID
 var ChaincodeID string
+var CCPathPrefix string = "github.com/hyperledger/fabric-sdk-go/test/fixtures/src/github.com/"
 var ChaincodePath string
 var ChaincodeVersion = defaultCCVersion
 var OrdererURL string

@@ -14,18 +14,6 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/fabric",
-		/*
-			beego.NSNamespace("/asset",
-				beego.NSInclude(
-					&controllers.AssetController{},
-				),
-			),
-			beego.NSNamespace("/register",
-				beego.NSInclude(
-					&controllers.RegisterController{},
-				),
-			),
-		*/
 		beego.NSNamespace("/enroll",
 			beego.NSInclude(
 				&controllers.EnrollController{},
@@ -36,19 +24,11 @@ func init() {
 				&controllers.QueryInstalledController{},
 			),
 		),
-
-		/*
-			beego.NSNamespace("/transaction",
-				beego.NSInclude(
-					&controllers.LedgerController{},
-				),
+		beego.NSNamespace("/install",
+			beego.NSInclude(
+				&controllers.InstallCCController{},
 			),
-			beego.NSNamespace("/blocks",
-				beego.NSInclude(
-					&controllers.BlockController{},
-				),
-			),
-		*/
+		),
 	)
 	beego.AddNamespace(ns)
 }
