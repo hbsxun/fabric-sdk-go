@@ -125,7 +125,6 @@ type ActionImpl struct {
 
 // Initialize initializes the action using the given flags
 func (action *ActionImpl) Initialize(flags *pflag.FlagSet) error {
-	fmt.Println(ConfigFile, Certificate)
 	if err := config.InitConfig(ConfigFile); err != nil {
 		return err
 	}

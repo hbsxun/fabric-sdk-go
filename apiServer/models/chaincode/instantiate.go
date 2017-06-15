@@ -67,11 +67,16 @@ func NewInstantiateAction(args *InstantiateArgs) (*instantiateAction, error) {
 	if len(action.Peers()) == 0 {
 		return nil, fmt.Errorf("a peer must be specified")
 	}
+
+	fmt.Printf("%s\n%s\n%s\n%s\n%s\n", common.OrdererURL, common.PeerURL, common.ChaincodePath, common.ChannelID, common.Args)
+
 	return action, err
 }
 
-func (action *instantiateAction) Invoke() (string, error) {
-	chain, err := action.NewChain()
+func (action *instantiateAction) Execute() (string, error) {
+	chain, err := action.NewChain() //just search testchannel, don't create
+	//chain, err := fcUtil.GetChain(action.Client(), common.ChannelID) //create channel if not found
+	//join the channel first, note!!
 	if err != nil {
 		return "", fmt.Errorf("Error initializing chain: %v", err)
 	}

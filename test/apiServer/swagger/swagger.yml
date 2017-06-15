@@ -1,0 +1,255 @@
+swagger: "2.0"
+info:
+  title: beego  API
+  description: beego has a very cool tools to autogenerate documents for your API
+  version: 1.0.0
+  termsOfService: http://beego.me/
+  contact:
+    email: warm3snow@linux.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /fabric
+paths:
+  /asset/:
+    post:
+      tags:
+      - asset
+      description: create assets
+      operationId: AssetController.AddAsset
+      parameters:
+      - in: body
+        name: body
+        description: body for asset content
+        required: true
+        schema:
+          $ref: '#/definitions/models.Asset'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: body is empty
+  /asset/{uid}:
+    get:
+      tags:
+      - asset
+      description: get asset by uid
+      operationId: AssetController.Get
+      parameters:
+      - in: path
+        name: uid
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/models.Asset'
+        "403":
+          description: :uid is empty
+  /blocks/:
+    get:
+      tags:
+      - blocks
+      description: get all Blocks
+      operationId: BlockController.GetAll
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/models.Block'
+  /blocks/{number}:
+    get:
+      tags:
+      - blocks
+      description: get block by number
+      operationId: BlockController.Get
+      parameters:
+      - in: path
+        name: number
+        description: The key for block
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/models.Block'
+        "403":
+          description: :number is out of bound
+  /enroll/:
+    post:
+      tags:
+      - enroll
+      description: Get Key and Ecert
+      operationId: EnrollController.Enroll
+      parameters:
+      - in: body
+        name: body
+        description: body for Ecert content
+        required: true
+        schema:
+          $ref: '#/definitions/models.EnrollRequest'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/models.EnrollResponse'
+        "403":
+          description: body is empty
+  /register/:
+    post:
+      tags:
+      - register
+      description: Get One-Time password for Ecert
+      operationId: RegisterController.Register
+      parameters:
+      - in: body
+        name: body
+        description: body for identity content
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/models.RegisterResponse'
+        "403":
+          description: body is empty
+  /transaction/{uid}:
+    get:
+      tags:
+      - transaction
+      description: Get transaction from ledger
+      operationId: LedgerController.GetTransaction
+      parameters:
+      - in: path
+        name: uid
+        description: The key for transaction
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "403":
+          description: :uid is empty
+definitions:
+  models.Asset:
+    title: Asset
+    type: object
+    properties:
+      desc:
+        type: string
+      docType:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+  models.Attribute:
+    title: Attribute
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  models.Block:
+    title: Block
+    type: object
+    properties:
+      currentHash:
+        type: string
+      data:
+        type: string
+      dataHash:
+        type: string
+      metadata:
+        type: string
+      number:
+        type: integer
+        format: int64
+      previousHash:
+        type: string
+  models.CSRInfo:
+    title: CSRInfo
+    type: object
+    properties:
+      cn:
+        type: string
+      hosts: {}
+  models.EnrollRequest:
+    title: EnrollRequest
+    type: object
+    properties:
+      csr:
+        $ref: '#/definitions/models.CSRInfo'
+      name:
+        type: string
+      secret:
+        type: string
+  models.EnrollResponse:
+    title: EnrollResponse
+    type: object
+    properties:
+      cert:
+        type: string
+      key:
+        type: string
+  models.RegisterRequest:
+    title: RegisterRequest
+    type: object
+    properties:
+      affiliation:
+        type: string
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/models.Attribute'
+      maxEnrollments:
+        type: integer
+        format: int64
+      name:
+        type: string
+      type:
+        type: string
+  models.RegisterResponse:
+    title: RegisterResponse
+    type: object
+    properties:
+      name:
+        type: string
+      secret:
+        type: string
+  models.Transaction:
+    title: Transaction
+    type: object
+    properties:
+      creator:
+        type: string
+      detail:
+        type: string
+      endorsers: {}
+      nonce:
+        type: string
+      payload:
+        type: string
+      signature:
+        type: string
+      txId:
+        type: string
+tags:
+- name: asset
+  description: |
+    Operations about Assets
+- name: register
+  description: |
+    Operations about Registers
+- name: enroll
+  description: |
+    Operations about Registers
+- name: transaction
+  description: |
+    Operations about Ledgers
+- name: blocks
+  description: |
+    Operations about Blocks

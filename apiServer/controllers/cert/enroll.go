@@ -6,7 +6,6 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/cert"
-	"github.com/spf13/pflag"
 )
 
 // Operations about Enroll
@@ -16,23 +15,22 @@ type EnrollController struct {
 
 // @Title Enroll
 // @Description Get Key and Ecert
-// @Param	body		body	cert.EnrollReq   true		"body for Ecert content"
+// @Param	body		body	cert.EnrollArgs   true		"body for Ecert content"
 // @Success 200 {string}
 // @Failure 403 body is empty
 // @router / [post]
 func (u *EnrollController) Post() {
-	var req cert.EnrollReq
+	var req cert.EnrollArgs
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
 	}
 	fmt.Println(req)
-	flags := &pflag.FlagSet{}
-	action, err := cert.NewEnrollAction(flags)
+	action, err := cert.NewEnrollAction(&req)
 	if err != nil {
 		fmt.Printf("Enroll Initialize error...")
 	}
-	resp, err := action.Enroll(req)
+	resp, err := action.Execute()
 	if err != nil {
 		u.Data["json"] = err
 	} else {

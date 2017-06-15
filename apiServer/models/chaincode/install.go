@@ -38,13 +38,16 @@ type installAction struct {
 	common.ActionImpl
 }
 
-func NewInstallAction(flags *pflag.FlagSet) (*installAction, error) {
-	action := &installAction{}
+func NewInstallAction(args *InstallCCArgs) (*installAction, error) {
+	action, flags := &installAction{}, &pflag.FlagSet{}
+	flags.StringVar(&common.ChaincodeID, common.ChaincodeIDFlag, args.ChaincodeName, "The unique name of chaincode")
+	flags.StringVar(&common.ChaincodePath, common.ChaincodePathFlag, common.CCPathPrefix+args.ChaincodeName, "The source code path of chaincode")
+
 	err := action.Initialize(flags)
 	return action, err
 }
 
-func (action *installAction) Invoke() error {
+func (action *installAction) Execute() error {
 	fmt.Printf("Installing chaincode %s on peers:\n", common.ChaincodeID)
 	for _, peer := range action.Peers() {
 		fmt.Printf("-- %s\n", peer.GetURL())

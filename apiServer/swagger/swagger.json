@@ -15,6 +15,62 @@
     },
     "basePath": "/fabric",
     "paths": {
+        "/chaincodeInfo/": {
+            "post": {
+                "tags": [
+                    "chaincodeInfo"
+                ],
+                "description": "ChaincodeInfo chaincode on peers",
+                "operationId": "ChaincodeInfoController.ChaincodeInfo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chaincode.ChaincodeInfoArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} string"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/createChannel/": {
+            "post": {
+                "tags": [
+                    "createChannel"
+                ],
+                "description": "ChannelCreate on peers",
+                "operationId": "ChannelCreateController.ChannelCreate",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for ChannelCreate Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.ChannelCreateArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/enroll/": {
             "post": {
                 "tags": [
@@ -29,7 +85,7 @@
                         "description": "body for Ecert content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/cert.EnrollReq"
+                            "$ref": "#/definitions/cert.EnrollArgs"
                         }
                     }
                 ],
@@ -99,17 +155,101 @@
                 }
             }
         },
-        "/queryInstalled/{peerURL}": {
+        "/invokeCC/": {
+            "post": {
+                "tags": [
+                    "invokeCC"
+                ],
+                "description": "Invoke chaincode on peers",
+                "operationId": "InvokeController.Invoke",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chaincode.InvokeArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} txId"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/joinChannel/": {
+            "post": {
+                "tags": [
+                    "joinChannel"
+                ],
+                "description": "ChannelJoin on peers",
+                "operationId": "ChannelJoinController.ChannelJoin",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for ChannelJoin Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.ChannelJoinArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/queryCC/": {
+            "post": {
+                "tags": [
+                    "queryCC"
+                ],
+                "description": "Query chaincode on peers",
+                "operationId": "QueryController.Query",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chaincode.QueryArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} txId"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/queryInstalled/{peerUrl}": {
             "get": {
                 "tags": [
                     "queryInstalled"
                 ],
-                "description": "Query Chaincodes installed on the peerURL",
+                "description": "Query Chaincodes installed on the peerUrl",
                 "operationId": "QueryInstalledController.QueryInstalledChaincodes",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "peerURL",
+                        "name": "peerUrl",
                         "description": "The URL of peer to query",
                         "required": true,
                         "type": "string"
@@ -127,8 +267,29 @@
         }
     },
     "definitions": {
-        "cert.EnrollReq": {
-            "type": "object"
+        "cert.EnrollArgs": {
+            "title": "EnrollArgs",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "chaincode.ChaincodeInfoArgs": {
+            "title": "ChaincodeInfoArgs",
+            "type": "object",
+            "properties": {
+                "chaincodeId": {
+                    "type": "string"
+                },
+                "channelId": {
+                    "type": "string"
+                }
+            }
         },
         "chaincode.InstallCCArgs": {
             "title": "InstallCCArgs",
@@ -146,8 +307,64 @@
             "title": "InstantiateArgs",
             "type": "object",
             "properties": {
-                "Args": {},
+                "args": {},
                 "chaincodeId": {
+                    "type": "string"
+                }
+            }
+        },
+        "chaincode.InvokeArgs": {
+            "title": "InvokeArgs",
+            "type": "object",
+            "properties": {
+                "args": {},
+                "chaincodeId": {
+                    "type": "string"
+                },
+                "channelId": {
+                    "type": "string"
+                }
+            }
+        },
+        "chaincode.QueryArgs": {
+            "title": "QueryArgs",
+            "type": "object",
+            "properties": {
+                "args": {},
+                "chaincodeId": {
+                    "type": "string"
+                },
+                "channelId": {
+                    "type": "string"
+                }
+            }
+        },
+        "channel.ChannelCreateArgs": {
+            "title": "ChannelCreateArgs",
+            "type": "object",
+            "properties": {
+                "channelId": {
+                    "type": "string"
+                },
+                "ordererUrl": {
+                    "type": "string"
+                },
+                "txFile": {
+                    "type": "string"
+                }
+            }
+        },
+        "channel.ChannelJoinArgs": {
+            "title": "ChannelJoinArgs",
+            "type": "object",
+            "properties": {
+                "channelId": {
+                    "type": "string"
+                },
+                "ordererUrl": {
+                    "type": "string"
+                },
+                "peerUrl": {
                     "type": "string"
                 }
             }
@@ -159,16 +376,36 @@
             "description": "Operations about Enroll\n"
         },
         {
-            "name": "queryInstalled",
-            "description": "Operations about QueryInstalled\n"
-        },
-        {
             "name": "install",
             "description": "Operations about InstallCC\n"
         },
         {
             "name": "instantiate",
             "description": "Operations about Instantiate\n"
+        },
+        {
+            "name": "invokeCC",
+            "description": "Operations about Invoke\n"
+        },
+        {
+            "name": "queryCC",
+            "description": "Operations about Query\n"
+        },
+        {
+            "name": "chaincodeInfo",
+            "description": "Operations about ChaincodeInfo\n"
+        },
+        {
+            "name": "createChannel",
+            "description": "Operations about ChannelCreate\n"
+        },
+        {
+            "name": "joinChannel",
+            "description": "Operations about ChannelJoin\n"
+        },
+        {
+            "name": "queryInstalled",
+            "description": "Operations about QueryInstalled\n"
         }
     ]
 }

@@ -6,8 +6,6 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/chaincode"
-	"github.com/hyperledger/fabric-sdk-go/fabric-cli/common"
-	"github.com/spf13/pflag"
 )
 
 // Operations about InstallCC
@@ -28,14 +26,11 @@ func (u *InstallCCController) Post() {
 		fmt.Printf("Unmarshal failed [%s]", err)
 	}
 	fmt.Println(req)
-	flags := &pflag.FlagSet{}
-	flags.StringVar(&common.ChaincodeID, common.ChaincodeIDFlag, req.ChaincodeName, "The unique name of chaincode")
-	flags.StringVar(&common.ChaincodePath, common.ChaincodePathFlag, common.CCPathPrefix+req.ChaincodeName, "The source code path of chaincode")
-	action, err := chaincode.NewInstallAction(flags)
+	action, err := chaincode.NewInstallAction(&req)
 	if err != nil {
 		fmt.Printf("InstallCC Initialize error...")
 	}
-	err = action.Invoke()
+	err = action.Execute()
 	if err != nil {
 		u.Data["json"] = err.Error()
 	} else {

@@ -30,11 +30,11 @@ func (u *InstantiateController) Post() {
 	if err != nil {
 		fmt.Printf("Instantiate Initialize error...")
 	}
-	txId, err := action.Invoke()
+	resp, err := action.Execute()
 	if err != nil {
 		u.Data["json"] = err.Error()
 	} else {
-		u.Data["json"] = fmt.Sprintf("txId:", txId)
+		u.Data["json"] = resp
 	}
 
 	u.ServeJSON()
