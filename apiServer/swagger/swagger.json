@@ -239,6 +239,34 @@
                 }
             }
         },
+        "/queryBlockchainInfo/": {
+            "post": {
+                "tags": [
+                    "queryBlockchainInfo"
+                ],
+                "description": "Query Info",
+                "operationId": "QueryInfoController.QueryInfo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Query BlockChain Info",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/query.QueryInfoArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} string"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/queryCC/": {
             "post": {
                 "tags": [
@@ -260,6 +288,32 @@
                 "responses": {
                     "200": {
                         "description": "{string} txId"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/queryChannels/{peerUrl}": {
+            "get": {
+                "tags": [
+                    "queryChannels"
+                ],
+                "description": "Query Chaincodes installed on the peerUrl",
+                "operationId": "QueryChannelsController.QueryChannelsChaincodes",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "peerUrl",
+                        "description": "The URL of peer to query",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} string"
                     },
                     "403": {
                         "description": "body is empty"
@@ -292,9 +346,49 @@
                     }
                 }
             }
+        },
+        "/register/": {
+            "post": {
+                "tags": [
+                    "register"
+                ],
+                "description": "Get a OTP secret",
+                "operationId": "RegisterController.Register",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Secret content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cert.RegisterArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} string"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "cert.Attribute": {
+            "title": "Attribute",
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "cert.EnrollArgs": {
             "title": "EnrollArgs",
             "type": "object",
@@ -303,6 +397,30 @@
                     "type": "string"
                 },
                 "secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "cert.RegisterArgs": {
+            "title": "RegisterArgs",
+            "type": "object",
+            "properties": {
+                "affiliation": {
+                    "type": "string"
+                },
+                "attributes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/cert.Attribute"
+                    }
+                },
+                "maxEnrollments": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -419,12 +537,40 @@
                     "format": "int64"
                 }
             }
+        },
+        "query.QueryInfoArgs": {
+            "title": "QueryInfoArgs",
+            "type": "object",
+            "properties": {
+                "ChannelID": {
+                    "type": "string"
+                },
+                "PeerUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "query.QueryTxArgs": {
+            "title": "QueryTxArgs",
+            "type": "object",
+            "properties": {
+                "channelId": {
+                    "type": "string"
+                },
+                "txId": {
+                    "type": "string"
+                }
+            }
         }
     },
     "tags": [
         {
             "name": "enroll",
             "description": "Operations about Enroll\n"
+        },
+        {
+            "name": "register",
+            "description": "Operations about Register\n"
         },
         {
             "name": "install",
@@ -461,6 +607,14 @@
         {
             "name": "queryBlock",
             "description": "Operations about QueryBlock\n"
+        },
+        {
+            "name": "queryChannels",
+            "description": "Operations about QueryChannels\n"
+        },
+        {
+            "name": "queryBlockchainInfo",
+            "description": "Operations about QueryInfo\n"
         }
     ]
 }

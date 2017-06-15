@@ -155,6 +155,24 @@ paths:
           description: '{string} []string'
         "403":
           description: body is empty
+  /queryBlockchainInfo/:
+    post:
+      tags:
+      - queryBlockchainInfo
+      description: Query Info
+      operationId: QueryInfoController.QueryInfo
+      parameters:
+      - in: body
+        name: body
+        description: body for Query BlockChain Info
+        required: true
+        schema:
+          $ref: '#/definitions/query.QueryInfoArgs'
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
   /queryCC/:
     post:
       tags:
@@ -171,6 +189,23 @@ paths:
       responses:
         "200":
           description: '{string} txId'
+        "403":
+          description: body is empty
+  /queryChannels/{peerUrl}:
+    get:
+      tags:
+      - queryChannels
+      description: Query Chaincodes installed on the peerUrl
+      operationId: QueryChannelsController.QueryChannelsChaincodes
+      parameters:
+      - in: path
+        name: peerUrl
+        description: The URL of peer to query
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} string'
         "403":
           description: body is empty
   /queryInstalled/{peerUrl}:
@@ -190,7 +225,33 @@ paths:
           description: '{string} string'
         "403":
           description: body is empty
+  /register/:
+    post:
+      tags:
+      - register
+      description: Get a OTP secret
+      operationId: RegisterController.Register
+      parameters:
+      - in: body
+        name: body
+        description: body for Secret content
+        required: true
+        schema:
+          $ref: '#/definitions/cert.RegisterArgs'
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
 definitions:
+  cert.Attribute:
+    title: Attribute
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
   cert.EnrollArgs:
     title: EnrollArgs
     type: object
@@ -198,6 +259,22 @@ definitions:
       name:
         type: string
       secret:
+        type: string
+  cert.RegisterArgs:
+    title: RegisterArgs
+    type: object
+    properties:
+      affiliation:
+        type: string
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/cert.Attribute'
+      maxEnrollments:
+        type: string
+      name:
+        type: string
+      type:
         type: string
   chaincode.ChaincodeInfoArgs:
     title: ChaincodeInfoArgs
@@ -276,10 +353,29 @@ definitions:
       traverse:
         type: integer
         format: int64
+  query.QueryInfoArgs:
+    title: QueryInfoArgs
+    type: object
+    properties:
+      ChannelID:
+        type: string
+      PeerUrl:
+        type: string
+  query.QueryTxArgs:
+    title: QueryTxArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      txId:
+        type: string
 tags:
 - name: enroll
   description: |
     Operations about Enroll
+- name: register
+  description: |
+    Operations about Register
 - name: install
   description: |
     Operations about InstallCC
@@ -307,3 +403,9 @@ tags:
 - name: queryBlock
   description: |
     Operations about QueryBlock
+- name: queryChannels
+  description: |
+    Operations about QueryChannels
+- name: queryBlockchainInfo
+  description: |
+    Operations about QueryInfo

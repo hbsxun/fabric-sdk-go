@@ -22,6 +22,11 @@ func init() {
 				&cert.EnrollController{},
 			),
 		),
+		beego.NSNamespace("/register",
+			beego.NSInclude(
+				&cert.RegisterController{},
+			),
+		),
 
 		beego.NSNamespace("/install",
 			beego.NSInclude(
@@ -68,6 +73,16 @@ func init() {
 		beego.NSNamespace("/queryBlock",
 			beego.NSInclude(
 				&query.QueryBlockController{},
+			),
+		),
+		beego.NSNamespace("/queryChannels",
+			beego.NSInclude(
+				&query.QueryChannelsController{},
+			),
+		),
+		beego.NSNamespace("/queryBlockchainInfo",
+			beego.NSInclude(
+				&query.QueryInfoController{},
 			),
 		),
 	)
