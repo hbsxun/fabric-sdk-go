@@ -1,4 +1,5 @@
-## Beego
+## apiServer
+apiServer based-on a micro-service platform, it provide flexibility and hot-plugin ability
 ### ADD New Function
 1. add models
 2. add controllers
