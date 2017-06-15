@@ -34,10 +34,10 @@ func NewQueryInstalledAction(peerUrl string) (*queryInstalledAction, error) {
 	if peerUrl == "" {
 		peerUrl = "localhost:7051"
 	}
-	flags := &pflag.FlagSet{}
+	action, flags := &queryInstalledAction{}, &pflag.FlagSet{}
+
 	flags.StringVar(&common.PeerURL, common.PeerFlag, peerUrl, "")
 
-	action := &queryInstalledAction{}
 	err := action.Initialize(flags)
 	return action, err
 }

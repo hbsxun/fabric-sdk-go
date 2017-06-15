@@ -65,6 +65,11 @@ func init() {
 				&query.QueryInstalledController{},
 			),
 		),
+		beego.NSNamespace("/queryBlock",
+			beego.NSInclude(
+				&query.QueryBlockController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

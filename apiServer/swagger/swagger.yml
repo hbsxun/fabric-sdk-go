@@ -137,6 +137,24 @@ paths:
           description: '{string}'
         "403":
           description: body is empty
+  /queryBlock/:
+    post:
+      tags:
+      - queryBlock
+      description: Query Block
+      operationId: QueryBlockController.QueryBlock
+      parameters:
+      - in: body
+        name: body
+        description: body for Query Block
+        required: true
+        schema:
+          $ref: '#/definitions/query.QueryBlockArgs'
+      responses:
+        "200":
+          description: '{string} []string'
+        "403":
+          description: body is empty
   /queryCC/:
     post:
       tags:
@@ -242,6 +260,22 @@ definitions:
         type: string
       peerUrl:
         type: string
+  query.QueryBlockArgs:
+    title: QueryBlockArgs
+    type: object
+    properties:
+      blockHash:
+        type: string
+      blockNum:
+        type: integer
+        format: int64
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+      traverse:
+        type: integer
+        format: int64
 tags:
 - name: enroll
   description: |
@@ -270,3 +304,6 @@ tags:
 - name: queryInstalled
   description: |
     Operations about QueryInstalled
+- name: queryBlock
+  description: |
+    Operations about QueryBlock
