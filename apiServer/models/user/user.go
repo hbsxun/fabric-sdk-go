@@ -18,9 +18,10 @@ limitations under the License.
 package user
 
 import (
+	"fmt"
 	"strconv"
 
-	"github.com/widuu/gomysql"
+	"github.com/astaxie/beego/orm"
 )
 
 type User struct {
@@ -31,66 +32,82 @@ type User struct {
 	Cert   string `json:"cert"`
 }
 
-var dbUtils *gomysql.Model
+func AddUser(user *User) (id int, err error) {
+	o := orm.NewOrm()
 
-func init() {
-	var err error
-	dbUtils, err = gomysql.SetConfig("./config/db.ini")
-	if err != nil {
-		panic(err)
-	}
-}
-
-func AddUser(u *User) (id int, err error) {
-	var value = make(map[string]interface{})
-	value["name"] = u.Name
-	value["passwd"] = u.Passwd
-	value["mail"] = u.Mail
-	value["cert"] = u.Cert
-
-	t := dbUtils.SetTable("ASSET_USER")
-	t.SetPk("id")
-
-	i, err := t.Insert(value)
+	id64, err := o.Insert(user)
+	fmt.Println(id64, err)
 	if err != nil {
 		return -1, err
 	}
-
-	return i, nil
+	return int(id64), nil
 }
 
-func GetUser(id int) (u *User, err error) {
-	data := dbUtils.SetTable("ASSET_USER").Fileds("id", "name", "passwd", "mail", "cert").Where("id=" + strconv.Itoa(id)).FindOne()
-	i, _ := strconv.Atoi(data[1]["id"])
-	u = &User{
-		Id:     i,
-		Name:   data[1]["name"],
-		Passwd: data[1]["passwd"],
-		Mail:   data[1]["mail"],
-		Cert:   data[1]["cert"],
+func GetUser(idStr string) (u *User, err error) {
+	o := orm.NewOrm()
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return nil, err
 	}
-	return u, nil
+	user := User{
+		Id: id,
+	}
+	err = o.Read(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
-func UpdateUser(id string, u *User) (bool, error) {
-	var value = make(map[string]interface{})
-	value["name"] = u.Name
-	value["passwd"] = u.Passwd
-	value["mail"] = u.Mail
-	value["cert"] = u.Cert
+func UpdateUser(idStr string, u *User) (*User, error) {
+	o := orm.NewOrm()
 
-	_, err := dbUtils.SetTable("ASSET_USER").Where("id=" + id).Update(value)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return nil, err
+	}
+
+	user := User{
+		Id:     id,
+		Name:   u.Name,
+		Mail:   u.Mail,
+		Passwd: u.Passwd,
+		Cert:   u.Cert,
+	}
+	_, err = o.Update(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func Login(username, passwd string) (bool, error) {
+	o := orm.NewOrm()
+	u := User{}
+
+	err := o.Raw("SELECT name, passwd FROM user WHERE name = ?", username).QueryRow(&u)
 	if err != nil {
 		return false, err
 	}
-
-	return true, nil
+	if passwd == u.Passwd {
+		return true, nil
+	}
+	return false, nil
 }
 
-func Login(username, passwd string) bool {
-	data := dbUtils.SetTable("ASSET_USER").Fileds("name", "passwd").Where("name=" + username).FindOne()
-	if passwd == data[1]["passwd"] {
-		return true
-	}
-	return false
+func init() {
+	//register model
+	orm.RegisterModel(new(User))
+	//register driver
+	orm.RegisterDriver("mysql", orm.DRMySQL)
+	//set default database
+	orm.RegisterDataBase("default", "mysql", "hxy:hxy@tcp(localhost:3306)/hxydb?charset=utf8", 30)
+	/*
+		//max idle connections
+		orm.SetMaxIdleConns("default", 30)
+		//max opened connections
+		orm.SetMaxOpenConns("default", 30)
+	*/
 }

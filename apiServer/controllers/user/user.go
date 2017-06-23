@@ -1,7 +1,6 @@
-package controllers
+package user
 
 import (
-	"apiTest/models"
 	"encoding/json"
 	"fmt"
 
@@ -21,36 +20,28 @@ type UserController struct {
 // @Failure 403 body is empty
 // @router / [post]
 func (u *UserController) Post() {
-	var u user.User
-	json.Unmarshal(u.Ctx.Input.RequestBody, &u)
-	uid := user
-	fmt.Println("models: ", models.UserList)
-	u.Data["json"] = map[string]string{"uid": uid}
-	u.ServeJSON()
-}
-
-// @Title GetAll
-// @Description get all Users
-// @Success 200 {object} models.User
-// @router / [get]
-func (u *UserController) GetAll() {
-	users := models.GetAllUsers()
-	fmt.Println("users: ", users)
-	u.Data["json"] = users
+	var ur user.User
+	json.Unmarshal(u.Ctx.Input.RequestBody, &ur)
+	uid, err := user.AddUser(&ur)
+	if err != nil {
+		u.Data["json"] = err.Error()
+	} else {
+		u.Data["json"] = uid
+	}
 	u.ServeJSON()
 }
 
 // @Title Get
 // @Description get user by uid
 // @Param	uid		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.User
+// @Success 200 {object} user.User
 // @Failure 403 :uid is empty
 // @router /:uid [get]
 func (u *UserController) Get() {
 	uid := u.GetString(":uid")
 	fmt.Println("uid: ", uid)
 	if uid != "" {
-		user, err := models.GetUser(uid)
+		user, err := user.GetUser(uid)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
@@ -63,35 +54,22 @@ func (u *UserController) Get() {
 // @Title Update
 // @Description update the user
 // @Param	uid		path 	string	true		"The uid you want to update"
-// @Param	body		body 	models.User	true		"body for user content"
-// @Success 200 {object} models.User
+// @Param	body		body 	user.User	true		"body for user content"
+// @Success 200 {object} user.User
 // @Failure 403 :uid is not int
 // @router /:uid [put]
 func (u *UserController) Put() {
 	uid := u.GetString(":uid")
 	if uid != "" {
-		var user models.User
-		json.Unmarshal(u.Ctx.Input.RequestBody, &user)
-		uu, err := models.UpdateUser(uid, &user)
+		var ur user.User
+		json.Unmarshal(u.Ctx.Input.RequestBody, &ur)
+		uu, err := user.UpdateUser(uid, &ur)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
 			u.Data["json"] = uu
 		}
 	}
-	u.ServeJSON()
-}
-
-// @Title Delete
-// @Description delete the user
-// @Param	uid		path 	string	true		"The uid you want to delete"
-// @Success 200 {string} delete success!
-// @Failure 403 uid is empty
-// @router /:uid [delete]
-func (u *UserController) Delete() {
-	uid := u.GetString(":uid")
-	models.DeleteUser(uid)
-	u.Data["json"] = "delete success!"
 	u.ServeJSON()
 }
 
@@ -105,10 +83,13 @@ func (u *UserController) Delete() {
 func (u *UserController) Login() {
 	username := u.GetString("username")
 	password := u.GetString("password")
-	if models.Login(username, password) {
-		u.Data["json"] = "login success"
+	fmt.Println("name:", username, "passwd:", password)
+
+	ok, err := user.Login(username, password)
+	if err != nil || !ok {
+		u.Data["json"] = fmt.Errorf("login failed, err [%s]", err.Error())
 	} else {
-		u.Data["json"] = "user not exist"
+		u.Data["json"] = "Login success!"
 	}
 	u.ServeJSON()
 }

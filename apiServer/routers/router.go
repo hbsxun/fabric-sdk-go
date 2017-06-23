@@ -13,6 +13,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/chaincode"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/channel"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/query"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/user"
 )
 
 func init() {
@@ -83,6 +84,12 @@ func init() {
 		beego.NSNamespace("/queryBlockchainInfo",
 			beego.NSInclude(
 				&query.QueryInfoController{},
+			),
+		),
+
+		beego.NSNamespace("/user",
+			beego.NSInclude(
+				&user.UserController{},
 			),
 		),
 	)

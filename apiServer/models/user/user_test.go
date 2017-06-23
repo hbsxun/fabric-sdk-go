@@ -2,6 +2,7 @@ package user
 
 import (
 	"log"
+	"strconv"
 	"testing"
 )
 
@@ -15,7 +16,7 @@ func TestAddUser(*testing.T) {
 	id, _ := AddUser(a)
 	log.Println(id)
 
-	b, _ := GetUser(id)
+	b, _ := GetUser(strconv.Itoa(id))
 
 	log.Println(b)
 }
