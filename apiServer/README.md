@@ -15,3 +15,14 @@ The project `apiServer` depends on the `fabric-cli` tools and `beego` project.
 1. `bee generate docs`
 2. `bee run watchall`
 Open `IE explorer` and visit `localhost:8080/swagger` to test the restful api
+
+#### Swagger comment
+the following line reside on the head of this file, and use // command on each line
+//@APIVersion 1.0.0
+//@Title beego  API
+//Description beego has a very cool tools to autogenerate documents for your API
+//@Contact warm3snow@linux.com
+//@TermsOfServiceUrl http://beego.me/
+//@License Apache 2.0
+//@LicenseUrl http://www.apache.org/licenses/LICENSE-2.0.html
+*/

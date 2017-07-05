@@ -1,14 +1,5 @@
 swagger: "2.0"
-info:
-  title: beego  API
-  description: beego has a very cool tools to autogenerate documents for your API
-  version: 1.0.0
-  termsOfService: http://beego.me/
-  contact:
-    email: warm3snow@linux.com
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+info: {}
 basePath: /fabric
 paths:
   /chaincodeInfo/:
