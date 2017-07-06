@@ -16,7 +16,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/user:UserController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/user:UserController"],
 		beego.ControllerComments{
 			Method: "Get",
-			Router: `/:uid`,
+			Router: `/:name`,
 			AllowHTTPMethods: []string{"get"},
 			Params: nil})
 

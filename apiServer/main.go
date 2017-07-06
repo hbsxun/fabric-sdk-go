@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/astaxie/beego"
+	_ "github.com/hyperledger/fabric-sdk-go/apiServer/models/user"
 	_ "github.com/hyperledger/fabric-sdk-go/apiServer/routers"
 )
 

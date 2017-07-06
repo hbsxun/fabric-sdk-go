@@ -32,14 +32,14 @@ func (u *UserController) Post() {
 }
 
 // @Title Get
-// @Description get user by uid
-// @Param	uid		path 	string	true		"The key for staticblock"
+// @Description get user by name
+// @Param	name		path 	string	true		"The key for staticblock"
 // @Success 200 {object} user.User
-// @Failure 403 :uid is empty
-// @router /:uid [get]
+// @Failure 403 :name is empty
+// @router /:name [get]
 func (u *UserController) Get() {
-	uid := u.GetString(":uid")
-	fmt.Println("uid: ", uid)
+	uid := u.GetString(":name")
+	fmt.Println("name: ", uid)
 	if uid != "" {
 		user, err := user.GetUser(uid)
 		if err != nil {

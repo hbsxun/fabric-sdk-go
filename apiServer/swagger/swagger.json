@@ -5,366 +5,6 @@
     },
     "basePath": "/fabric",
     "paths": {
-        "/chaincodeInfo/": {
-            "post": {
-                "tags": [
-                    "chaincodeInfo"
-                ],
-                "description": "ChaincodeInfo chaincode on peers",
-                "operationId": "ChaincodeInfoController.ChaincodeInfo",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.ChaincodeInfoArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/createChannel/": {
-            "post": {
-                "tags": [
-                    "createChannel"
-                ],
-                "description": "ChannelCreate on peers",
-                "operationId": "ChannelCreateController.ChannelCreate",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for ChannelCreate Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/channel.ChannelCreateArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/enroll/": {
-            "post": {
-                "tags": [
-                    "enroll"
-                ],
-                "description": "Get Key and Ecert",
-                "operationId": "EnrollController.Enroll",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Ecert content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/cert.EnrollArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/install/": {
-            "post": {
-                "tags": [
-                    "install"
-                ],
-                "description": "InstallCC on peers",
-                "operationId": "InstallCCController.InstallCC",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.InstallCCArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/instantiate/": {
-            "post": {
-                "tags": [
-                    "instantiate"
-                ],
-                "description": "Instantiate chaincode on peers",
-                "operationId": "InstantiateController.Instantiate",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.InstantiateArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} txId"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/invokeCC/": {
-            "post": {
-                "tags": [
-                    "invokeCC"
-                ],
-                "description": "Invoke chaincode on peers",
-                "operationId": "InvokeController.Invoke",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.InvokeArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} txId"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/joinChannel/": {
-            "post": {
-                "tags": [
-                    "joinChannel"
-                ],
-                "description": "ChannelJoin on peers",
-                "operationId": "ChannelJoinController.ChannelJoin",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for ChannelJoin Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/channel.ChannelJoinArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/queryBlock/": {
-            "post": {
-                "tags": [
-                    "queryBlock"
-                ],
-                "description": "Query Block",
-                "operationId": "QueryBlockController.QueryBlock",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Query Block",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/query.QueryBlockArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} []string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/queryBlockchainInfo/": {
-            "post": {
-                "tags": [
-                    "queryBlockchainInfo"
-                ],
-                "description": "Query Info",
-                "operationId": "QueryInfoController.QueryInfo",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Query BlockChain Info",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/query.QueryInfoArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/queryCC/": {
-            "post": {
-                "tags": [
-                    "queryCC"
-                ],
-                "description": "Query chaincode on peers",
-                "operationId": "QueryController.Query",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.QueryArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} txId"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/queryChannels/{peerUrl}": {
-            "get": {
-                "tags": [
-                    "queryChannels"
-                ],
-                "description": "Query Chaincodes installed on the peerUrl",
-                "operationId": "QueryChannelsController.QueryChannelsChaincodes",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "peerUrl",
-                        "description": "The URL of peer to query",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/queryInstalled/{peerUrl}": {
-            "get": {
-                "tags": [
-                    "queryInstalled"
-                ],
-                "description": "Query Chaincodes installed on the peerUrl",
-                "operationId": "QueryInstalledController.QueryInstalledChaincodes",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "peerUrl",
-                        "description": "The URL of peer to query",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/register/": {
-            "post": {
-                "tags": [
-                    "register"
-                ],
-                "description": "Get a OTP secret",
-                "operationId": "RegisterController.Register",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Secret content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/cert.RegisterArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
         "/user/": {
             "post": {
                 "tags": [
@@ -440,17 +80,17 @@
                 }
             }
         },
-        "/user/{uid}": {
+        "/user/{name}": {
             "get": {
                 "tags": [
                     "user"
                 ],
-                "description": "get user by uid",
+                "description": "get user by name",
                 "operationId": "UserController.Get",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "uid",
+                        "name": "name",
                         "description": "The key for staticblock",
                         "required": true,
                         "type": "string"
@@ -463,10 +103,12 @@
                         }
                     },
                     "403": {
-                        "description": ":uid is empty"
+                        "description": ":name is empty"
                     }
                 }
-            },
+            }
+        },
+        "/user/{uid}": {
             "put": {
                 "tags": [
                     "user"
@@ -505,198 +147,10 @@
         }
     },
     "definitions": {
-        "cert.Attribute": {
-            "title": "Attribute",
-            "type": "object",
-            "properties": {
-                "key": {
-                    "type": "string"
-                },
-                "value": {
-                    "type": "string"
-                }
-            }
-        },
-        "cert.EnrollArgs": {
-            "title": "EnrollArgs",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "secret": {
-                    "type": "string"
-                }
-            }
-        },
-        "cert.RegisterArgs": {
-            "title": "RegisterArgs",
-            "type": "object",
-            "properties": {
-                "affiliation": {
-                    "type": "string"
-                },
-                "attributes": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/cert.Attribute"
-                    }
-                },
-                "maxEnrollments": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "chaincode.ChaincodeInfoArgs": {
-            "title": "ChaincodeInfoArgs",
-            "type": "object",
-            "properties": {
-                "chaincodeId": {
-                    "type": "string"
-                },
-                "channelId": {
-                    "type": "string"
-                }
-            }
-        },
-        "chaincode.InstallCCArgs": {
-            "title": "InstallCCArgs",
-            "type": "object",
-            "properties": {
-                "chaincodeName": {
-                    "type": "string"
-                },
-                "chaincodeVersion": {
-                    "type": "string"
-                }
-            }
-        },
-        "chaincode.InstantiateArgs": {
-            "title": "InstantiateArgs",
-            "type": "object",
-            "properties": {
-                "args": {},
-                "chaincodeId": {
-                    "type": "string"
-                }
-            }
-        },
-        "chaincode.InvokeArgs": {
-            "title": "InvokeArgs",
-            "type": "object",
-            "properties": {
-                "args": {},
-                "chaincodeId": {
-                    "type": "string"
-                },
-                "channelId": {
-                    "type": "string"
-                }
-            }
-        },
-        "chaincode.QueryArgs": {
-            "title": "QueryArgs",
-            "type": "object",
-            "properties": {
-                "args": {},
-                "chaincodeId": {
-                    "type": "string"
-                },
-                "channelId": {
-                    "type": "string"
-                }
-            }
-        },
-        "channel.ChannelCreateArgs": {
-            "title": "ChannelCreateArgs",
-            "type": "object",
-            "properties": {
-                "channelId": {
-                    "type": "string"
-                },
-                "ordererUrl": {
-                    "type": "string"
-                },
-                "txFile": {
-                    "type": "string"
-                }
-            }
-        },
-        "channel.ChannelJoinArgs": {
-            "title": "ChannelJoinArgs",
-            "type": "object",
-            "properties": {
-                "channelId": {
-                    "type": "string"
-                },
-                "ordererUrl": {
-                    "type": "string"
-                },
-                "peerUrl": {
-                    "type": "string"
-                }
-            }
-        },
-        "query.QueryBlockArgs": {
-            "title": "QueryBlockArgs",
-            "type": "object",
-            "properties": {
-                "blockHash": {
-                    "type": "string"
-                },
-                "blockNum": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "channelId": {
-                    "type": "string"
-                },
-                "peerUrl": {
-                    "type": "string"
-                },
-                "traverse": {
-                    "type": "integer",
-                    "format": "int64"
-                }
-            }
-        },
-        "query.QueryInfoArgs": {
-            "title": "QueryInfoArgs",
-            "type": "object",
-            "properties": {
-                "ChannelID": {
-                    "type": "string"
-                },
-                "PeerUrl": {
-                    "type": "string"
-                }
-            }
-        },
-        "query.QueryTxArgs": {
-            "title": "QueryTxArgs",
-            "type": "object",
-            "properties": {
-                "channelId": {
-                    "type": "string"
-                },
-                "txId": {
-                    "type": "string"
-                }
-            }
-        },
         "user.User": {
             "title": "User",
             "type": "object",
             "properties": {
-                "cert": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer",
                     "format": "int64"
@@ -709,63 +163,18 @@
                 },
                 "passwd": {
                     "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "format": "int64"
                 }
             }
         }
     },
     "tags": [
-        {
-            "name": "enroll",
-            "description": "Operations about Enroll\n"
-        },
-        {
-            "name": "register",
-            "description": "Operations about Register\n"
-        },
-        {
-            "name": "install",
-            "description": "Operations about InstallCC\n"
-        },
-        {
-            "name": "instantiate",
-            "description": "Operations about Instantiate\n"
-        },
-        {
-            "name": "invokeCC",
-            "description": "Operations about Invoke\n"
-        },
-        {
-            "name": "queryCC",
-            "description": "Operations about Query\n"
-        },
-        {
-            "name": "chaincodeInfo",
-            "description": "Operations about ChaincodeInfo\n"
-        },
-        {
-            "name": "createChannel",
-            "description": "Operations about ChannelCreate\n"
-        },
-        {
-            "name": "joinChannel",
-            "description": "Operations about ChannelJoin\n"
-        },
-        {
-            "name": "queryInstalled",
-            "description": "Operations about QueryInstalled\n"
-        },
-        {
-            "name": "queryBlock",
-            "description": "Operations about QueryBlock\n"
-        },
-        {
-            "name": "queryChannels",
-            "description": "Operations about QueryChannels\n"
-        },
-        {
-            "name": "queryBlockchainInfo",
-            "description": "Operations about QueryInfo\n"
-        },
         {
             "name": "user",
             "description": "Operations about Users\n"

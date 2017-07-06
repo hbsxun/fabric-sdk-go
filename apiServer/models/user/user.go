@@ -21,16 +21,28 @@ import (
 	"fmt"
 	"strconv"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/astaxie/beego/orm"
 )
 
 type User struct {
-	Id     int    `json:"id"`
-	Name   string `json:"name"`
+	Id     int    `json:"id"`   //primary key
+	Type   int    `json:"type"` //0: admin, 1: user
+	Name   string `json:"name"` //unique
 	Passwd string `json:"passwd"`
-	Mail   string `json:"mail"`
-	Cert   string `json:"cert"`
+	Email  string `json:"mail"`
+	Phone  string `json:"phone"`
 }
+
+/*
+type Identity struct {
+	Id          int    `json:"id"`
+	Key         string `json:"key"`
+	Certificate string `json:"certificate"`
+	UserId      int    `json:"userId"`
+}
+*/
 
 func AddUser(user *User) (id int, err error) {
 	o := orm.NewOrm()
@@ -43,21 +55,15 @@ func AddUser(user *User) (id int, err error) {
 	return int(id64), nil
 }
 
-func GetUser(idStr string) (u *User, err error) {
+func GetUser(username string) (*User, error) {
 	o := orm.NewOrm()
+	u := User{}
 
-	id, err := strconv.Atoi(idStr)
+	err := o.Raw("SELECT type, name, passwd, phone, email FROM user WHERE name = ?", username).QueryRow(&u)
 	if err != nil {
 		return nil, err
 	}
-	user := User{
-		Id: id,
-	}
-	err = o.Read(&user)
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
+	return &u, nil
 }
 
 func UpdateUser(idStr string, u *User) (*User, error) {
@@ -70,10 +76,11 @@ func UpdateUser(idStr string, u *User) (*User, error) {
 
 	user := User{
 		Id:     id,
+		Type:   u.Type,
 		Name:   u.Name,
-		Mail:   u.Mail,
 		Passwd: u.Passwd,
-		Cert:   u.Cert,
+		Email:  u.Email,
+		Phone:  u.Phone,
 	}
 	_, err = o.Update(&user)
 	if err != nil {
@@ -103,7 +110,8 @@ func init() {
 	//register driver
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	//set default database
-	orm.RegisterDataBase("default", "mysql", "hxy:hxy@tcp(localhost:3306)/hxydb?charset=utf8", 30)
+	orm.RegisterDataBase("default", "mysql", "root:@tcp(localhost:3306)/hxydb?charset=utf8", 30)
+
 	/*
 		//max idle connections
 		orm.SetMaxIdleConns("default", 30)
