@@ -2,6 +2,129 @@ swagger: "2.0"
 info: {}
 basePath: /fabric
 paths:
+  /AssetApp/Addassert:
+    post:
+      tags:
+      - AssetApp
+      description: Invoke chaincode on peers
+      operationId: AssetController.Addassert
+      parameters:
+      - in: body
+        name: body
+        description: body for chaincode Description
+        required: true
+        schema:
+          $ref: '#/definitions/AssetApp.AssertArgs'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: body is empty
+  /AssetApp/Adduser:
+    post:
+      tags:
+      - AssetApp
+      description: Invoke chaincode on peers
+      operationId: AssetController.Adduser
+      parameters:
+      - in: body
+        name: body
+        description: body for chaincode Description
+        required: true
+        schema:
+          $ref: '#/definitions/AssetApp.UserArgs'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: body is empty
+  /AssetApp/Deleteassert:
+    put:
+      tags:
+      - AssetApp
+      description: delete the assert
+      operationId: AssetController.Delete
+      parameters:
+      - in: body
+        name: body
+        description: body for update content
+        required: true
+        schema:
+          $ref: '#/definitions/AssetApp.DeleteArgs'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: :assertid is empty
+  /AssetApp/Queryassert/{id}:
+    get:
+      tags:
+      - AssetApp
+      description: get assert by id
+      operationId: AssetController.Queryassert
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{object}Assertinfo'
+        "403":
+          description: :id is empty
+  /AssetApp/Querybyowner/{owner}:
+    get:
+      tags:
+      - AssetApp
+      description: get assert by owner
+      operationId: AssetController.Queryassertbyowner
+      parameters:
+      - in: path
+        name: owner
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} assertlist'
+        "403":
+          description: :owner is empty
+  /AssetApp/Updateassert:
+    put:
+      tags:
+      - AssetApp
+      description: update the assert, we can update "name", "owner", "price"
+      operationId: AssetController.Update
+      parameters:
+      - in: body
+        name: body
+        description: body for update content
+        required: true
+        schema:
+          $ref: '#/definitions/AssetApp.UpdateArgs'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: :assertid is empty
+  /AssetApp/gethistoryforassert/{id}:
+    get:
+      tags:
+      - AssetApp
+      description: get history for assert
+      operationId: AssetController.Gethistoryforassert
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} asserthistory'
+        "403":
+          description: :id is empty
   /user/:
     post:
       tags:
@@ -94,143 +217,54 @@ paths:
         "200":
           description: '{string} logout success'
 definitions:
-<<<<<<< HEAD
-=======
-  cert.Attribute:
-    title: Attribute
+  AssetApp.AssertArgs:
+    title: AssertArgs
     type: object
     properties:
-      key:
-        type: string
-      value:
-        type: string
-  cert.EnrollArgs:
-    title: EnrollArgs
-    type: object
-    properties:
-      name:
-        type: string
-      secret:
-        type: string
-  cert.RegisterArgs:
-    title: RegisterArgs
-    type: object
-    properties:
-      affiliation:
-        type: string
-      attributes:
-        type: array
-        items:
-          $ref: '#/definitions/cert.Attribute'
-      maxEnrollments:
+      id:
         type: string
       name:
         type: string
-      type:
+      owner:
         type: string
-  chaincode.ChaincodeInfoArgs:
-    title: ChaincodeInfoArgs
+      price:
+        type: string
+      userid:
+        type: string
+      username:
+        type: string
+  AssetApp.DeleteArgs:
+    title: DeleteArgs
     type: object
     properties:
-      chaincodeId:
+      id:
         type: string
-      channelId:
+      ueserid:
         type: string
-  chaincode.InstallCCArgs:
-    title: InstallCCArgs
+      username:
+        type: string
+  AssetApp.UpdateArgs:
+    title: UpdateArgs
     type: object
     properties:
-      chaincodeName:
+      id:
         type: string
-      chaincodeVersion:
+      ueserid:
         type: string
-  chaincode.InstantiateArgs:
-    title: InstantiateArgs
+      updatecontent:
+        type: string
+      updatetag:
+        type: string
+      username:
+        type: string
+  AssetApp.UserArgs:
+    title: UserArgs
     type: object
     properties:
-      args:
-        type: array
-        items:
-          type: string
-      chaincodeId:
+      id:
         type: string
-  chaincode.InvokeArgs:
-    title: InvokeArgs
-    type: object
-    properties:
-      args:
-        type: array
-        items:
-          type: string
-      chaincodeId:
+      name:
         type: string
-      channelId:
-        type: string
-  chaincode.QueryArgs:
-    title: QueryArgs
-    type: object
-    properties:
-      args:
-        type: array
-        items:
-          type: string
-      chaincodeId:
-        type: string
-      channelId:
-        type: string
-  channel.ChannelCreateArgs:
-    title: ChannelCreateArgs
-    type: object
-    properties:
-      channelId:
-        type: string
-      ordererUrl:
-        type: string
-      txFile:
-        type: string
-  channel.ChannelJoinArgs:
-    title: ChannelJoinArgs
-    type: object
-    properties:
-      channelId:
-        type: string
-      ordererUrl:
-        type: string
-      peerUrl:
-        type: string
-  query.QueryBlockArgs:
-    title: QueryBlockArgs
-    type: object
-    properties:
-      blockHash:
-        type: string
-      blockNum:
-        type: integer
-        format: int64
-      channelId:
-        type: string
-      peerUrl:
-        type: string
-      traverse:
-        type: integer
-        format: int64
-  query.QueryInfoArgs:
-    title: QueryInfoArgs
-    type: object
-    properties:
-      ChannelID:
-        type: string
-      PeerUrl:
-        type: string
-  query.QueryTxArgs:
-    title: QueryTxArgs
-    type: object
-    properties:
-      channelId:
-        type: string
-      txId:
-        type: string
->>>>>>> 066d20b1ebc3d096375210849eb5667df1bb67c5
   user.User:
     title: User
     type: object
@@ -253,3 +287,6 @@ tags:
 - name: user
   description: |
     Operations about Users
+- name: AssetApp
+  description: |
+    Operations about Invoke

@@ -59,16 +59,13 @@ func (u *UserController) Get() {
 // @Failure 403 :uid is not int
 // @router /:uid [put]
 func (u *UserController) Put() {
-	uid := u.GetString(":uid")
-	if uid != "" {
-		var ur user.User
-		json.Unmarshal(u.Ctx.Input.RequestBody, &ur)
-		uu, err := user.UpdateUser(uid, &ur)
-		if err != nil {
-			u.Data["json"] = err.Error()
-		} else {
-			u.Data["json"] = uu
-		}
+	var ur user.User
+	json.Unmarshal(u.Ctx.Input.RequestBody, &ur)
+	err := user.UpdateUser(&ur)
+	if err != nil {
+		u.Data["json"] = err.Error()
+	} else {
+		u.Data["json"] = "update success"
 	}
 	u.ServeJSON()
 }

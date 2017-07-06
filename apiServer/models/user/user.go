@@ -19,7 +19,6 @@ package user
 
 import (
 	"fmt"
-	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -44,7 +43,7 @@ type Identity struct {
 }
 */
 
-func AddUser(user *User) (id int, err error) {
+func AddUser(user *User) (id int64, err error) {
 	o := orm.NewOrm()
 
 	id64, err := o.Insert(user)
@@ -52,7 +51,7 @@ func AddUser(user *User) (id int, err error) {
 	if err != nil {
 		return -1, err
 	}
-	return int(id64), nil
+	return id64, nil
 }
 
 func GetUser(username string) (*User, error) {
@@ -66,28 +65,22 @@ func GetUser(username string) (*User, error) {
 	return &u, nil
 }
 
-func UpdateUser(idStr string, u *User) (*User, error) {
+func UpdateUser(newU *User) error {
 	o := orm.NewOrm()
+	oldU := User{}
 
-	id, err := strconv.Atoi(idStr)
+	err := o.Raw("SELECT id from user WHERE id = ?", newU.Name).QueryRow(&oldU)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	newU.Id = oldU.Id
 
-	user := User{
-		Id:     id,
-		Type:   u.Type,
-		Name:   u.Name,
-		Passwd: u.Passwd,
-		Email:  u.Email,
-		Phone:  u.Phone,
-	}
-	_, err = o.Update(&user)
+	_, err = o.Update(newU)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &user, nil
+	return nil
 }
 
 func Login(username, passwd string) (bool, error) {

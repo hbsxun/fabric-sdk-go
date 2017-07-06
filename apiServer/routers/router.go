@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/user"
 )
 
@@ -80,6 +81,11 @@ func init() {
 		beego.NSNamespace("/user",
 			beego.NSInclude(
 				&user.UserController{},
+			),
+		),
+		beego.NSNamespace("/AssetApp",
+			beego.NSInclude(
+				&AssetApp.AssetController{},
 			),
 		),
 	)
