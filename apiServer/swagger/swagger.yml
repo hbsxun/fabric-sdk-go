@@ -94,6 +94,143 @@ paths:
         "200":
           description: '{string} logout success'
 definitions:
+<<<<<<< HEAD
+=======
+  cert.Attribute:
+    title: Attribute
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  cert.EnrollArgs:
+    title: EnrollArgs
+    type: object
+    properties:
+      name:
+        type: string
+      secret:
+        type: string
+  cert.RegisterArgs:
+    title: RegisterArgs
+    type: object
+    properties:
+      affiliation:
+        type: string
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/cert.Attribute'
+      maxEnrollments:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+  chaincode.ChaincodeInfoArgs:
+    title: ChaincodeInfoArgs
+    type: object
+    properties:
+      chaincodeId:
+        type: string
+      channelId:
+        type: string
+  chaincode.InstallCCArgs:
+    title: InstallCCArgs
+    type: object
+    properties:
+      chaincodeName:
+        type: string
+      chaincodeVersion:
+        type: string
+  chaincode.InstantiateArgs:
+    title: InstantiateArgs
+    type: object
+    properties:
+      args:
+        type: array
+        items:
+          type: string
+      chaincodeId:
+        type: string
+  chaincode.InvokeArgs:
+    title: InvokeArgs
+    type: object
+    properties:
+      args:
+        type: array
+        items:
+          type: string
+      chaincodeId:
+        type: string
+      channelId:
+        type: string
+  chaincode.QueryArgs:
+    title: QueryArgs
+    type: object
+    properties:
+      args:
+        type: array
+        items:
+          type: string
+      chaincodeId:
+        type: string
+      channelId:
+        type: string
+  channel.ChannelCreateArgs:
+    title: ChannelCreateArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      ordererUrl:
+        type: string
+      txFile:
+        type: string
+  channel.ChannelJoinArgs:
+    title: ChannelJoinArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      ordererUrl:
+        type: string
+      peerUrl:
+        type: string
+  query.QueryBlockArgs:
+    title: QueryBlockArgs
+    type: object
+    properties:
+      blockHash:
+        type: string
+      blockNum:
+        type: integer
+        format: int64
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+      traverse:
+        type: integer
+        format: int64
+  query.QueryInfoArgs:
+    title: QueryInfoArgs
+    type: object
+    properties:
+      ChannelID:
+        type: string
+      PeerUrl:
+        type: string
+  query.QueryTxArgs:
+    title: QueryTxArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      txId:
+        type: string
+>>>>>>> 066d20b1ebc3d096375210849eb5667df1bb67c5
   user.User:
     title: User
     type: object
