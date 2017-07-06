@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/channel"
 	_ "github.com/hyperledger/fabric-sdk-go/apiServer/routers"
 )
 
@@ -10,5 +11,6 @@ func main() {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
+	channel.CreateAndJoinChannel()
 	beego.Run()
 }

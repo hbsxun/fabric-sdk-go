@@ -581,7 +581,12 @@
             "title": "InstantiateArgs",
             "type": "object",
             "properties": {
-                "args": {},
+                "args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "chaincodeId": {
                     "type": "string"
                 }
@@ -591,7 +596,12 @@
             "title": "InvokeArgs",
             "type": "object",
             "properties": {
-                "args": {},
+                "args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "chaincodeId": {
                     "type": "string"
                 },
@@ -604,7 +614,12 @@
             "title": "QueryArgs",
             "type": "object",
             "properties": {
-                "args": {},
+                "args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "chaincodeId": {
                     "type": "string"
                 },

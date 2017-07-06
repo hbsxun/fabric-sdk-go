@@ -377,14 +377,20 @@ definitions:
     title: InstantiateArgs
     type: object
     properties:
-      args: {}
+      args:
+        type: array
+        items:
+          type: string
       chaincodeId:
         type: string
   chaincode.InvokeArgs:
     title: InvokeArgs
     type: object
     properties:
-      args: {}
+      args:
+        type: array
+        items:
+          type: string
       chaincodeId:
         type: string
       channelId:
@@ -393,7 +399,10 @@ definitions:
     title: QueryArgs
     type: object
     properties:
-      args: {}
+      args:
+        type: array
+        items:
+          type: string
       chaincodeId:
         type: string
       channelId:
