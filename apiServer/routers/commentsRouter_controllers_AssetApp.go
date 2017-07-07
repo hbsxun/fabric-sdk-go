@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context/param"
 )
 
 func init() {
@@ -11,6 +12,7 @@ func init() {
 			Method: "Adduser",
 			Router: `/Adduser`,
 			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"],
@@ -18,6 +20,7 @@ func init() {
 			Method: "Addassert",
 			Router: `/Addassert`,
 			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"],
@@ -25,6 +28,7 @@ func init() {
 			Method: "Queryassert",
 			Router: `/Queryassert/:id`,
 			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"],
@@ -32,6 +36,7 @@ func init() {
 			Method: "Querybyowner",
 			Router: `/Querybyowner/:owner`,
 			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"],
@@ -39,6 +44,7 @@ func init() {
 			Method: "Gethistoryforassert",
 			Router: `/gethistoryforassert/:id`,
 			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"],
@@ -46,6 +52,7 @@ func init() {
 			Method: "Updateassert",
 			Router: `/Updateassert`,
 			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:AssetController"],
@@ -53,6 +60,31 @@ func init() {
 			Method: "Deleteassert",
 			Router: `/Deleteassert`,
 			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:UserManageController"],
+		beego.ControllerComments{
+			Method: "Register",
+			Router: `/Register/`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:UserManageController"],
+		beego.ControllerComments{
+			Method: "Login",
+			Router: `/login/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp:UserManageController"],
+		beego.ControllerComments{
+			Method: "UpdateInfo",
+			Router: `/UpdateInfo/`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 }

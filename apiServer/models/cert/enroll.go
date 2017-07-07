@@ -49,18 +49,18 @@ func NewEnrollAction(req *EnrollArgs) (*enrollAction, error) {
 	return action, err
 }
 
-func (action *enrollAction) Execute() (string, error) {
+func (action *enrollAction) Execute() (string, string, error) {
 	fmt.Printf("enrolling user [%s]\n", action.req.Name)
 	caClient, err := fabricCaClient.NewFabricCAClient()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	key, cert, err := caClient.Enroll(action.req.Name, action.req.Secret)
 	if err != nil {
-		return "", err
+		return "", "", err
 	} else {
-		return fmt.Sprintf("{Key: %s \nCert: %s}\n", base64.StdEncoding.EncodeToString(key), base64.StdEncoding.EncodeToString(cert)), nil
+		return base64.StdEncoding.EncodeToString(key), base64.StdEncoding.EncodeToString(cert), nil
 	}
 
-	return "", nil
+	return "", "", nil
 }

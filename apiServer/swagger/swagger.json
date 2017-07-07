@@ -195,10 +195,99 @@
                 }
             }
         },
-        "/user/": {
+        "/user/Register/": {
             "post": {
                 "tags": [
                     "user"
+                ],
+                "description": "register users",
+                "operationId": "UserManageController.RegisterUser",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{int} user.User.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/user/UpdateInfo/": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "description": "update the user",
+                "operationId": "UserManageController.UpdateInfo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} update success"
+                    },
+                    "403": {
+                        "description": ":uid is not int"
+                    }
+                }
+            }
+        },
+        "/user/login/": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "Logs user into the system",
+                "operationId": "UserManageController.Login",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "username",
+                        "description": "The username for login",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "password",
+                        "description": "The password for login",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} login success"
+                    },
+                    "403": {
+                        "description": "user not exist"
+                    }
+                }
+            }
+        },
+        "/user01/": {
+            "post": {
+                "tags": [
+                    "user01"
                 ],
                 "description": "create users",
                 "operationId": "UserController.CreateUser",
@@ -223,10 +312,10 @@
                 }
             }
         },
-        "/user/login": {
+        "/user01/login": {
             "get": {
                 "tags": [
-                    "user"
+                    "user01"
                 ],
                 "description": "Logs user into the system",
                 "operationId": "UserController.Login",
@@ -256,10 +345,10 @@
                 }
             }
         },
-        "/user/logout": {
+        "/user01/logout": {
             "get": {
                 "tags": [
-                    "user"
+                    "user01"
                 ],
                 "description": "Logs out current logged in user session",
                 "operationId": "UserController.logout",
@@ -270,10 +359,10 @@
                 }
             }
         },
-        "/user/{name}": {
+        "/user01/{name}": {
             "get": {
                 "tags": [
-                    "user"
+                    "user01"
                 ],
                 "description": "get user by name",
                 "operationId": "UserController.Get",
@@ -298,10 +387,10 @@
                 }
             }
         },
-        "/user/{uid}": {
+        "/user01/{uid}": {
             "put": {
                 "tags": [
-                    "user"
+                    "user01"
                 ],
                 "description": "update the user",
                 "operationId": "UserController.Update",
@@ -437,6 +526,10 @@
         }
     },
     "tags": [
+        {
+            "name": "user01",
+            "description": "Operations about Users\n"
+        },
         {
             "name": "user",
             "description": "Operations about Users\n"

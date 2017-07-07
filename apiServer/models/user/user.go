@@ -69,7 +69,7 @@ func UpdateUser(newU *User) error {
 	o := orm.NewOrm()
 	oldU := User{}
 
-	err := o.Raw("SELECT id from user WHERE id = ?", newU.Name).QueryRow(&oldU)
+	err := o.Raw("SELECT id from user WHERE name = ?", newU.Name).QueryRow(&oldU)
 	if err != nil {
 		return err
 	}
@@ -103,7 +103,7 @@ func init() {
 	//register driver
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	//set default database
-	orm.RegisterDataBase("default", "mysql", "root:@tcp(localhost:3306)/hxydb?charset=utf8", 30)
+	orm.RegisterDataBase("default", "mysql", "hxy:hxy@tcp(10.0.48.50:3306)/hxydb?charset=utf8", 30)
 
 	/*
 		//max idle connections

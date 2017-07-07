@@ -99,7 +99,7 @@ func (action *registerAction) Execute() (string, error) {
 	if err != nil {
 		return "", err
 	} else {
-		return fmt.Sprintf("User register successfuly, Return: \n{Name: %s, EnrollmentSecret: %s}\n", action.req.Name, secret), nil
+		return secret, nil
 	}
 
 	return "", errors.New("Register User error")

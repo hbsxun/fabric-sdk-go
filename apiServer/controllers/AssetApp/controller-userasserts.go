@@ -19,7 +19,7 @@ type Userinfo struct {
 }
 
 //定义描述资产的数据结构
-type Assertinfo struct {
+type info struct {
 	ObjectType string   `json:"doctype"`
 	Id         string   `json:"id"`
 	Name       string   `json:"name"`
@@ -52,63 +52,63 @@ func (u *AssetController) Adduser() {
 	u.ServeJSON()
 }
 
-// @Title Addassert
+// @Title Add
 // @Description Invoke chaincode on peers
-// @Param	body		body	AssetApp.AssertArgs  true		"body for chaincode Description"
+// @Param	body		body	AssetApp.Args  true		"body for chaincode Description"
 // @Success 200 {string} txId
 // @Failure 403 body is empty
-// @router /Addassert [post]
-func (u *AssetController) Addassert() {
-	var req AssetApp.AssertArgs
+// @router /Add [post]
+func (u *AssetController) Add() {
+	var req AssetApp.Args
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
 	}
 	fmt.Println(req)
-	resp, err := AssetApp.AddAssert(&req)
+	resp, err := AssetApp.Add(&req)
 	if err != nil {
-		fmt.Printf("add assert error...")
+		fmt.Printf("add  error...")
 		u.Data["json"] = err.Error()
 	} else {
-		u.Data["json"] = fmt.Sprintf("add assert successfully, txid = %s", resp)
+		u.Data["json"] = fmt.Sprintf("add  successfully, txid = %s", resp)
 	}
 
 	u.ServeJSON()
 }
 
-// @Title Queryassert
-// @Description get assert by id
+// @Title Query
+// @Description get  by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object}Assertinfo
+// @Success 200 {object}info
 // @Failure 403 :id is empty
-// @router /Queryassert/:id [get]
-func (u *AssetController) Queryassert() {
-	assertid := u.GetString(":id")
-	fmt.Println("assertid: ", assertid)
-	if assertid != "" {
-		resp, err := AssetApp.QueryAssert(assertid)
+// @router /Query/:id [get]
+func (u *AssetController) Queryasset() {
+	id := u.GetString(":id")
+	fmt.Println("id: ", id)
+	if id != "" {
+		resp, err := AssetApp.Query(id)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
-			var assertJSON Assertinfo
-			err = json.Unmarshal([]byte(resp), &assertJSON)
-			u.Data["json"] = assertJSON
+			var JSON info
+			err = json.Unmarshal([]byte(resp), &JSON)
+			u.Data["json"] = JSON
 		}
 	}
 	u.ServeJSON()
 }
 
-// @Title Queryassertbyowner
-// @Description get assert by owner
+// @Title Querybyowner
+// @Description get  by owner
 // @Param	owner		path 	string	true		"The key for staticblock"
-// @Success 200 {string} assertlist
+// @Success 200 {string} list
 // @Failure 403 :owner is empty
 // @router /Querybyowner/:owner [get]
 func (u *AssetController) Querybyowner() {
 	owner := u.GetString(":owner")
 	fmt.Println("owner: ", owner)
 	if owner != "" {
-		resp, err := AssetApp.QueryAssertByOwner(owner)
+		resp, err := AssetApp.QueryByOwner(owner)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
@@ -118,17 +118,17 @@ func (u *AssetController) Querybyowner() {
 	u.ServeJSON()
 }
 
-// @Title Gethistoryforassert
-// @Description get history for assert
+// @Title Gethistoryfor
+// @Description get history for
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {string} asserthistory
+// @Success 200 {string} history
 // @Failure 403 :id is empty
-// @router /gethistoryforassert/:id [get]
-func (u *AssetController) Gethistoryforassert() {
+// @router /gethistoryfor/:id [get]
+func (u *AssetController) Gethistoryfor() {
 	id := u.GetString(":id")
-	fmt.Println("assertid: ", id)
+	fmt.Println("id: ", id)
 	if id != "" {
-		resp, err := AssetApp.GetHistoryForAssert(id)
+		resp, err := AssetApp.GetHistoryFor(id)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
@@ -139,48 +139,48 @@ func (u *AssetController) Gethistoryforassert() {
 }
 
 // @Title Update
-// @Description update the assert, we can update "name", "owner", "price"
+// @Description update the , we can update "name", "owner", "price"
 // @Param	body		body 	AssetApp.UpdateArgs	true		"body for update content"
 // @Success 200 {string} txId
-// @Failure 403 :assertid is empty
-// @router /Updateassert [put]
-func (u *AssetController) Updateassert() {
+// @Failure 403 :id is empty
+// @router /Update [put]
+func (u *AssetController) Update() {
 	var req AssetApp.UpdateArgs
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
 	}
 	fmt.Println(req)
-	resp, err := AssetApp.UpdateAssert(&req)
+	resp, err := AssetApp.Update(&req)
 	if err != nil {
-		fmt.Printf("update assert error...")
+		fmt.Printf("update  error...")
 		u.Data["json"] = err.Error()
 	} else {
-		u.Data["json"] = fmt.Sprintf("update assert successfully, txid = %s", resp)
+		u.Data["json"] = fmt.Sprintf("update  successfully, txid = %s", resp)
 	}
 
 	u.ServeJSON()
 }
 
 // @Title Delete
-// @Description delete the assert
+// @Description delete the
 // @Param	body		body 	AssetApp.DeleteArgs	true		"body for update content"
 // @Success 200 {string} txId
-// @Failure 403 :assertid is empty
-// @router /Deleteassert [put]
-func (u *AssetController) Deleteassert() {
+// @Failure 403 :id is empty
+// @router /Delete [put]
+func (u *AssetController) Delete() {
 	var req AssetApp.DeleteArgs
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
 	}
 	fmt.Println(req)
-	resp, err := AssetApp.DeleteAssert(&req)
+	resp, err := AssetApp.Delete(&req)
 	if err != nil {
-		fmt.Printf("delete assert error...")
+		fmt.Printf("delete  error...")
 		u.Data["json"] = err.Error()
 	} else {
-		u.Data["json"] = fmt.Sprintf("delete assert successfully, txid = %s", resp)
+		u.Data["json"] = fmt.Sprintf("delete  successfully, txid = %s", resp)
 	}
 
 	u.ServeJSON()

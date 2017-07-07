@@ -125,10 +125,68 @@ paths:
           description: '{string} asserthistory'
         "403":
           description: :id is empty
-  /user/:
+  /user/Register/:
     post:
       tags:
       - user
+      description: register users
+      operationId: UserManageController.RegisterUser
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      responses:
+        "200":
+          description: '{int} user.User.Id'
+        "403":
+          description: body is empty
+  /user/UpdateInfo/:
+    put:
+      tags:
+      - user
+      description: update the user
+      operationId: UserManageController.UpdateInfo
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      responses:
+        "200":
+          description: '{string} update success'
+        "403":
+          description: :uid is not int
+  /user/login/:
+    get:
+      tags:
+      - user
+      description: Logs user into the system
+      operationId: UserManageController.Login
+      parameters:
+      - in: query
+        name: username
+        description: The username for login
+        required: true
+        type: string
+      - in: query
+        name: password
+        description: The password for login
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} login success'
+        "403":
+          description: user not exist
+  /user01/:
+    post:
+      tags:
+      - user01
       description: create users
       operationId: UserController.CreateUser
       parameters:
@@ -143,10 +201,10 @@ paths:
           description: '{int} user.User.Id'
         "403":
           description: body is empty
-  /user/{name}:
+  /user01/{name}:
     get:
       tags:
-      - user
+      - user01
       description: get user by name
       operationId: UserController.Get
       parameters:
@@ -161,10 +219,10 @@ paths:
             $ref: '#/definitions/user.User'
         "403":
           description: :name is empty
-  /user/{uid}:
+  /user01/{uid}:
     put:
       tags:
-      - user
+      - user01
       description: update the user
       operationId: UserController.Update
       parameters:
@@ -185,10 +243,10 @@ paths:
             $ref: '#/definitions/user.User'
         "403":
           description: :uid is not int
-  /user/login:
+  /user01/login:
     get:
       tags:
-      - user
+      - user01
       description: Logs user into the system
       operationId: UserController.Login
       parameters:
@@ -207,10 +265,10 @@ paths:
           description: '{string} login success'
         "403":
           description: user not exist
-  /user/logout:
+  /user01/logout:
     get:
       tags:
-      - user
+      - user01
       description: Logs out current logged in user session
       operationId: UserController.logout
       responses:
@@ -284,6 +342,9 @@ definitions:
         type: integer
         format: int64
 tags:
+- name: user01
+  description: |
+    Operations about Users
 - name: user
   description: |
     Operations about Users
