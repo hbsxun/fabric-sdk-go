@@ -55,10 +55,12 @@ func NewChannelJoinAction(args *ChannelJoinArgs) (*channelJoinAction, error) {
 		args.ChannelID = common.ChannelID
 		common.Logger.Infof("Using default ChannelID: %s", common.ChannelID)
 	}
-	if args.PeerUrl == "" {
-		args.PeerUrl = defautPeerUrl
-		common.Logger.Infof("Using default PeerUrl: %s", defautPeerUrl)
-	}
+	/*
+		if args.PeerUrl == "" {
+			args.PeerUrl = defautPeerUrl
+			common.Logger.Infof("Using default PeerUrl: %s", defautPeerUrl)
+		}
+	*/
 	if args.OrdererUrl == "" {
 		args.OrdererUrl = defaultOrderer
 		common.Logger.Infof("Using default OrdererUrl: %s", defaultOrderer)

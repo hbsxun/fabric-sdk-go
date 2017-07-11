@@ -91,6 +91,9 @@ func Login(username, passwd string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
+	//	fmt.Println(reflect.TypeOf(passwd), reflect.TypeOf(u.Passwd))
+
 	if passwd == u.Passwd {
 		return true, nil
 	}
