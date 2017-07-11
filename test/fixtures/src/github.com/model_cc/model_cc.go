@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -36,8 +37,9 @@ type ModelChaincode struct {
 type model struct {
 	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
 	Name       string `json:"name"`    //the fieldtags are needed to keep case from bouncing around
-	Desc       []byte `json:"desc"`
-	Owner      string `json:"owner"`
+	Desc       string `json:"desc"`
+	Price      string `json:"price"`
+	Owner      string `json:"owner"` //it should be a hash of public key or certificate
 }
 
 // ===================================================================================
@@ -65,14 +67,14 @@ func (t *ModelChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error("The number of args must greater than 1. The first is  function name")
 	}
 	// Handle different functions
-	if function == "initModel" { //create a new model
-		return t.initModel(stub, args)
+	if function == "addModel" { //create a new model
+		return t.addModel(stub, args)
 	} else if function == "transferModel" { //change owner of a specific model
 		return t.transferModel(stub, args)
-	} else if function == "delete" { //delete a model
-		return t.delete(stub, args)
-	} else if function == "readModel" { //read a model
-		return t.readModel(stub, args)
+	} else if function == "delModel" { //delete a model
+		return t.delModel(stub, args)
+	} else if function == "queryModel" { //read a model
+		return t.queryModel(stub, args)
 	} else if function == "queryModelsByOwner" { //find models for owner X using rich query
 		return t.queryModelsByOwner(stub, args)
 	} else if function == "queryModels" { //find models based on an ad hoc rich query
@@ -88,31 +90,37 @@ func (t *ModelChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 }
 
 // ============================================================
-// initModel - create a new model, store into chaincode state
+// addModel - create a new model, store into chaincode state
 // ============================================================
-func (t *ModelChaincode) initModel(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *ModelChaincode) addModel(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var err error
 
-	//   0       1       2
-	// "Owner", "Name", "desc"
-	if len(args) != 3 {
-		return shim.Error("Incorrect number of arguments. Expecting 3")
+	//   0       1       2      3
+	// "Name", "Desc", "Price" "Owner"
+	if len(args) != 4 {
+		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
 	// ==== Input sanitation ====
-	fmt.Println("- start init model")
+	fmt.Println("- start add model")
 	if len(args[0]) <= 0 {
-		return shim.Error("1st argument must be a non-empty string")
+		return shim.Error("1st argument 'Name' must be a non-empty string")
 	}
 	if len(args[1]) <= 0 {
-		return shim.Error("2nd argument must be a non-empty string")
+		return shim.Error("2nd argument 'Desc' must be a non-empty string")
 	}
 	if len(args[2]) <= 0 {
-		return shim.Error("3rd argument must be a non-empty string")
+		return shim.Error("3rd argument 'Price' must be a non-empty string")
 	}
-	owner := strings.ToLower(args[0])
-	modelName := args[1]
-	desc := args[2]
+	if len(args[3]) <= 0 {
+		return shim.Error("4rd argument 'Owner' must be a non-empty string")
+	}
+
+	modelName, desc, price, owner := args[0], args[1], args[2], args[3]
+
+	if _, err = strconv.ParseFloat(price, 64); err != nil {
+		return shim.Error("'Price should be a numberic string'")
+	}
 
 	// ==== Check if model already exists ====
 	modelAsBytes, err := stub.GetState(modelName)
@@ -124,8 +132,9 @@ func (t *ModelChaincode) initModel(stub shim.ChaincodeStubInterface, args []stri
 	}
 
 	// ==== Create model object and marshal to JSON ====
-	objectType := "model"
-	model := &model{objectType, modelName, []byte(desc), owner}
+	objectType := "MODEL"
+	model := &model{objectType, modelName, desc, price, owner}
+
 	modelJSONasBytes, err := json.Marshal(model)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -141,9 +150,9 @@ func (t *ModelChaincode) initModel(stub shim.ChaincodeStubInterface, args []stri
 }
 
 // ===============================================
-// readModel - read a model from chaincode state
+// queryModel - read a model from chaincode state
 // ===============================================
-func (t *ModelChaincode) readModel(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *ModelChaincode) queryModel(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var name, jsonResp string
 	var err error
 
@@ -166,9 +175,9 @@ func (t *ModelChaincode) readModel(stub shim.ChaincodeStubInterface, args []stri
 }
 
 // ==================================================
-// delete - remove a model key/value pair from state
+// delModel - remove a model key/value pair from state
 // ==================================================
-func (t *ModelChaincode) delete(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *ModelChaincode) delModel(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var jsonResp string
 	var modelJSON model
 	if len(args) != 1 {
@@ -194,7 +203,7 @@ func (t *ModelChaincode) delete(stub shim.ChaincodeStubInterface, args []string)
 
 	err = stub.DelState(modelName) //remove the model from chaincode state
 	if err != nil {
-		return shim.Error("Failed to delete state:" + err.Error())
+		return shim.Error("Failed to delModel state:" + err.Error())
 	}
 
 	return shim.Success(nil)

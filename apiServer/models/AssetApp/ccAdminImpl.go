@@ -8,14 +8,10 @@ var chaincodeId string
 
 type AdminCCImpl struct{}
 
-func (this *AdminCCImpl) Deploy(chaincodeName, chaincodeVersion string) error {
+func (this *AdminCCImpl) Deploy(args *chaincode.InstallCCArgs) error {
 
-	chaincodeId = chaincodeName
+	chaincodeId = args.ChaincodeName
 
-	args := &chaincode.InstallCCArgs{
-		ChaincodeName:    chaincodeName,
-		ChaincodeVersion: chaincodeVersion,
-	}
 	installAction, err := chaincode.NewInstallAction(args)
 	if err != nil {
 		return err
@@ -26,11 +22,7 @@ func (this *AdminCCImpl) Deploy(chaincodeName, chaincodeVersion string) error {
 	return nil
 }
 
-func (this *AdminCCImpl) Instantiate(names []string) (string, error) {
-	args := &chaincode.InstantiateArgs{
-		ChaincodeID: chaincodeId,
-		Args:        names,
-	}
+func (this *AdminCCImpl) Instantiate(args *chaincode.InstantiateArgs) (string, error) {
 	action, err := chaincode.NewInstantiateAction(args)
 	if err != nil {
 		return "", err
@@ -42,7 +34,7 @@ func (this *AdminCCImpl) Instantiate(names []string) (string, error) {
 	return txId, nil
 }
 
-func (this *AdminCCImpl) RegisterAsset(args chaincode.InvokeArgs) (string, error) {
+func (this *AdminCCImpl) RegisterAsset(args *chaincode.InvokeArgs) (string, error) {
 
 	return "", nil
 }

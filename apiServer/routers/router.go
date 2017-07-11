@@ -3,6 +3,7 @@ package routers
 import (
 	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/AssetApp"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/channel"
 )
 
 func init() {
@@ -81,6 +82,12 @@ func init() {
 					&user.UserController{},
 				),
 			),*/
+		beego.NSNamespace("/joinChannel",
+			beego.NSInclude(
+				&channel.ChannelJoinController{},
+			),
+		),
+
 		beego.NSNamespace("/user",
 			beego.NSInclude(
 				&AssetApp.UserManageController{},

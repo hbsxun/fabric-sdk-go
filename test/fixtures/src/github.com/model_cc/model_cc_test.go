@@ -27,7 +27,8 @@ func checkState(t *testing.T, stub *shim.MockStub, name string, value string) {
 	}
 }
 func checkQuery(t *testing.T, stub *shim.MockStub, name string, value string) {
-	res := stub.MockInvoke("1", [][]byte{[]byte("readModel"), []byte(name)})
+	res := stub.MockInvoke("1", [][]byte{[]byte("queryModel"), []byte(name)})
+	fmt.Println(res.String(), string(res.Payload))
 	if res.Status != shim.OK {
 		fmt.Println("Query failed:", name, string(res.String()))
 		t.FailNow()
@@ -60,23 +61,26 @@ func Test_Invoke(t *testing.T) {
 
 	//	checkInit(t, stub, nil)
 	checkInvoke(t, stub, [][]byte{
-		[]byte("initModel"),
-		[]byte("alice"),
+		[]byte("addModel"),
 		[]byte("Model1"),
 		[]byte("for healthcare"),
+		[]byte("1"),
+		[]byte("alice"),
 	})
 	checkInvoke(t, stub, [][]byte{
-		[]byte("initModel"),
-		[]byte("bob"),
+		[]byte("addModel"),
 		[]byte("Model2"),
 		[]byte("for supply chain"),
+		[]byte("2"),
+		[]byte("bob"),
 	})
 
 	model := &model{
+		ObjectType: "MODEL",
 		Name:       "Model1",
-		ObjectType: "model",
+		Desc:       "for healthcare",
+		Price:      "1",
 		Owner:      "alice",
-		Desc:       []byte("for healthcare"),
 	}
 	modelAsJson, err := json.Marshal(model)
 	if err != nil {
@@ -84,6 +88,7 @@ func Test_Invoke(t *testing.T) {
 		t.FailNow()
 	}
 	checkQuery(t, stub, "Model1", string(modelAsJson))
+
 	//Mock not implemented
 	/*
 		checkInvoke(t, stub, [][]byte{
