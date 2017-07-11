@@ -25,8 +25,8 @@ import (
 	"bufio"
 	"os"
 
-	"github.com/hyperledger/fabric-sdk-go/fabric-client/events"
 	"github.com/hyperledger/fabric-sdk-go/fabric-cli/common"
+	"github.com/hyperledger/fabric-sdk-go/fabric-client/events"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -93,9 +93,9 @@ func (action *listenccAction) invoke() error {
 	registration := eventHub.RegisterChaincodeEvent(common.ChaincodeID, ccEventName, func(event *events.ChaincodeEvent) {
 		fmt.Printf("Received CC event:\n")
 		fmt.Printf("- Channel ID: %s\n", event.ChannelID)
-		fmt.Printf("- Chaincode ID: %s\n", event.ChaincodeID)
+		fmt.Printf("- Chaincode ID: %s\n", event.ChaincodeId)
 		fmt.Printf("- Event: %s\n", event.EventName)
-		fmt.Printf("- TxID: %s\n", event.TxID)
+		fmt.Printf("- TxID: %s\n", event.TxId)
 		fmt.Printf("- Payload: %v\n", event.Payload)
 
 		fmt.Println("Press <enter> to terminate")

@@ -24,7 +24,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
@@ -221,7 +220,7 @@ func (t *ModelChaincode) transferModel(stub shim.ChaincodeStubInterface, args []
 	}
 
 	modelName := args[0]
-	newOwner := strings.ToLower(args[1])
+	newOwner := args[1]
 	fmt.Println("- start transferModel ", modelName, newOwner)
 
 	modelAsBytes, err := stub.GetState(modelName)
@@ -275,9 +274,9 @@ func (t *ModelChaincode) queryModelsByOwner(stub shim.ChaincodeStubInterface, ar
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	owner := strings.ToLower(args[0])
+	owner := args[0]
 
-	queryString := fmt.Sprintf("{\"selector\":{\"docType\":\"model\",\"owner\":\"%s\"}}", owner)
+	queryString := fmt.Sprintf("{\"selector\":{\"docType\":\"MODEL\",\"owner\":\"%s\"}}", owner)
 
 	queryResults, err := getQueryResultForQueryString(stub, queryString)
 	if err != nil {

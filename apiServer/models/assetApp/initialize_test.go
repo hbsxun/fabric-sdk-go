@@ -1,4 +1,4 @@
-package AssetApp
+package assetApp
 
 import "testing"
 

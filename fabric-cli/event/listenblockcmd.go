@@ -24,8 +24,8 @@ import (
 	"fmt"
 	"os"
 
-	fabricCommon "github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric-sdk-go/fabric-cli/common"
+	fabricCommon "github.com/hyperledger/fabric/protos/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )

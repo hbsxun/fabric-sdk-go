@@ -22,7 +22,6 @@ package event
 import (
 	"fmt"
 
-	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/hyperledger/fabric-sdk-go/fabric-cli/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -87,7 +86,6 @@ func (action *listentxAction) invoke() error {
 		fmt.Printf("Received TX event. TxID: %s, Code: %s, Error: %s\n", txID, code, err)
 		done <- true
 	})
-
 	// Wait for the event
 	<-done
 

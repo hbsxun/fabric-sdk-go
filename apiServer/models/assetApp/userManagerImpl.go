@@ -1,4 +1,4 @@
-package AssetApp
+package assetApp
 
 import "github.com/hyperledger/fabric-sdk-go/apiServer/models/user"
 

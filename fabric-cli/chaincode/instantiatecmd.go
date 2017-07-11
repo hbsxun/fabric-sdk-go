@@ -25,10 +25,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hyperledger/fabric-sdk-go/fabric-cli/common"
 	fabricClient "github.com/hyperledger/fabric-sdk-go/fabric-client"
 	"github.com/hyperledger/fabric-sdk-go/fabric-client/events"
 	pb "github.com/hyperledger/fabric/protos/peer"
-	"github.com/hyperledger/fabric-sdk-go/fabric-cli/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -166,7 +166,6 @@ func instantiateCC(chain fabricClient.Chain, eventHub events.EventHub, chainID s
 		}
 
 	})
-
 	select {
 	case <-done:
 	case <-fail:

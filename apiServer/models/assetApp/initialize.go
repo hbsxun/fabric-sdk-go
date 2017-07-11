@@ -1,10 +1,25 @@
-package AssetApp
+package assetApp
 
 import (
+	"time"
+
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/chaincode"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/channel"
-	"time"
 )
+
+func Initialize() error {
+	err := InitChannel()
+	if err != nil {
+		appLogger.Debugf("CreateChannel err [%v]\n", err)
+		return err
+	}
+	err = InitCC("model_cc", "v0", nil)
+	if err != nil {
+		appLogger.Debugf("InitCC err [%v]\n", err)
+		return err
+	}
+	return nil
+}
 
 //InitChannel create and join channel
 func InitChannel() error {
@@ -48,7 +63,7 @@ func InitCC(chaincodeID, chaincodeVersion string, args []string) error {
 		return err
 	}
 
-	time.Sleep(time.Second * 5)
+	time.Sleep(time.Second * 2)
 
 	//initialize chaincode on primary peer
 	initAction, err := chaincode.NewInstantiateAction(&chaincode.InstantiateArgs{

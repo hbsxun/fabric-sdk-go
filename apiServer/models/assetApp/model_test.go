@@ -1,4 +1,4 @@
-package AssetApp
+package assetApp
 
 import (
 	"math/rand"
@@ -63,7 +63,7 @@ func queryModelByXX(modelName string, t *testing.T) {
 /*
 func TestDelModel(modelName string, t *testing.T) {
 	//del asset
-	if _, err := AddModel(modelName); err != nil {
+	if _, err := DelModel(modelName); err != nil {
 		t.Fatal(err)
 	}
 	//query model
