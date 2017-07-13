@@ -1,6 +1,9 @@
 package assetApp
 
-import "github.com/hyperledger/fabric-sdk-go/apiServer/models/user"
+import (
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/hjwt"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/user"
+)
 
 type UserManagerImpl struct{}
 
@@ -13,16 +16,20 @@ func (this *UserManagerImpl) Register(u *user.User) (int64, bool) {
 	return id, true
 }
 
-func (this *UserManagerImpl) Login(name, passwd string) bool {
-	ok, err := user.Login(name, passwd)
+//Login signedToken is for SSO and authorization
+func (this *UserManagerImpl) Login(name, passwd string) (signedToken string, err error) {
+	user, err := user.Login(name, passwd)
 	if err != nil {
-		appLogger.Debugf("User Login err [%v]\n", err)
+		appLogger.Debugf("User Login failed [%v]\n", err)
+		return "", err
 	}
-	if !ok {
-		appLogger.Debugf("User Login failed, Username or Password is incorrect")
-		return false
+
+	var isAdmin bool = false
+	if user.Type == 0 {
+		isAdmin = true
 	}
-	return true
+	signedToken = hjwt.CreateToken(user.Id, user.Name, isAdmin)
+	return signedToken, nil
 }
 
 func (this *UserManagerImpl) UpdateInfo(u *user.User) error {

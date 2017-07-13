@@ -38,11 +38,11 @@ func register(name string, t *testing.T) {
 
 func login(name, passwd string, t *testing.T) {
 	impl := UserManagerImpl{}
-	ok := impl.Login(name, passwd)
-	if !ok {
-		t.Error("Login failed")
+	signedToken, err := impl.Login(name, passwd)
+	if err != nil {
+		t.Fatal("Login failed", err)
 	} else {
-		fmt.Println("login success: bill")
+		t.Log("signedToken", signedToken)
 	}
 }
 

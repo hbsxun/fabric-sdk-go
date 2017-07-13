@@ -117,7 +117,43 @@ paths:
           description: '{string} txId'
         "403":
           description: body is empty
-  /user/:
+  /user/addUser:
+    post:
+      tags:
+      - user
+      description: register user
+      operationId: UserManageController.Register
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      responses:
+        "200":
+          description: '{int} user.User.Id'
+        "403":
+          description: body is empty
+  /user/updateUser:
+    put:
+      tags:
+      - user
+      description: update the user
+      operationId: UserManageController.UpdateInfo
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      responses:
+        "200":
+          description: '{string} update successfully'
+        "403":
+          description: :uid is not int
+  /user/userLogin:
     get:
       tags:
       - user
@@ -139,40 +175,6 @@ paths:
           description: '{string} login successfully'
         "403":
           description: user not exist
-    put:
-      tags:
-      - user
-      description: update the user
-      operationId: UserManageController.UpdateInfo
-      parameters:
-      - in: body
-        name: body
-        description: body for user content
-        required: true
-        schema:
-          $ref: '#/definitions/user.User'
-      responses:
-        "200":
-          description: '{string} update successfully'
-        "403":
-          description: :uid is not int
-    post:
-      tags:
-      - user
-      description: register user
-      operationId: UserManageController.Register
-      parameters:
-      - in: body
-        name: body
-        description: body for user content
-        required: true
-        schema:
-          $ref: '#/definitions/user.User'
-      responses:
-        "200":
-          description: '{int} user.User.Id'
-        "403":
-          description: body is empty
 definitions:
   assetApp.AddModelArgs:
     title: AddModelArgs

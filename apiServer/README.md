@@ -14,7 +14,8 @@ The project `apiServer` depends on the `fabric-cli` tools and `beego` project.
 ### Swagger
 1. `bee generate docs`
 2. `bee run watchall`
-Open `IE explorer` and visit `localhost:8080/swagger` to test the restful api
+Open `IE explorer` and visit `localhost:8080/swagger` to test the restful api.  
+Note: @router /func [get/post], the 'func' must be different the func name, it's case-insensitive.
 
 #### Swagger comment
 the following line reside on the head of this file, and use // command on each line

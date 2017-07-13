@@ -19,7 +19,7 @@ type UserManageController struct {
 // @Param	body		body 	user.User	true		"body for user content"
 // @Success 200 {int} user.User.Id
 // @Failure 403 body is empty
-// @router / [post]
+// @router /addUser [post]
 func (u *UserManageController) Register() {
 	var ur user.User
 	json.Unmarshal(u.Ctx.Input.RequestBody, &ur)
@@ -39,17 +39,22 @@ func (u *UserManageController) Register() {
 // @Param	password		query 	string	true		"The password for login"
 // @Success 200 {string} login successfully
 // @Failure 403 user not exist
-// @router / [get]
+// @router /userLogin [get]
 func (u *UserManageController) Login() {
 	username := u.GetString("username")
 	password := u.GetString("password")
 	fmt.Println("name:", username, "passwd:", password)
 	impl := assetApp.UserManagerImpl{}
-	ok := impl.Login(username, password)
-	if !ok {
+	signedToekn, err := impl.Login(username, password)
+	if err != nil {
 		u.Data["json"] = "login failed!"
 	} else {
-		u.Data["json"] = "Login successfully!"
+		//for authorization
+		u.Ctx.SetCookie("Bearer", signedToekn)
+		tokenMap := make(map[string]interface{})
+		tokenMap["status"] = 200
+		tokenMap["message"] = "Login successfully"
+		u.Data["json"] = tokenMap
 	}
 	u.ServeJSON()
 }
@@ -59,10 +64,11 @@ func (u *UserManageController) Login() {
 // @Param	body		body 	user.User	true		"body for user content"
 // @Success 200 {string} update successfully
 // @Failure 403 :uid is not int
-// @router / [put]
+// @router /updateUser [put]
 func (u *UserManageController) UpdateInfo() {
 	var ur user.User
 	json.Unmarshal(u.Ctx.Input.RequestBody, &ur)
+	fmt.Println("updateUser:", ur)
 	impl := assetApp.UserManagerImpl{}
 	err := impl.UpdateInfo(&ur)
 	if err != nil {

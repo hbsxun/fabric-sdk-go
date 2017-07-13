@@ -7,11 +7,13 @@ func TestUser(t *testing.T) {
 }
 
 func login(name, passwd string, t *testing.T) {
-	ok, err := Login(name, passwd)
+	u, err := Login(name, passwd)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !ok {
+	if u == nil {
 		t.Fatal("Incorrect username or password")
+	} else {
+		t.Log(u)
 	}
 }

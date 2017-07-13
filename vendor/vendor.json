@@ -142,6 +142,12 @@
 			"revisionTime": "2017-05-18T13:26:00Z"
 		},
 		{
+			"checksumSHA1": "FwjxyOGlOWp5TqkqLSYfrdxC1E4=",
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": "6c8dedd55f8a2e41f605de6d5d66e51ed1f299fc",
+			"revisionTime": "2017-05-08T16:54:58Z"
+		},
+		{
 			"checksumSHA1": "fXAinpJ5bOcborK7AiO1rnW60BI=",
 			"path": "github.com/docker/docker/opts",
 			"revision": "139fe8ff333dad0a5faf3b581042d3c01c5344fd",

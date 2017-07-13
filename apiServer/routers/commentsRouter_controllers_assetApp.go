@@ -2,7 +2,6 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/context/param"
 )
 
 func init() {
@@ -12,7 +11,6 @@ func init() {
 			Method: "AddModel",
 			Router: `/AddModel`,
 			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"],
@@ -20,7 +18,6 @@ func init() {
 			Method: "QueryModel",
 			Router: `/QueryModel/:ModelName`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"],
@@ -28,7 +25,6 @@ func init() {
 			Method: "TransferModel",
 			Router: `/TransferModel`,
 			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"],
@@ -36,7 +32,6 @@ func init() {
 			Method: "QueryModelsByOwner",
 			Router: `/QueryModelsByOwner/:owner`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"],
@@ -44,7 +39,6 @@ func init() {
 			Method: "GetHistoryForModel",
 			Router: `/GetHistoryForModel/:ModelName`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:AssetController"],
@@ -52,7 +46,6 @@ func init() {
 			Method: "DeleteModel",
 			Router: `/DeleteModel/:ModelName`,
 			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:InitializeController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:InitializeController"],
@@ -60,31 +53,27 @@ func init() {
 			Method: "Post",
 			Router: `/`,
 			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"],
 		beego.ControllerComments{
 			Method: "Register",
-			Router: `/`,
+			Router: `/addUser`,
 			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"],
 		beego.ControllerComments{
 			Method: "Login",
-			Router: `/`,
+			Router: `/userLogin`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"],
 		beego.ControllerComments{
 			Method: "UpdateInfo",
-			Router: `/`,
+			Router: `/updateUser`,
 			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
 			Params: nil})
 
 }

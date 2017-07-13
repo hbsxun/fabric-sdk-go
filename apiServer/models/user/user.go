@@ -18,6 +18,7 @@ limitations under the License.
 package user
 
 import (
+	"errors"
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -83,21 +84,21 @@ func UpdateUser(newU *User) error {
 	return nil
 }
 
-func Login(username, passwd string) (bool, error) {
+func Login(username, passwd string) (*User, error) {
 	o := orm.NewOrm()
 	u := User{}
 
-	err := o.Raw("SELECT name, passwd FROM user WHERE name = ?", username).QueryRow(&u)
+	err := o.Raw("SELECT * FROM user WHERE name = ?", username).QueryRow(&u)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
 	//	fmt.Println(reflect.TypeOf(passwd), reflect.TypeOf(u.Passwd))
 
 	if passwd == u.Passwd {
-		return true, nil
+		return &u, nil
 	}
-	return false, nil
+	return nil, errors.New("Invalid password")
 }
 
 func init() {

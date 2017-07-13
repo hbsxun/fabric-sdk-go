@@ -82,11 +82,11 @@ func (u *UserController) Login() {
 	password := u.GetString("password")
 	fmt.Println("name:", username, "passwd:", password)
 
-	ok, err := user.Login(username, password)
+	u, err := user.Login(username, password)
 	if err != nil || !ok {
 		u.Data["json"] = fmt.Errorf("login failed, err [%s]", err.Error())
 	} else {
-		u.Data["json"] = "Login success!"
+		u.Data["json"] = u
 	}
 	u.ServeJSON()
 }
