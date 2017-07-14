@@ -16,7 +16,7 @@ func main() {
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 
-	//filter
+	//filter,  api Authorization
 	beego.InsertFilter("/fabric/*", beego.BeforeRouter, func(ctx *context.Context) {
 		//fmt.Println("URI:", ctx.Input.URI())
 		//fmt.Println("Request:", ctx.Request.RequestURI)

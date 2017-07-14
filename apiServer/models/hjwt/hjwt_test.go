@@ -3,7 +3,7 @@ package hjwt
 import "testing"
 
 func TestJWT(t *testing.T) {
-	id, name, isAdmin := "0", "hxy", false
+	id, name, isAdmin := 0, "hxy", false
 	signedToken := CreateToken(id, name, isAdmin)
 	if signedToken == "" {
 		t.Fatal("create token failed")

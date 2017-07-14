@@ -16,11 +16,10 @@ type UserManager interface {
 
 type Chaincode interface {
 	//admin
-	Deploy(chaincodeName, chaincodeVersion string) error    //install chaincode to all peers
+	Install(chaincodeName, chaincodeVersion string) error   //install chaincode to all peers
 	Instantiate(*chaincode.InstantiateArgs) (string, error) //returns a txid
 	RegisterAsset(*chaincode.InvokeArgs) (string, error)    //returns a txid
 	DeleteAsset(*chaincode.InvokeArgs) (string, error)      //returns a txid
-	RegisterUser(*chaincode.InvokeArgs) (string, error)     //returns a txid
 
 	//common
 	QueryAssetByName(assetName string) ([]string, error)
