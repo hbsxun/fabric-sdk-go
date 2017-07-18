@@ -24,12 +24,17 @@ func (u *UserManageController) Register() {
 	var ur user.User
 	json.Unmarshal(u.Ctx.Input.RequestBody, &ur)
 	impl := assetApp.UserManagerImpl{}
-	uid, ok := impl.Register(&ur)
+	id, ok := impl.Register(&ur)
+	res := make(map[string]interface{})
 	if !ok {
-		u.Data["json"] = "register failed"
+		res["status"] = 301
+		res["message"] = "register failed"
 	} else {
-		u.Data["json"] = fmt.Sprintf("Register user successfully, uid:%d", uid)
+		res["status"] = 200
+		res["message"] = "register successfully"
+		res["userId"] = id
 	}
+	u.Data["json"] = res
 	u.ServeJSON()
 }
 
@@ -46,16 +51,17 @@ func (u *UserManageController) Login() {
 	fmt.Println("name:", username, "passwd:", password)
 	impl := assetApp.UserManagerImpl{}
 	signedToekn, err := impl.Login(username, password)
+	res := make(map[string]interface{})
 	if err != nil {
-		u.Data["json"] = "login failed!"
+		res["status"] = 302
+		res["message"] = "Login failed"
 	} else {
 		//for authorization
 		u.Ctx.SetCookie("Bearer", signedToekn)
-		tokenMap := make(map[string]interface{})
-		tokenMap["status"] = 200
-		tokenMap["message"] = "Login successfully"
-		u.Data["json"] = tokenMap
+		res["status"] = 200
+		res["message"] = "Login successfully"
 	}
+	u.Data["json"] = res
 	u.ServeJSON()
 }
 
@@ -71,10 +77,14 @@ func (u *UserManageController) UpdateInfo() {
 	fmt.Println("updateUser:", ur)
 	impl := assetApp.UserManagerImpl{}
 	err := impl.UpdateInfo(&ur)
+	res := make(map[string]interface{})
 	if err != nil {
-		u.Data["json"] = fmt.Sprintf("update failed:%s", err.Error())
+		res["status"] = 303
+		res["message"] = fmt.Sprintf("update failed:%s", err.Error())
 	} else {
-		u.Data["json"] = "update successfully"
+		res["status"] = 200
+		res["message"] = "User update successfully"
 	}
+	u.Data["json"] = res
 	u.ServeJSON()
 }
