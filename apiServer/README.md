@@ -33,3 +33,17 @@ There are two steps for this `apiServer` authorization:
 1. Firstly, in `apiServer main.go`, add your filter
 2. save the `JWT Token` in the cookie when user login in 
 3. User send request with the `Token`, and `server` validate and check its Claims to decide if the user have the permission to do some specific task.  
+
+### Update apiServer
+1. update `fabric`,fabric-sdk-go` and `fabric-examples`, also named `fabric-cli`
+2. put `fabric-cli` in `apiServer/models`
+3. modify .go files `import` path
+```
+grep -ri "securekey/fabric-examples/fabric-cli/cmd" | \
+xargs sed -i "s/securekey\/fabric-examples\/fabric-cli\/cmd/hyperledger\/fabric-sdk-go\/apiServer\/models/g"
+```
+4. comment the code about `corda.command` and delete the primary cmd go file.
+5. add the corresponding `xxxArgs` and `flags` set, modify `invoke --> Exectue` and `newXXAction --> NewXXAction`
+6. program `go test` file to test your lucky function :-)
+7. Further Test, code your controllers and router, test the  swagger
+
