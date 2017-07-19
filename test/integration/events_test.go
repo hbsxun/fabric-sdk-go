@@ -1,40 +1,43 @@
 /*
 Copyright SecureKey Technologies Inc. All Rights Reserved.
 
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+SPDX-License-Identifier: Apache-2.0
 */
 
 package integration
 
 import (
-	"fmt"
+	"sync"
 	"testing"
 	"time"
 
-	fabricClient "github.com/hyperledger/fabric-sdk-go/fabric-client"
-	fcUtil "github.com/hyperledger/fabric-sdk-go/fabric-client/helpers"
+	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
+
 	"github.com/hyperledger/fabric/protos/common"
+	pb "github.com/hyperledger/fabric/protos/peer"
+)
+
+const (
+	eventTimeout = time.Second * 30
 )
 
 func TestEvents(t *testing.T) {
+	testSetup := initializeTests(t)
 
+	testFailedTx(t, testSetup)
+	testFailedTxErrorCode(t, testSetup)
+	testMultipleBlockEventCallbacks(t, testSetup)
+
+	// TODO: The ordering of the reconnect test can affect the result - needs investigation.
+	testReconnectEventHub(t, testSetup)
+}
+
+func initializeTests(t *testing.T) BaseSetupImpl {
 	testSetup := BaseSetupImpl{
 		ConfigFile:      "../fixtures/config/config_test.yaml",
-		ChainID:         "testchannel",
-		ChannelConfig:   "../fixtures/channel/testchannel.tx",
+		ChannelID:       "mychannel",
+		OrgID:           "peerorg1",
+		ChannelConfig:   "../fixtures/channel/mychannel.tx",
 		ConnectEventHub: true,
 	}
 
@@ -42,19 +45,192 @@ func TestEvents(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	testSetup.ChainCodeID = fcUtil.GenerateRandomID()
+	testSetup.ChainCodeID = GenerateRandomID()
 
 	// Install and Instantiate Events CC
 	if err := testSetup.InstallCC(testSetup.ChainCodeID, "github.com/events_cc", "v0", nil); err != nil {
 		t.Fatalf("installCC return error: %v", err)
 	}
 
-	if err := testSetup.InstantiateCC(testSetup.ChainCodeID, testSetup.ChainID, "github.com/events_cc", "v0", nil); err != nil {
+	if err := testSetup.InstantiateCC(testSetup.ChainCodeID, "github.com/events_cc", "v0", nil); err != nil {
 		t.Fatalf("instantiateCC return error: %v", err)
 	}
 
-	testFailedTx(t, testSetup)
+	return testSetup
+}
 
+func testFailedTx(t *testing.T, testSetup BaseSetupImpl) {
+	fcn := "invoke"
+
+	// Arguments for events CC
+	var args []string
+	args = append(args, "invoke")
+	args = append(args, "SEVERE")
+
+	tpResponses1, tx1, err := testSetup.CreateAndSendTransactionProposal(testSetup.Channel, testSetup.ChainCodeID, fcn, args, []apitxn.ProposalProcessor{testSetup.Channel.PrimaryPeer()}, nil)
+	if err != nil {
+		t.Fatalf("CreateAndSendTransactionProposal return error: %v", err)
+	}
+
+	tpResponses2, tx2, err := testSetup.CreateAndSendTransactionProposal(testSetup.Channel, testSetup.ChainCodeID, fcn, args, []apitxn.ProposalProcessor{testSetup.Channel.PrimaryPeer()}, nil)
+	if err != nil {
+		t.Fatalf("CreateAndSendTransactionProposal return error: %v", err)
+	}
+
+	// Register tx1 and tx2 for commit/block event(s)
+	done1, fail1 := testSetup.RegisterTxEvent(tx1, testSetup.EventHub)
+	defer testSetup.EventHub.UnregisterTxEvent(tx1)
+
+	done2, fail2 := testSetup.RegisterTxEvent(tx2, testSetup.EventHub)
+	defer testSetup.EventHub.UnregisterTxEvent(tx2)
+
+	// Setup monitoring of events
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		monitorFailedTx(t, testSetup, done1, fail1, done2, fail2)
+	}()
+
+	// Test invalid transaction: create 2 invoke requests in quick succession that modify
+	// the same state variable which should cause one invoke to be invalid
+	_, err = testSetup.CreateAndSendTransaction(testSetup.Channel, tpResponses1)
+	if err != nil {
+		t.Fatalf("First invoke failed err: %v", err)
+	}
+	_, err = testSetup.CreateAndSendTransaction(testSetup.Channel, tpResponses2)
+	if err != nil {
+		t.Fatalf("Second invoke failed err: %v", err)
+	}
+
+	wg.Wait()
+}
+
+func monitorFailedTx(t *testing.T, testSetup BaseSetupImpl, done1 chan bool, fail1 chan error, done2 chan bool, fail2 chan error) {
+	rcvDone := false
+	rcvFail := false
+	timeout := time.After(eventTimeout)
+
+Loop:
+	for !rcvDone || !rcvFail {
+		select {
+		case <-done1:
+			rcvDone = true
+		case <-fail1:
+			t.Fatalf("Received fail for first invoke")
+		case <-done2:
+			t.Fatalf("Received success for second invoke")
+		case <-fail2:
+			rcvFail = true
+		case <-timeout:
+			t.Logf("Timeout: Didn't receive events")
+			break Loop
+		}
+	}
+
+	if !rcvDone || !rcvFail {
+		t.Fatalf("Didn't receive events (done: %t; fail %t)", rcvDone, rcvFail)
+	}
+}
+
+func testFailedTxErrorCode(t *testing.T, testSetup BaseSetupImpl) {
+	fcn := "invoke"
+
+	// Arguments for events CC
+	var args []string
+	args = append(args, "invoke")
+	args = append(args, "SEVERE")
+
+	tpResponses1, tx1, err := testSetup.CreateAndSendTransactionProposal(testSetup.Channel, testSetup.ChainCodeID, fcn, args, []apitxn.ProposalProcessor{testSetup.Channel.PrimaryPeer()}, nil)
+
+	if err != nil {
+		t.Fatalf("CreateAndSendTransactionProposal return error: %v", err)
+	}
+
+	tpResponses2, tx2, err := testSetup.CreateAndSendTransactionProposal(testSetup.Channel, testSetup.ChainCodeID, fcn, args, []apitxn.ProposalProcessor{testSetup.Channel.PrimaryPeer()}, nil)
+	if err != nil {
+		t.Fatalf("CreateAndSendTransactionProposal return error: %v", err)
+	}
+
+	done := make(chan bool)
+	fail := make(chan pb.TxValidationCode)
+
+	testSetup.EventHub.RegisterTxEvent(tx1, func(txId string, errorCode pb.TxValidationCode, err error) {
+		if err != nil {
+			fail <- errorCode
+		} else {
+			done <- true
+		}
+	})
+
+	defer testSetup.EventHub.UnregisterTxEvent(tx1)
+
+	done2 := make(chan bool)
+	fail2 := make(chan pb.TxValidationCode)
+
+	testSetup.EventHub.RegisterTxEvent(tx2, func(txId string, errorCode pb.TxValidationCode, err error) {
+		if err != nil {
+			fail2 <- errorCode
+		} else {
+			done2 <- true
+		}
+	})
+
+	defer testSetup.EventHub.UnregisterTxEvent(tx2)
+
+	// Setup monitoring of events
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		monitorFailedTxErrorCode(t, testSetup, done, fail, done2, fail2)
+	}()
+
+	// Test invalid transaction: create 2 invoke requests in quick succession that modify
+	// the same state variable which should cause one invoke to be invalid
+	_, err = testSetup.CreateAndSendTransaction(testSetup.Channel, tpResponses1)
+	if err != nil {
+		t.Fatalf("First invoke failed err: %v", err)
+	}
+	_, err = testSetup.CreateAndSendTransaction(testSetup.Channel, tpResponses2)
+	if err != nil {
+		t.Fatalf("Second invoke failed err: %v", err)
+	}
+
+	wg.Wait()
+}
+
+func monitorFailedTxErrorCode(t *testing.T, testSetup BaseSetupImpl, done chan bool, fail chan pb.TxValidationCode, done2 chan bool, fail2 chan pb.TxValidationCode) {
+	rcvDone := false
+	rcvFail := false
+	timeout := time.After(eventTimeout)
+
+Loop:
+	for !rcvDone || !rcvFail {
+		select {
+		case <-done:
+			rcvDone = true
+		case <-fail:
+			t.Fatalf("Received fail for first invoke")
+		case <-done2:
+			t.Fatalf("Received success for second invoke")
+		case errorValidationCode := <-fail2:
+			if errorValidationCode.String() != "MVCC_READ_CONFLICT" {
+				t.Fatalf("Expected error code MVCC_READ_CONFLICT. Got %s", errorValidationCode.String())
+			}
+			rcvFail = true
+		case <-timeout:
+			t.Logf("Timeout: Didn't receive events")
+			break Loop
+		}
+	}
+
+	if !rcvDone || !rcvFail {
+		t.Fatalf("Didn't receive events (done: %t; fail %t)", rcvDone, rcvFail)
+	}
+}
+
+func testReconnectEventHub(t *testing.T, testSetup BaseSetupImpl) {
 	// Test disconnect event hub
 	testSetup.EventHub.Disconnect()
 	if testSetup.EventHub.IsConnected() {
@@ -65,99 +241,69 @@ func TestEvents(t *testing.T) {
 	if err := testSetup.EventHub.Connect(); err != nil {
 		t.Fatalf("Failed to connect event hub")
 	}
-
-	testMultipleBlockEventCallbacks(t, testSetup)
-
-}
-
-func testFailedTx(t *testing.T, testSetup BaseSetupImpl) {
-	// Arguments for events CC
-	var args []string
-	args = append(args, "invoke")
-	args = append(args, "invoke")
-	args = append(args, "SEVERE")
-
-	tpResponses1, tx1, err := fcUtil.CreateAndSendTransactionProposal(testSetup.Chain, testSetup.ChainCodeID, testSetup.ChainID, args, []fabricClient.Peer{testSetup.Chain.GetPrimaryPeer()}, nil)
-	if err != nil {
-		t.Fatalf("CreateAndSendTransactionProposal return error: %v \n", err)
-	}
-
-	tpResponses2, tx2, err := fcUtil.CreateAndSendTransactionProposal(testSetup.Chain, testSetup.ChainCodeID, testSetup.ChainID, args, []fabricClient.Peer{testSetup.Chain.GetPrimaryPeer()}, nil)
-	if err != nil {
-		t.Fatalf("CreateAndSendTransactionProposal return error: %v \n", err)
-	}
-
-	// Register tx1 and tx2 for commit/block event(s)
-	done1, fail1 := fcUtil.RegisterTxEvent(tx1, testSetup.EventHub)
-	defer testSetup.EventHub.UnregisterTxEvent(tx1)
-
-	done2, fail2 := fcUtil.RegisterTxEvent(tx2, testSetup.EventHub)
-	defer testSetup.EventHub.UnregisterTxEvent(tx2)
-
-	// Test invalid transaction: create 2 invoke requests in quick succession that modify
-	// the same state variable which should cause one invoke to be invalid
-	_, err = fcUtil.CreateAndSendTransaction(testSetup.Chain, tpResponses1)
-	if err != nil {
-		t.Fatalf("First invoke failed err: %v", err)
-	}
-	_, err = fcUtil.CreateAndSendTransaction(testSetup.Chain, tpResponses2)
-	if err != nil {
-		t.Fatalf("Second invoke failed err: %v", err)
-	}
-
-	for i := 0; i < 2; i++ {
-		select {
-		case <-done1:
-		case <-fail1:
-		case <-done2:
-			t.Fatalf("Received success for second invoke")
-		case <-fail2:
-			// success
-			return
-		case <-time.After(time.Second * 30):
-			t.Fatalf("invoke Didn't receive block event for txid1(%s) or txid1(%s)", tx1, tx2)
-		}
-	}
-
 }
 
 func testMultipleBlockEventCallbacks(t *testing.T, testSetup BaseSetupImpl) {
+	fcn := "invoke"
 
 	// Arguments for events CC
 	var args []string
-	args = append(args, "invoke")
 	args = append(args, "invoke")
 	args = append(args, "SEVERE")
 
 	// Create and register test callback that will be invoked upon block event
 	test := make(chan bool)
 	testSetup.EventHub.RegisterBlockEvent(func(block *common.Block) {
-		fmt.Println("Invoked test callback on block event")
+		t.Logf("Received test callback on block event")
 		test <- true
 	})
 
-	tpResponses, tx, err := fcUtil.CreateAndSendTransactionProposal(testSetup.Chain, testSetup.ChainCodeID, testSetup.ChainID, args, []fabricClient.Peer{testSetup.Chain.GetPrimaryPeer()}, nil)
+	tpResponses, tx, err := testSetup.CreateAndSendTransactionProposal(testSetup.Channel, testSetup.ChainCodeID, fcn, args, []apitxn.ProposalProcessor{testSetup.Channel.PrimaryPeer()}, nil)
 	if err != nil {
-		t.Fatalf("CreateAndSendTransactionProposal return error: %v \n", err)
+		t.Fatalf("CreateAndSendTransactionProposal returned error: %v", err)
 	}
 
 	// Register tx for commit/block event(s)
-	done, fail := fcUtil.RegisterTxEvent(tx, testSetup.EventHub)
+	done, fail := testSetup.RegisterTxEvent(tx, testSetup.EventHub)
 	defer testSetup.EventHub.UnregisterTxEvent(tx)
 
-	_, err = fcUtil.CreateAndSendTransaction(testSetup.Chain, tpResponses)
+	// Setup monitoring of events
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		monitorMultipleBlockEventCallbacks(t, testSetup, done, fail, test)
+	}()
+
+	_, err = testSetup.CreateAndSendTransaction(testSetup.Channel, tpResponses)
 	if err != nil {
-		t.Fatalf("First invoke failed err: %v", err)
+		t.Fatalf("CreateAndSendTransaction failed with error: %v", err)
 	}
 
-	for i := 0; i < 2; i++ {
+	wg.Wait()
+}
+
+func monitorMultipleBlockEventCallbacks(t *testing.T, testSetup BaseSetupImpl, done chan bool, fail chan error, test chan bool) {
+	rcvTxDone := false
+	rcvTxEvent := false
+	timeout := time.After(eventTimeout)
+
+Loop:
+	for !rcvTxDone || !rcvTxEvent {
 		select {
 		case <-done:
+			rcvTxDone = true
 		case <-fail:
+			t.Fatalf("Received tx failure")
 		case <-test:
-		case <-time.After(time.Second * 30):
-			t.Fatalf("invoke Didn't receive test callback event")
+			rcvTxEvent = true
+		case <-timeout:
+			t.Logf("Timeout while waiting for events")
+			break Loop
 		}
 	}
 
+	if !rcvTxDone || !rcvTxEvent {
+		t.Fatalf("Didn't receive events (tx event: %t; tx done %t)", rcvTxEvent, rcvTxDone)
+	}
 }

@@ -1,20 +1,7 @@
 /*
 Copyright SecureKey Technologies Inc. All Rights Reserved.
 
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+SPDX-License-Identifier: Apache-2.0
 */
 
 package integration
@@ -25,15 +12,17 @@ import (
 	"testing"
 	"time"
 
-	fcUtil "github.com/hyperledger/fabric-sdk-go/fabric-client/helpers"
+	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
+	fabricTxn "github.com/hyperledger/fabric-sdk-go/pkg/fabric-txn"
 )
 
 func TestChainCodeInvoke(t *testing.T) {
 
 	testSetup := BaseSetupImpl{
 		ConfigFile:      "../fixtures/config/config_test.yaml",
-		ChainID:         "testchannel",
-		ChannelConfig:   "../fixtures/channel/testchannel.tx",
+		ChannelID:       "mychannel",
+		OrgID:           "peerorg1",
+		ChannelConfig:   "../fixtures/channel/mychannel.tx",
 		ConnectEventHub: true,
 	}
 
@@ -55,9 +44,9 @@ func TestChainCodeInvoke(t *testing.T) {
 	eventID := "test([a-zA-Z]+)"
 
 	// Register callback for chaincode event
-	done, rce := fcUtil.RegisterCCEvent(testSetup.ChainCodeID, eventID, testSetup.EventHub)
+	done, rce := fabricTxn.RegisterCCEvent(testSetup.ChainCodeID, eventID, testSetup.EventHub)
 
-	_, err = testSetup.MoveFunds()
+	err = moveFunds(&testSetup)
 	if err != nil {
 		t.Fatalf("Move funds return error: %v", err)
 	}
@@ -84,4 +73,21 @@ func TestChainCodeInvoke(t *testing.T) {
 		t.Fatalf("SendTransaction didn't change the QueryValue")
 	}
 
+}
+
+// moveFunds ...
+func moveFunds(setup *BaseSetupImpl) error {
+	fcn := "invoke"
+
+	var args []string
+	args = append(args, "move")
+	args = append(args, "a")
+	args = append(args, "b")
+	args = append(args, "1")
+
+	transientDataMap := make(map[string][]byte)
+	transientDataMap["result"] = []byte("Transient data in move funds...")
+
+	_, err := fabricTxn.InvokeChaincode(setup.Client, setup.Channel, []apitxn.ProposalProcessor{setup.Channel.PrimaryPeer()}, setup.EventHub, setup.ChainCodeID, fcn, args, transientDataMap)
+	return err
 }

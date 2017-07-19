@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
+#
+# Copyright SecureKey Technologies Inc. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# This variable can be altered to test against prebuilt fabric and fabric-ca images
+# If set to false, CI will build images from scratch for the commit levels specified below
+export USE_PREBUILT_IMAGES=true
+
 #file used for automatic integration build test
-#This should always match what's in the README.md
-export FABRIC_COMMIT=fa3d88cde177750804c7175ae000e0923199735c
-export FABRIC_CA_COMMIT=b587a4809438cc91787c49c11198dea70e2647b4
+#This should always match the compatibility specified in the README.md
+export FABRIC_COMMIT=v1.0.0
+export FABRIC_CA_COMMIT=v1.0.0
