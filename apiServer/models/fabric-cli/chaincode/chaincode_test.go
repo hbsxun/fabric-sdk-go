@@ -32,24 +32,26 @@ func TestChaincode(t *testing.T) {
 			chaincodeID,
 			[]string{"invoke", "query", "a"},
 		}, t)
-		move(&InvokeArgs{
-			peerUrl,
-			channelID,
-			chaincodeID,
-			[]string{"invoke", "move", "a", "b", "200"},
-		}, t)
-		query(&QueryArgs{
-			peerUrl,
-			channelID,
-			chaincodeID,
-			[]string{"invoke", "query", "b"},
-		}, t)
 	*/
-	chaincodeInfo(&ChaincodeInfoArgs{
+	move(&InvokeArgs{
 		peerUrl,
 		channelID,
 		chaincodeID,
+		[]string{"invoke", "move", "a", "b", "200"},
 	}, t)
+	query(&QueryArgs{
+		peerUrl,
+		channelID,
+		chaincodeID,
+		[]string{"invoke", "query", "b"},
+	}, t)
+	/*
+		chaincodeInfo(&ChaincodeInfoArgs{
+			peerUrl,
+			channelID,
+			chaincodeID,
+		}, t)
+	*/
 }
 
 func installCC(args *InstallCCArgs, t *testing.T) {

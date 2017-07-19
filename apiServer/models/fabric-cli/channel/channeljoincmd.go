@@ -56,9 +56,9 @@ type channelJoinAction struct {
 
 func NewChannelJoinAction(args *ChannelJoinArgs) (*channelJoinAction, error) {
 	flags := &pflag.FlagSet{}
-	common.Config().InitChannelID(flags)
-	//common.Config().InitOrdererURL(flags)
-	//common.Config().InitPeerURL(flags)
+	common.Config().InitChannelID(flags, args.ChannelID)
+	common.Config().InitOrdererURL(flags, args.OrdererUrl)
+	common.Config().InitPeerURL(flags, args.PeerUrl)
 
 	action := &channelJoinAction{}
 	err := action.Initialize(flags)

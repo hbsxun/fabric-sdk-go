@@ -58,9 +58,9 @@ type channelCreateAction struct {
 
 func NewChannelCreateAction(args *ChannelCreateArgs) (*channelCreateAction, error) {
 	flags := &pflag.FlagSet{}
-	common.Config().InitChannelID(flags) //Use default ChannelID, custom way should be .InitChannelID(flags, "xxchannel", "description")
-	common.Config().InitOrdererURL(flags)
-	common.Config().InitTxFile(flags)
+	common.Config().InitChannelID(flags, args.ChannelID) //Use default ChannelID, custom way should be .InitChannelID(flags, "xxchannel", "description")
+	common.Config().InitOrdererURL(flags, args.OrdererUrl)
+	common.Config().InitTxFile(flags, args.TxFile)
 
 	action := &channelCreateAction{}
 	err := action.Initialize(flags) //config by reading the `config_test.yaml`

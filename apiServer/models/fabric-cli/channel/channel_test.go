@@ -6,6 +6,10 @@ import (
 )
 
 func TestChannel(t *testing.T) {
+	//channelID := "mychannel"
+	//ordererID := "localhost:7050"
+	//txFile := "../fixtures/channel/mychannel.tx"
+	//if params above aren't set, will use the default values from config_test.yaml and common/config.go
 	createAction, err := NewChannelCreateAction(&ChannelCreateArgs{})
 	if err != nil {
 		t.Fatal("NewChannelCreateAction failed, %v", err)
