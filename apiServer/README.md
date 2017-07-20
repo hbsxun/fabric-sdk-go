@@ -35,6 +35,7 @@ There are two steps for this `apiServer` authorization:
 3. User send request with the `Token`, and `server` validate and check its Claims to decide if the user have the permission to do some specific task.  
 
 ### Update apiServer
+#### code
 1. update `fabric`,fabric-sdk-go` and `fabric-examples`, also named `fabric-cli`
 2. put `fabric-cli` in `apiServer/models`
 3. modify .go files `import` path
@@ -47,3 +48,7 @@ xargs sed -i "s/securekey\/fabric-examples\/fabric-cli\/cmd/hyperledger\/fabric-
 6. program `go test` file to test your lucky function :-)
 7. Further Test, code your controllers and router, test the  swagger
 
+#### config
+1. The config `fabric-cli/cmd/fabric-cli/fixtures/config/config_test.yaml` is slightly different from the one in the `fabric-sdk-go test/fixtures` folder.  
+In that the organizations are specified as org1, org2 and not peerorg1, peerorg2.
+2. common.Config().InitXXX(flags) vs .InitXXX(flags, args). *Note*: when args="", an error will occur, it because the len(overrides ...string) = 1 > 0 (here, the overrides[0] = "", so the slice length is 1, not 0), the function should be modify from `if len(overrides) > 0` to `if len(overrides) > 0 && len(overrides[0]) > 0`

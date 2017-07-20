@@ -24,7 +24,7 @@ func TestQuery(t *testing.T) {
 	queryTx(&QueryTxArgs{
 		ChannelID: channelID,
 		PeerUrl:   peerUrl,
-		TxID:      "5c562fe29c60da050a2f588b78b1b838fd189d133f1acdd3a2f9491c87b3d2d0", //if not set, then query all txs in 'mychannel' channel
+		TxID:      "", //if not set, then query all txs in 'mychannel' channel
 	}, t)
 }
 

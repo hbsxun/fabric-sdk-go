@@ -58,7 +58,9 @@ type channelCreateAction struct {
 
 func NewChannelCreateAction(args *ChannelCreateArgs) (*channelCreateAction, error) {
 	flags := &pflag.FlagSet{}
-	common.Config().InitChannelID(flags, args.ChannelID) //Use default ChannelID, custom way should be .InitChannelID(flags, "xxchannel", "description")
+	//Custom: InitChannelID(flags, "xxchannel", "description")
+	//FIXME, why len(args.xxx) is not set, but the deeper func parameter len is 1 ??? wired
+	common.Config().InitChannelID(flags, args.ChannelID)
 	common.Config().InitOrdererURL(flags, args.OrdererUrl)
 	common.Config().InitTxFile(flags, args.TxFile)
 

@@ -10,8 +10,8 @@ import (
 	"fmt"
 
 	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
-	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/spf13/pflag"
 )
 
@@ -48,27 +48,27 @@ func getListenTXCmd() *cobra.Command {
 	return listenTxCmd
 }
 */
-type ListentxArgs struct {
+type ListenTxArgs struct {
 	TxID    string `json:"txID"`
 	PeerUrl string `json:"peerUrl"`
 }
 
-type listentxAction struct {
+type listenTxAction struct {
 	common.Action
 	inputEvent
 }
 
-func NewListenTXAction(args *ListentxArgs) (*listentxAction, error) {
+func NewListenTxAction(args *ListenTxArgs) (*listenTxAction, error) {
 	flags := &pflag.FlagSet{}
 	common.Config().InitTxID(flags, args.TxID)
 	common.Config().InitPeerURL(flags, args.PeerUrl, "The URL of the peer on which to listen for events, e.g. localhost:7051")
 
-	action := &listentxAction{inputEvent: inputEvent{done: make(chan bool)}}
+	action := &listenTxAction{inputEvent: inputEvent{done: make(chan bool)}}
 	err := action.Initialize(flags)
 	return action, err
 }
 
-func (action *listentxAction) Execute() error {
+func (action *listenTxAction) Execute() error {
 	done := make(chan bool)
 
 	eventHub, err := action.EventHub()

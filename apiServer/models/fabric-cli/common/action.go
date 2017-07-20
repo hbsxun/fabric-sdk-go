@@ -78,7 +78,7 @@ func (action *Action) Initialize(flags *pflag.FlagSet) error {
 	var allPeers []apifabclient.Peer
 	allPeersByOrg := make(map[string][]apifabclient.Peer)
 	for _, orgID := range Config().OrgIDs() {
-		peersConfig, err := Config().PeersConfig("peer" + orgID)
+		peersConfig, err := Config().PeersConfig(orgID)
 		if err != nil {
 			return fmt.Errorf("Error getting peer configs for org [%s]: %v", orgID, err)
 		}
@@ -387,7 +387,7 @@ func (action *Action) newEventHub() (apifabclient.EventHub, error) {
 		orgID = Config().OrgID()
 	}
 
-	eventHub, err := action.getEventHub("peer"+orgID, peerURL)
+	eventHub, err := action.getEventHub(orgID, peerURL)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get event hub: %s", err)
 	}

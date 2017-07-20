@@ -9,8 +9,8 @@ package event
 import (
 	"fmt"
 
-	fabricCommon "github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
+	fabricCommon "github.com/hyperledger/fabric/protos/common"
 	"github.com/spf13/pflag"
 )
 
@@ -49,7 +49,7 @@ type listenBlockAction struct {
 	inputEvent
 }
 
-func NewlistenBlockAction(args *ListenBlockArgs) (*listenBlockAction, error) {
+func NewListenBlockAction(args *ListenBlockArgs) (*listenBlockAction, error) {
 	flags := &pflag.FlagSet{}
 	common.Config().InitPeerURL(flags, args.PeerUrl)
 
