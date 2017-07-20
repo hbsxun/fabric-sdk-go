@@ -17,8 +17,8 @@ func (this *UserManagerImpl) Register(u *user.User) (int64, bool) {
 }
 
 //Login signedToken is for SSO and authorization
-func (this *UserManagerImpl) Login(name, passwd string) (signedToken string, err error) {
-	user, err := user.Login(name, passwd)
+func (this *UserManagerImpl) Login(ss *user.Secret) (signedToken string, err error) {
+	user, err := user.Login(ss)
 	if err != nil {
 		appLogger.Debugf("User Login failed [%v]\n", err)
 		return "", err

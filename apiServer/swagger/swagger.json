@@ -239,7 +239,7 @@
             }
         },
         "/user/userLogin": {
-            "get": {
+            "post": {
                 "tags": [
                     "user"
                 ],
@@ -247,18 +247,13 @@
                 "operationId": "UserManageController.Login",
                 "parameters": [
                     {
-                        "in": "query",
-                        "name": "username",
-                        "description": "The username for login",
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user login",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "password",
-                        "description": "The password for login",
-                        "required": true,
-                        "type": "string"
+                        "schema": {
+                            "$ref": "#/definitions/user.Secret"
+                        }
                     }
                 ],
                 "responses": {
@@ -266,7 +261,7 @@
                         "description": "{string} login successfully"
                     },
                     "403": {
-                        "description": "user not exist"
+                        "description": "user not exist or login failed"
                     }
                 }
             }
@@ -299,6 +294,18 @@
                     "type": "string"
                 },
                 "newOwner": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.Secret": {
+            "title": "Secret",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "passwd": {
                     "type": "string"
                 }
             }

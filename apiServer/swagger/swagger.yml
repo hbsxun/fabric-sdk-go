@@ -154,27 +154,23 @@ paths:
         "403":
           description: :uid is not int
   /user/userLogin:
-    get:
+    post:
       tags:
       - user
       description: Logs user into the system
       operationId: UserManageController.Login
       parameters:
-      - in: query
-        name: username
-        description: The username for login
+      - in: body
+        name: body
+        description: body for user login
         required: true
-        type: string
-      - in: query
-        name: password
-        description: The password for login
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/user.Secret'
       responses:
         "200":
           description: '{string} login successfully'
         "403":
-          description: user not exist
+          description: user not exist or login failed
 definitions:
   assetApp.AddModelArgs:
     title: AddModelArgs
@@ -195,6 +191,14 @@ definitions:
       name:
         type: string
       newOwner:
+        type: string
+  user.Secret:
+    title: Secret
+    type: object
+    properties:
+      name:
+        type: string
+      passwd:
         type: string
   user.User:
     title: User

@@ -72,18 +72,18 @@ func (u *UserController) Put() {
 
 // @Title Login
 // @Description Logs user into the system
-// @Param	username		query 	string	true		"The username for login"
-// @Param	password		query 	string	true		"The password for login"
+// @Param	body		body 	user.Secret	true		"The username for login"
 // @Success 200 {string} login success
 // @Failure 403 user not exist
-// @router /login [get]
+// @router /login [post]
 func (u *UserController) Login() {
-	username := u.GetString("username")
-	password := u.GetString("password")
-	fmt.Println("name:", username, "passwd:", password)
+	var ss user.Secret
+	json.Unmarshal(u.Ctx.Input.RequestBody, &ss)
 
-	u, err := user.Login(username, password)
-	if err != nil || !ok {
+	fmt.Println("Secret:", ss)
+
+	u, err := user.Login(&ss)
+	if err != nil {
 		u.Data["json"] = fmt.Errorf("login failed, err [%s]", err.Error())
 	} else {
 		u.Data["json"] = u

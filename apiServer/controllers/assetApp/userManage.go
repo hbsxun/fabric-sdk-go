@@ -40,17 +40,17 @@ func (u *UserManageController) Register() {
 
 // @Title Login
 // @Description Logs user into the system
-// @Param	username		query 	string	true		"The username for login"
-// @Param	password		query 	string	true		"The password for login"
+// @Param	body		body 	user.Secret	true		"body for user login"
 // @Success 200 {string} login successfully
-// @Failure 403 user not exist
-// @router /userLogin [get]
+// @Failure 403 user not exist or login failed
+// @router /userLogin [post]
 func (u *UserManageController) Login() {
-	username := u.GetString("username")
-	password := u.GetString("password")
-	fmt.Println("name:", username, "passwd:", password)
+	var ss user.Secret
+	json.Unmarshal(u.Ctx.Input.RequestBody, &ss)
 	impl := assetApp.UserManagerImpl{}
-	signedToekn, err := impl.Login(username, password)
+	signedToekn, err := impl.Login(&ss)
+	fmt.Println("User Secret:", ss)
+	fmt.Println("Cookie Token:", signedToekn)
 	res := make(map[string]interface{})
 	if err != nil {
 		res["status"] = 302

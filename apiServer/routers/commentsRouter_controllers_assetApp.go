@@ -66,7 +66,7 @@ func init() {
 		beego.ControllerComments{
 			Method: "Login",
 			Router: `/userLogin`,
-			AllowHTTPMethods: []string{"get"},
+			AllowHTTPMethods: []string{"post"},
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"],

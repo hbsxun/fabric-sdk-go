@@ -34,6 +34,10 @@ type User struct {
 	Email  string `json:"mail"`
 	Phone  string `json:"phone"`
 }
+type Secret struct {
+	Name   string `json:"name"`
+	Passwd string `json:"passwd"`
+}
 
 /*
 type Identity struct {
@@ -84,18 +88,18 @@ func UpdateUser(newU *User) error {
 	return nil
 }
 
-func Login(username, passwd string) (*User, error) {
+func Login(ss *Secret) (*User, error) {
 	o := orm.NewOrm()
 	u := User{}
 
-	err := o.Raw("SELECT * FROM user WHERE name = ?", username).QueryRow(&u)
+	err := o.Raw("SELECT * FROM user WHERE name = ?", ss.Name).QueryRow(&u)
 	if err != nil {
 		return nil, err
 	}
 
 	//	fmt.Println(reflect.TypeOf(passwd), reflect.TypeOf(u.Passwd))
 
-	if passwd == u.Passwd {
+	if u.Passwd == ss.Passwd {
 		return &u, nil
 	}
 	return nil, errors.New("Invalid password")

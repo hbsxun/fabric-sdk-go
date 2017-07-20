@@ -1,5 +1,17 @@
 ## apiServer
 apiServer based-on a micro-service platform, it provide flexibility and hot-plugin ability
+### How to setup apiServer
+- Firstly, setup the fabric network using `docker-compose -f xxx.yaml up` 
+- Second, start the `mysql`. Here i use the `xampp`, follow the steps below:
+```
+cd /opt/lampp
+sudo ./manager-linux-x64.run
+```
+Then start the `mysql` and `apache` in the graphic mode. 
+- Then boot the `apiServer` using `bee run` 
+### Test server
+Open the browser, visit `localhost:8080/swagger` 
+If any problem occurs, check the `models controllers router`, and then regenerate the swagger docs, and reboot the `apiServer`
 
 ### Dependencies
 The project `apiServer` depends on the `fabric-cli` tools and `beego` project. 
@@ -30,6 +42,8 @@ the following line reside on the head of this file, and use // command on each l
 ### api Authorization
 The `apiServer` api authorization is based on `JWT`, the code is in dir `models/hjwt`  
 There are two steps for this `apiServer` authorization:  
-1. Firstly, in `apiServer main.go`, add your filter
+1. Firstly, in apiServer `main.go`, add your filter
 2. save the `JWT Token` in the cookie when user login in 
 3. User send request with the `Token`, and `server` validate and check its Claims to decide if the user have the permission to do some specific task.  
+
+
