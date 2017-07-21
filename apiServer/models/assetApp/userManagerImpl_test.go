@@ -38,7 +38,7 @@ func register(name string, t *testing.T) {
 
 func login(name, passwd string, t *testing.T) {
 	impl := UserManagerImpl{}
-	signedToken, err := impl.Login(name, passwd)
+	signedToken, err := impl.Login(&user.Secret{name, passwd})
 	if err != nil {
 		t.Fatal("Login failed", err)
 	} else {
