@@ -88,3 +88,46 @@ func (u *UserManageController) UpdateInfo() {
 	u.Data["json"] = res
 	u.ServeJSON()
 }
+
+// @Title GetUser
+// @Description get user by username
+// @Param	userName		path 	string	true		"The key for staticblock"
+// @Success 200 {object}user.User
+// @Failure 403 :userName is empty
+// @router /getUser/:userName [get]
+func (u *UserManageController) GetUser() {
+	name := u.GetString(":userName")
+	fmt.Println("userName: ", name)
+	if name != "" {
+		impl := assetApp.UserManagerImpl{}
+		userInfo, err := impl.GetUserInfo(name)
+		fmt.Println("userInfo: ", userInfo)
+		res := make(map[string]interface{})
+		if err != nil {
+			res["status"] = 304
+			res["message"] = fmt.Sprintf("get user failed:%s", err.Error())
+		} else {
+			res["status"] = 200
+			res["message"] = userInfo
+		}
+		u.Data["json"] = res
+	}
+
+	u.ServeJSON()
+}
+
+// @Title Logout
+// @Description logout
+// @Success 200 {string}logout successfully
+// @Failure 403 :logout failed
+// @router /logout [get]
+func (u *UserManageController) Logout() {
+	u.Ctx.SetCookie("Bearer", "xxxx")
+	res := make(map[string]interface{})
+	res["status"] = 200
+	res["message"] = "logout successfully"
+
+	u.Data["json"] = res
+
+	u.ServeJSON()
+}

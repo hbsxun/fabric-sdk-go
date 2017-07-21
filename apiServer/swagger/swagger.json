@@ -210,6 +210,49 @@
                 }
             }
         },
+        "/user/getUser/{userName}": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "get user by username",
+                "operationId": "UserManageController.GetUser",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userName",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{object}user.User"
+                    },
+                    "403": {
+                        "description": ":userName is empty"
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "logout",
+                "operationId": "UserManageController.Logout",
+                "responses": {
+                    "200": {
+                        "description": "{string}logout successfully"
+                    },
+                    "403": {
+                        "description": ":logout failed"
+                    }
+                }
+            }
+        },
         "/user/updateUser": {
             "put": {
                 "tags": [

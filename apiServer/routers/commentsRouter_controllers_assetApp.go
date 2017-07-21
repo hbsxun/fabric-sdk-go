@@ -76,4 +76,18 @@ func init() {
 			AllowHTTPMethods: []string{"put"},
 			Params: nil})
 
+	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"],
+		beego.ControllerComments{
+			Method: "GetUser",
+			Router: `/getUser/:userName`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp:UserManageController"],
+		beego.ControllerComments{
+			Method: "Logout",
+			Router: `/logout`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
 }

@@ -2,15 +2,10 @@ package assetApp
 
 import (
 	"fmt"
-	"math/rand"
-	"strconv"
 	"testing"
-	"time"
-
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/user"
 )
 
-func TestUserManager(t *testing.T) {
+/*func TestUserManager(t *testing.T) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	name := "bill" + strconv.Itoa(r.Intn(1000)) //note: the len(name) in database is 18. len(passwd) is 20 bytes
 	register(name, t)
@@ -38,7 +33,7 @@ func register(name string, t *testing.T) {
 
 func login(name, passwd string, t *testing.T) {
 	impl := UserManagerImpl{}
-	signedToken, err := impl.Login(&user.Secret{name, passwd})
+	signedToken, err := impl.Login(name, passwd)
 	if err != nil {
 		t.Fatal("Login failed", err)
 	} else {
@@ -58,5 +53,17 @@ func updateUser(name string, t *testing.T) {
 		t.Error("Update failed")
 	} else {
 		fmt.Println("update success")
+	}
+}*/
+
+func TestGetUser(t *testing.T) {
+	fmt.Println("hh")
+	impl := UserManagerImpl{}
+	userInfo, err := impl.GetUserInfo("hxy")
+	if err != nil {
+		t.Errorf("getUser failed")
+	} else {
+		fmt.Println("get user success")
+		t.Log("user: ", userInfo)
 	}
 }

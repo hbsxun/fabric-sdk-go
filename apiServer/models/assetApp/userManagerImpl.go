@@ -41,6 +41,18 @@ func (this *UserManagerImpl) UpdateInfo(u *user.User) error {
 	return nil
 }
 
+func (this *UserManagerImpl) GetUserInfo(username string) (*user.User, error) {
+	userinfo, err := user.GetUser(username)
+	if err != nil {
+		appLogger.Debugf("User GetUser err [%v]\n", err)
+		return nil, err
+	}
+	return userinfo, nil
+}
+
+/*func (this *UserManagerImpl) Logout() error {
+
+}*/
 func (this *UserManagerImpl) UpdatePasswd(username, passwd string) bool {
 	appLogger.Debug("Not implemented")
 	return false
