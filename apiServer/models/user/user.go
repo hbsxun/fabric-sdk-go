@@ -59,17 +59,26 @@ func AddUser(user *User) (id int64, err error) {
 	return id64, nil
 }
 
-func GetUser(username string) (*User, error) {
+func GetUserByName(username string) (*User, error) {
 	o := orm.NewOrm()
 	u := User{}
 
-	err := o.Raw("SELECT type, name, passwd, phone, email FROM user WHERE name = ?", username).QueryRow(&u)
+	err := o.Raw("SELECT id, type, name, passwd, phone, email FROM user WHERE name = ?", username).QueryRow(&u)
 	if err != nil {
 		return nil, err
 	}
 	return &u, nil
 }
 
+func GetUserById(userid int) (*User, error) {
+	o := orm.NewOrm()
+	u := User{}
+	err := o.Raw("SELECT id, type, name, passwd, phone, email FROM user WHERE id = ?", userid).QueryRow(&u)
+	if err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
 func UpdateUser(newU *User) error {
 	o := orm.NewOrm()
 	oldU := User{}
@@ -111,7 +120,8 @@ func init() {
 	//register driver
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	//set default database
-	orm.RegisterDataBase("default", "mysql", "hxy:hxy@tcp(10.0.48.50:3306)/hxydb?charset=utf8", 30)
+	//orm.RegisterDataBase("default", "mysql", "hxy:hxy@tcp(10.0.48.50:3306)/hxydb?charset=utf8", 30)
+	orm.RegisterDataBase("default", "mysql", "someone:123@tcp(localhost:3306)/someonedb?charset=utf8", 30)
 
 	/*
 		//max idle connections

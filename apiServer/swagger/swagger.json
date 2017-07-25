@@ -210,13 +210,39 @@
                 }
             }
         },
-        "/user/getUser/{userName}": {
+        "/user/getUserById/{userId}": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "get user by userid",
+                "operationId": "UserManageController.GetUserById",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{object}user.User"
+                    },
+                    "403": {
+                        "description": ":userId is empty"
+                    }
+                }
+            }
+        },
+        "/user/getUserByName/{userName}": {
             "get": {
                 "tags": [
                     "user"
                 ],
                 "description": "get user by username",
-                "operationId": "UserManageController.GetUser",
+                "operationId": "UserManageController.GetUserByName",
                 "parameters": [
                     {
                         "in": "path",

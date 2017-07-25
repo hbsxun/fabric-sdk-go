@@ -2,15 +2,22 @@ package assetApp
 
 import (
 	"fmt"
+	"math/rand"
+	"strconv"
 	"testing"
+	"time"
+
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/user"
 )
 
-/*func TestUserManager(t *testing.T) {
+func TestUserManager(t *testing.T) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	name := "bill" + strconv.Itoa(r.Intn(1000)) //note: the len(name) in database is 18. len(passwd) is 20 bytes
 	register(name, t)
 	login(name, name, t) //passwd=name
 	updateUser(name, t)
+	getUserByName(name, t)
+	getUserById(3, t)
 }
 
 func register(name string, t *testing.T) {
@@ -33,7 +40,7 @@ func register(name string, t *testing.T) {
 
 func login(name, passwd string, t *testing.T) {
 	impl := UserManagerImpl{}
-	signedToken, err := impl.Login(name, passwd)
+	signedToken, err := impl.Login(&user.Secret{name, passwd})
 	if err != nil {
 		t.Fatal("Login failed", err)
 	} else {
@@ -54,16 +61,23 @@ func updateUser(name string, t *testing.T) {
 	} else {
 		fmt.Println("update success")
 	}
-}*/
+}
 
-func TestGetUser(t *testing.T) {
-	fmt.Println("hh")
+func getUserByName(name string, t *testing.T) {
 	impl := UserManagerImpl{}
-	userInfo, err := impl.GetUserInfo("hxy")
+	userInfo, err := impl.GetUserInfoByName(name)
 	if err != nil {
-		t.Errorf("getUser failed")
+		t.Errorf("getUserByName failed")
 	} else {
-		fmt.Println("get user success")
+		t.Log("user: ", userInfo)
+	}
+}
+func getUserById(id int, t *testing.T) {
+	impl := UserManagerImpl{}
+	userInfo, err := impl.GetUserInfoById(id)
+	if err != nil {
+		t.Errorf("getUserById failed")
+	} else {
 		t.Log("user: ", userInfo)
 	}
 }

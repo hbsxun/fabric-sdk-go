@@ -3,6 +3,7 @@ package assetApp
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/assetApp"
@@ -89,26 +90,59 @@ func (u *UserManageController) UpdateInfo() {
 	u.ServeJSON()
 }
 
-// @Title GetUser
+// @Title GetUserByName
 // @Description get user by username
 // @Param	userName		path 	string	true		"The key for staticblock"
 // @Success 200 {object}user.User
 // @Failure 403 :userName is empty
-// @router /getUser/:userName [get]
-func (u *UserManageController) GetUser() {
+// @router /getUserByName/:userName [get]
+func (u *UserManageController) GetUserByName() {
 	name := u.GetString(":userName")
 	fmt.Println("userName: ", name)
 	if name != "" {
 		impl := assetApp.UserManagerImpl{}
-		userInfo, err := impl.GetUserInfo(name)
+		userInfo, err := impl.GetUserInfoByName(name)
 		fmt.Println("userInfo: ", userInfo)
 		res := make(map[string]interface{})
 		if err != nil {
 			res["status"] = 304
-			res["message"] = fmt.Sprintf("get user failed:%s", err.Error())
+			res["message"] = fmt.Sprintf("get user by name failed:%s", err.Error())
 		} else {
 			res["status"] = 200
 			res["message"] = userInfo
+		}
+		u.Data["json"] = res
+	}
+
+	u.ServeJSON()
+}
+
+// @Title GetUserById
+// @Description get user by userid
+// @Param	userId		path 	string	true		"The key for staticblock"
+// @Success 200 {object}user.User
+// @Failure 403 :userId is empty
+// @router /getUserById/:userId [get]
+func (u *UserManageController) GetUserById() {
+	id := u.GetString(":userId")
+	fmt.Println("userId: ", id)
+	if id != "" {
+		res := make(map[string]interface{})
+		userId, err := strconv.Atoi(id)
+		if err != nil {
+			res["status"] = 304
+			res["message"] = fmt.Sprintf("atoi failed:%s", err.Error())
+		} else {
+			impl := assetApp.UserManagerImpl{}
+			userInfo, err := impl.GetUserInfoById(userId)
+			fmt.Println("userInfo: ", userInfo)
+			if err != nil {
+				res["status"] = 304
+				res["message"] = fmt.Sprintf("get user by id failed:%s", err.Error())
+			} else {
+				res["status"] = 200
+				res["message"] = userInfo
+			}
 		}
 		u.Data["json"] = res
 	}

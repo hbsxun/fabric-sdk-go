@@ -23,7 +23,7 @@ func main() {
 		uri := ctx.Input.URI()
 		if strings.HasPrefix(uri, "/fabric/user/addUser") || strings.HasPrefix(uri, "/fabric/user/userLogin") {
 			return
-		} else if strings.HasPrefix(uri, "/fabric/user/updateUser") || strings.HasPrefix(uri, "/fabric/user/getUser") {
+		} else if strings.HasPrefix(uri, "/fabric/user/updateUser") || strings.HasPrefix(uri, "/fabric/user/getUserByName") || strings.HasPrefix(uri, "/fabric/user/getUserById") {
 			token := ctx.Input.Cookie("Bearer")
 			//token := ctx.Request.Header.Get("Authorization")
 			fmt.Println(token)
@@ -32,7 +32,7 @@ func main() {
 				ctx.ResponseWriter.Write([]byte("Authorization failed, not login or you don't have the priviledge"))
 				return
 			}
-		} else if strings.HasPrefix(uri, "/fabric/model/AddModel") || strings.HasPrefix(uri, "/fabric/model/DeleteModel") {
+		} else if strings.HasPrefix(uri, "/fabric/model/AddModel") || strings.HasPrefix(uri, "/fabric/model/DeleteModel") || strings.HasPrefix(uri, "/fabric/model/TransferModel") {
 			token := ctx.Input.Cookie("Bearer")
 			if _, isAdmin := hjwt.CheckToken(token); !isAdmin {
 				fmt.Println("Don't have the 'admin' privilege")

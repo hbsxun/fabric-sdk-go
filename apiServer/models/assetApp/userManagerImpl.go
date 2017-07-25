@@ -41,13 +41,22 @@ func (this *UserManagerImpl) UpdateInfo(u *user.User) error {
 	return nil
 }
 
-func (this *UserManagerImpl) GetUserInfo(username string) (*user.User, error) {
-	userinfo, err := user.GetUser(username)
+func (this *UserManagerImpl) GetUserInfoByName(username string) (*user.User, error) {
+	userInfo, err := user.GetUserByName(username)
 	if err != nil {
-		appLogger.Debugf("User GetUser err [%v]\n", err)
+		appLogger.Debugf("User GetUserByName err [%v]\n", err)
 		return nil, err
 	}
-	return userinfo, nil
+	return userInfo, nil
+}
+
+func (this *UserManagerImpl) GetUserInfoById(userid int) (*user.User, error) {
+	userInfo, err := user.GetUserById(userid)
+	if err != nil {
+		appLogger.Debugf("User GetUserById err [%v]\n", err)
+		return nil, err
+	}
+	return userInfo, nil
 }
 
 /*func (this *UserManagerImpl) Logout() error {
