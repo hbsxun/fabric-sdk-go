@@ -50,6 +50,16 @@ func getQueryBlockCmd() *cobra.Command {
 	common.Config().InitPeerURL(flags, "", "The URL of the peer on which to install the chaincode, e.g. localhost:7051")
 	return queryBlockCmd
 }
+
+type queryBlockAction struct {
+	common.Action
+}
+
+func newQueryBlockAction(flags *pflag.FlagSet) (*queryBlockAction, error) {
+	action := &queryBlockAction{}
+	err := action.Initialize(flags)
+	return action, err
+}
 */
 type QueryBlockArgs struct {
 	ChannelID string `json:"channelId"`
@@ -82,7 +92,7 @@ func (action *queryBlockAction) Execute() error {
 		return fmt.Errorf("Error getting channel client: %v", err)
 	}
 
-	context := action.SetUserContext(action.OrgAdminUser(common.Config().OrgID()))
+	context := action.SetUserContext(action.OrgAdminUser(action.OrgID()))
 	defer context.Restore()
 
 	var block *fabricCommon.Block

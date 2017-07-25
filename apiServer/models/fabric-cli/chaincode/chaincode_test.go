@@ -11,6 +11,7 @@ func TestChaincode(t *testing.T) {
 	chaincodeID := "example02_cc"
 	chaincodePath := "github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/src/github.com/example_cc"
 	chaincodeVersion := "v0"
+	chaincodePolicy := "AND('Org1MSP.member','Org2MSP.member')"
 
 	fmt.Println("*****************************************************")
 	installCC(&InstallCCArgs{
@@ -30,6 +31,7 @@ func TestChaincode(t *testing.T) {
 		chaincodePath,
 		chaincodeVersion,
 		[]string{"Init", "init", "a", "100", "b", "200"},
+		chaincodePolicy,
 	}, t)
 
 	fmt.Println("*****************************************************")
@@ -46,6 +48,7 @@ func TestChaincode(t *testing.T) {
 		channelID,
 		chaincodeID,
 		[]string{"invoke", "move", "a", "b", "200"},
+		"2000",
 	}, t)
 
 	fmt.Println("*****************************************************")

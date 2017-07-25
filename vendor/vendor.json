@@ -718,12 +718,6 @@
 			"revisionTime": "2017-07-11T12:18:19Z"
 		},
 		{
-			"checksumSHA1": "Ow2EySrV4wlOEpD8gDd/vOrYsN4=",
-			"path": "github.com/hyperledger/fabric/protos/common",
-			"revision": "e4b47043270f2293daabf7d24984dd46901e04e7",
-			"revisionTime": "2017-07-11T12:18:19Z"
-		},
-		{
 			"checksumSHA1": "oVdABN5MjfYuR0bakI+hzh1xaFg=",
 			"path": "github.com/hyperledger/fabric/protos/ledger/queryresult",
 			"revision": "e4b47043270f2293daabf7d24984dd46901e04e7",
@@ -905,7 +899,7 @@
 			"revision": "74f8f4d4c29e45a79a8849efb057dbd8de3ae8d0",
 			"revisionTime": "2017-07-11T14:43:39Z"
 		},
-        {
+		{
 			"checksumSHA1": "59wTbS4fE2282Q88NrBYImbFGbo=",
 			"origin": "github.com/hyperledger/fabric-ca/vendor/github.com/spf13/afero",
 			"path": "github.com/spf13/afero",

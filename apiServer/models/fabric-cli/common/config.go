@@ -64,11 +64,10 @@ const (
 
 	configFileFlag        = "config"
 	configFileDescription = "The path of the config.yaml file"
-	//defaultConfigFile     = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/config/config_test.yaml"
-	defaultConfigFile = "../fixtures/config/config_test.yaml"
+	defaultConfigFile     = "../fixtures/config/config_test.yaml"
 
 	peerURLFlag        = "peer"
-	peerURLDescription = "The URL of the peer to connect to, e.g. localhost:7051"
+	peerURLDescription = "A comma-separated list of peer targets, e.g. 'localhost:7051,localhost:8051'"
 	defaultPeerURL     = ""
 
 	ordererFlag           = "orderer"
@@ -77,6 +76,9 @@ const (
 
 	printFormatFlag        = "format"
 	printFormatDescription = "The output format - display, json, raw"
+
+	writerFlag        = "writer"
+	writerDescription = "The writer - stdout, stderr, log"
 
 	certificateFileFlag    = "cacert"
 	certificateDescription = "The path of the ca-cert.pem file"
@@ -95,8 +97,7 @@ const (
 
 	txFileFlag        = "txfile"
 	txFileDescription = "The path of the channel.tx file"
-	//defaultTxFile     = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/mychannel.tx"
-	defaultTxFile = "../fixtures/channel/mychannel.tx"
+	defaultTxFile     = "../fixtures/channel/mychannel.tx"
 
 	chaincodeEventFlag        = "event"
 	chaincodeEventDescription = "The name of the chaincode event to listen for"
@@ -117,6 +118,14 @@ const (
 	traverseFlag        = "traverse"
 	traverseDescription = "Blocks will be traversed starting with the given block in reverse order up to the given number of blocks"
 	defaultTraverse     = "0"
+
+	chaincodePolicyFlag        = "policy"
+	chaincodePolicyDescription = "The chaincode policy, e.g. OR('Org1MSP.admin','Org2MSP.admin',AND('Org1MSP.member','Org2MSP.member'))"
+	defaultChaincodePolicy     = ""
+
+	timeoutFlag        = "timeout"
+	timeoutDescription = "The timeout (in milliseconds) for the operation"
+	defaultTimeout     = "3000"
 )
 
 var configInstance *cliConfig
@@ -172,7 +181,7 @@ type CLIConfig interface {
 	ChaincodeEvent() string
 	InitChaincodeEvent(flags *pflag.FlagSet, defaultValueAndDescription ...string)
 
-	// PeerURL returns the URL of the peer
+	// PeerURL returns a comma-separated list of peers in the format host1:port1,host2:port2,...
 	PeerURL() string
 	InitPeerURL(flags *pflag.FlagSet, defaultValueAndDescription ...string)
 
@@ -208,6 +217,10 @@ type CLIConfig interface {
 	PrintFormat() string
 	InitPrintFormat(flags *pflag.FlagSet, defaultValueAndDescription ...string)
 
+	// Writer returns the writer for output
+	Writer() string
+	InitWriter(flags *pflag.FlagSet, defaultValueAndDescription ...string)
+
 	// Args returns the chaincode invocation arguments as a JSON string in the format, {"Func":"function","Args":["arg1","arg2",...]}
 	Args() string
 	InitArgs(flags *pflag.FlagSet, defaultValueAndDescription ...string)
@@ -219,6 +232,14 @@ type CLIConfig interface {
 	// TxID returns the transaction ID
 	TxID() string
 	InitTxID(flags *pflag.FlagSet, defaultValueAndDescription ...string)
+
+	// ChaincodePolicy returns the chaincode policy string, e.g Nof(1,(SignedBy(Org1Msp),SignedBy(Org2MSP)))
+	ChaincodePolicy() string
+	InitChaincodePolicy(flags *pflag.FlagSet, defaultValueAndDescription ...string)
+
+	// Timeout returns the timeout (in milliseconds) for various operations
+	Timeout() time.Duration
+	InitTimeout(flags *pflag.FlagSet, defaultValueAndDescription ...string)
 }
 
 // cliConfig overrides certain configuration values with those supplied on the command-line
@@ -242,11 +263,14 @@ type cliConfig struct {
 	txFile           string
 	txID             string
 	printFormat      string
+	writer           string
 	args             string
 	chaincodeEvent   string
 	blockHash        string
 	blockNum         int
 	traverse         int
+	chaincodePolicy  string
+	timeout          int64
 }
 
 func getConfigImpl() *cliConfig {
@@ -469,6 +493,15 @@ func (c *cliConfig) InitPrintFormat(flags *pflag.FlagSet, defaultValueAndDescrip
 	flags.StringVar(&c.printFormat, printFormatFlag, defaultValue, description)
 }
 
+func (c *cliConfig) Writer() string {
+	return c.writer
+}
+
+func (c *cliConfig) InitWriter(flags *pflag.FlagSet, defaultValueAndDescription ...string) {
+	defaultValue, description := getDefaultValueAndDescription(STDOUT.String(), writerDescription, defaultValueAndDescription...)
+	flags.StringVar(&c.writer, writerFlag, defaultValue, description)
+}
+
 func (c *cliConfig) OrdererTLSCertificate() string {
 	return c.certificate
 }
@@ -503,6 +536,29 @@ func (c *cliConfig) TxID() string {
 func (c *cliConfig) InitTxID(flags *pflag.FlagSet, defaultValueAndDescription ...string) {
 	defaultValue, description := getDefaultValueAndDescription(defaultTxID, txIDDescription, defaultValueAndDescription...)
 	flags.StringVar(&c.txID, txIDFlag, defaultValue, description)
+}
+
+func (c *cliConfig) ChaincodePolicy() string {
+	return c.chaincodePolicy
+}
+
+func (c *cliConfig) InitChaincodePolicy(flags *pflag.FlagSet, defaultValueAndDescription ...string) {
+	defaultValue, description := getDefaultValueAndDescription(defaultChaincodePolicy, chaincodePolicyDescription, defaultValueAndDescription...)
+	flags.StringVar(&c.chaincodePolicy, chaincodePolicyFlag, defaultValue, description)
+}
+
+func (c *cliConfig) Timeout() time.Duration {
+	return time.Duration(c.timeout)
+}
+
+func (c *cliConfig) InitTimeout(flags *pflag.FlagSet, defaultValueAndDescription ...string) {
+	defaultValue, description := getDefaultValueAndDescription(defaultTimeout, timeoutDescription, defaultValueAndDescription...)
+	i, err := strconv.Atoi(defaultValue)
+	if err != nil {
+		fmt.Printf("Invalid number: %s\n", defaultValue)
+		i = 1000
+	}
+	flags.Int64Var(&c.timeout, timeoutFlag, int64(i), description)
 }
 
 // Implementation of apifabclient.Config...
@@ -585,10 +641,10 @@ func (c *cliConfig) OrderersConfig() ([]apiconfig.OrdererConfig, error) {
 		s := strings.Split(c.OrdererURL(), ":")
 		host = s[0]
 		if len(s) > 1 {
-			if p, err := strconv.Atoi(s[1]); err != nil {
+			if p, err := strconv.Atoi(s[1]); err == nil {
 				port = p
 			} else {
-				return nil, fmt.Errorf("invalid port %s", s[1])
+				return nil, fmt.Errorf("invalid port %s: %s", s[1], err)
 			}
 		}
 	}
@@ -657,27 +713,19 @@ func getEmptyArgs() string {
 	}
 	return string(argBytes)
 }
-func GetArgs(args []string) string {
-	argBytes, err := json.Marshal(&ArgStruct{
-		Func: args[0],
-		Args: args[1:],
-	})
-	if err != nil {
-		panic(fmt.Errorf("error marshaling empty args struct: %v", err))
-	}
-	return string(argBytes)
-}
 
+/*
 func getDefaultValueAndDescription(defaultValue string, defaultDescription string, overrides ...string) (value, description string) {
-	if len(overrides) > 0 && len(overrides[0]) > 0 {
+	if len(overrides) > 0 {
 		value = overrides[0]
 	} else {
 		value = defaultValue
 	}
-	if len(overrides) > 1 && len(overrides[1]) > 0 {
+	if len(overrides) > 1 {
 		description = overrides[1]
 	} else {
 		description = defaultDescription
 	}
 	return value, description
 }
+*/

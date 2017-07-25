@@ -52,10 +52,6 @@ func getDefaultImplPreEnrolledUser(client apifabclient.FabricClient, keyDir stri
 		return nil, fmt.Errorf("Error finding the enrollment cert path: %v", err)
 	}
 	mspID, err := client.Config().MspID(orgName)
-
-	//mspID := "Org1MSP"
-	//fmt.Printf("client.config: %v, privateKeyDir: %s, enrollmentCertPath: %s, username: %s, mspID: %s, client.CryptoSuite: %v\n", client.Config(), privateKeyPath, enrollmentCertPath, username, mspID, client.CryptoSuite())
-
 	if err != nil {
 		return nil, fmt.Errorf("Error reading MSP ID config: %s", err)
 	}
@@ -74,7 +70,7 @@ func getFirstPathFromDir(dir string) (string, error) {
 		}
 
 		fullName := filepath.Join(dir, string(filepath.Separator), p.Name())
-		fmt.Printf("Reading file %s\n", fullName)
+		Config().Logger().Infof("Reading file %s\n", fullName)
 	}
 
 	for _, f := range files {

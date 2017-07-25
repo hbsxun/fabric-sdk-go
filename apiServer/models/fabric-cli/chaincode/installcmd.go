@@ -55,6 +55,16 @@ func getInstallCmd() *cobra.Command {
 	common.Config().InitChaincodeVersion(flags)
 	return installCmd
 }
+
+type installAction struct {
+	common.Action
+}
+
+func newInstallAction(flags *pflag.FlagSet) (*installAction, error) {
+	action := &installAction{}
+	err := action.Initialize(flags)
+	return action, err
+}
 */
 type InstallCCArgs struct {
 	PeerUrl          string `json:"peerUrl"`

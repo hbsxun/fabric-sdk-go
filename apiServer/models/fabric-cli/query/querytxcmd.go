@@ -46,6 +46,17 @@ func getQueryTXCmd() *cobra.Command {
 	common.Config().InitPeerURL(flags)
 	return queryTXCmd
 }
+
+type queryTXAction struct {
+	common.Action
+}
+
+func newQueryTXAction(flags *pflag.FlagSet) (*queryTXAction, error) {
+	action := &queryTXAction{}
+	err := action.Initialize(flags)
+
+	return action, err
+}
 */
 type QueryTxArgs struct {
 	ChannelID string `json:"channelId"`
@@ -75,7 +86,7 @@ func (action *queryTXAction) Execute() error {
 		return fmt.Errorf("Error getting channel client: %v", err)
 	}
 
-	context := action.SetUserContext(action.OrgAdminUser(common.Config().OrgID()))
+	context := action.SetUserContext(action.OrgAdminUser(action.OrgID()))
 	defer context.Restore()
 
 	tx, err := channelClient.QueryTransaction(common.Config().TxID())

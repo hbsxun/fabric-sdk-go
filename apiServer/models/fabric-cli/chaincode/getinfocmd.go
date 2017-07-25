@@ -10,9 +10,9 @@ import (
 	"fmt"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/hyperledger/fabric-sdk-go/api/apifabclient"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
+	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
 	"github.com/hyperledger/fabric/core/common/ccprovider"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
 	"github.com/spf13/pflag"
 )
 
@@ -52,6 +52,19 @@ func getGetInfoCmd() *cobra.Command {
 	common.Config().InitChannelID(flags)
 	common.Config().InitChaincodeID(flags)
 	return getInfoCmd
+}
+
+type getInfoAction struct {
+	common.Action
+}
+
+func newGetInfoAction(flags *pflag.FlagSet) (*getInfoAction, error) {
+	action := &getInfoAction{}
+	err := action.Initialize(flags)
+	if len(action.Peers()) == 0 {
+		return nil, fmt.Errorf("a peer must be specified")
+	}
+	return action, err
 }
 */
 type ChaincodeInfoArgs struct {
@@ -99,13 +112,26 @@ func (action *getInfoAction) Execute() error {
 
 	fmt.Printf("querying chaincode chaincode info for %s on peer: %s...\n", common.Config().ChaincodeID(), peer.URL())
 
-	cdbytes, err := QueryChaincode(channel, []apifabclient.Peer{peer}, lifecycleSCC, common.Config().ChannelID(), "getccdata", args)
+	responses, _, err := channel.SendTransactionProposal(apitxn.ChaincodeInvokeRequest{
+		Targets:     []apitxn.ProposalProcessor{peer},
+		Fcn:         "getccdata",
+		Args:        args,
+		ChaincodeID: lifecycleSCC,
+	})
 	if err != nil {
 		return fmt.Errorf("Error querying for chaincode info: %v", err)
 	}
+	if len(responses) == 0 {
+		return fmt.Errorf("Didn't receive a response from chaincode %s", lifecycleSCC)
+	}
+
+	response := responses[0]
+	if response.Err != nil {
+		return response.Err
+	}
 
 	ccData := &ccprovider.ChaincodeData{}
-	err = proto.Unmarshal(cdbytes, ccData)
+	err = proto.Unmarshal(response.ProposalResponse.Response.Payload, ccData)
 	if err != nil {
 		return fmt.Errorf("Error unmarshalling chaincode data: %v", err)
 	}

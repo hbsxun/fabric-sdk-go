@@ -19,14 +19,15 @@ var queryChannelsCmd = &cobra.Command{
 	Short: "Query channels",
 	Long:  "Queries the channels of the specified peer",
 	Run: func(cmd *cobra.Command, args []string) {
-		if common.Config().PeerURL() == "" {
-			fmt.Printf("\nMust specify the peer URL\n\n")
-			cmd.HelpFunc()(cmd, args)
-			return
-		}
 		action, err := newQueryChannelsAction(cmd.Flags())
 		if err != nil {
 			common.Config().Logger().Criticalf("Error while initializing queryChannelsAction: %v", err)
+			return
+		}
+
+		if len(action.Peers()) != 1 {
+			fmt.Printf("\nMust specify exactly one peer URL\n\n")
+			cmd.HelpFunc()(cmd, args)
 			return
 		}
 
@@ -43,8 +44,17 @@ func getQueryChannelsCmd() *cobra.Command {
 	common.Config().InitPeerURL(queryChannelsCmd.Flags())
 	return queryChannelsCmd
 }
-*/
 
+type queryChannelsAction struct {
+	common.Action
+}
+
+func newQueryChannelsAction(flags *pflag.FlagSet) (*queryChannelsAction, error) {
+	action := &queryChannelsAction{}
+	err := action.Initialize(flags)
+	return action, err
+}
+*/
 type QueryChannelsArgs struct {
 	PeerUrl string `json:"peerUrl"`
 }
@@ -63,25 +73,15 @@ func NewQueryChannelsAction(args *QueryChannelsArgs) (*queryChannelsAction, erro
 }
 
 func (action *queryChannelsAction) Execute() error {
-	peer := action.PeerFromURL(common.Config().PeerURL())
-	if peer == nil {
-		return fmt.Errorf("unknown peer URL: %s", common.Config().PeerURL())
-	}
-
-	orgID, err := action.OrgOfPeer(peer.URL())
-	if err != nil {
-		return err
-	}
-
-	context := action.SetUserContext(action.OrgAdminUser(orgID))
+	context := action.SetUserContext(action.OrgAdminUser(action.OrgID()))
 	defer context.Restore()
 
-	response, err := action.Client().QueryChannels(peer)
+	response, err := action.Client().QueryChannels(action.Peer())
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Channels for peer [%s]\n", peer.URL())
+	fmt.Printf("Channels for peer [%s]\n", action.Peer().URL())
 
 	action.Printer().PrintChannels(response.Channels)
 

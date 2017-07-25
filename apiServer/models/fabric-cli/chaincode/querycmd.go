@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/hyperledger/fabric-sdk-go/api/apifabclient"
+	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
 	"github.com/spf13/pflag"
 )
@@ -52,6 +53,18 @@ func getQueryCmd() *cobra.Command {
 	common.Config().InitIterations(flags)
 	common.Config().InitSleepTime(flags)
 	return queryCmd
+}
+
+type queryAction struct {
+	common.Action
+	numInvoked uint32
+	done       chan bool
+}
+
+func newQueryAction(flags *pflag.FlagSet) (*queryAction, error) {
+	action := &queryAction{done: make(chan bool)}
+	err := action.Initialize(flags)
+	return action, err
 }
 */
 type QueryArgs struct {
@@ -109,12 +122,12 @@ func (action *queryAction) Query() error {
 			}
 		}
 	} else {
-		response, err := action.doQuery(channelClient, args.Func, args.Args)
-		if err != nil {
+		if responses, err := action.doQuery(channelClient, args.Func, args.Args); err != nil {
 			fmt.Printf("Error invoking chaincode: %v\n", err)
 		} else {
-			fmt.Printf("***** Response: %s\n", response)
+			action.Printer().PrintTxProposalResponses(responses)
 		}
+		fmt.Println("Done!")
 	}
 
 	return nil
@@ -123,10 +136,10 @@ func (action *queryAction) Query() error {
 func (action *queryAction) queryMultiple(channel apifabclient.Channel, fctn string, args []string, iterations int) {
 	fmt.Printf("Querying CC %d times ...\n", iterations)
 	for i := 0; i < iterations; i++ {
-		if response, err := action.doQuery(channel, fctn, args); err != nil {
+		if responses, err := action.doQuery(channel, fctn, args); err != nil {
 			fmt.Printf("Error invoking chaincode: %v\n", err)
 		} else {
-			common.Config().Logger().Infof("***** Response: %s\n", response)
+			action.Printer().PrintTxProposalResponses(responses)
 		}
 
 		if (i+1) < iterations && common.Config().SleepTime() > 0 {
@@ -138,13 +151,19 @@ func (action *queryAction) queryMultiple(channel apifabclient.Channel, fctn stri
 	action.done <- true
 }
 
-func (action *queryAction) doQuery(channel apifabclient.Channel, fctn string, args []string) ([]byte, error) {
-	common.Config().Logger().Infof("Invoking chaincode: %s on channel: %s, function: %s, args: %v\n", common.Config().ChaincodeID(), common.Config().ChannelID(), fctn, args)
+func (action *queryAction) doQuery(channel apifabclient.Channel, fctn string, args []string) ([]*apitxn.TransactionProposalResponse, error) {
+	common.Config().Logger().Infof("Querying chaincode: %s on channel: %s, function: %s, args: %v\n", common.Config().ChaincodeID(), common.Config().ChannelID(), fctn, args)
 
-	response, err := QueryChaincode(channel, action.Peers(), common.Config().ChaincodeID(), common.Config().ChannelID(), fctn, args)
-	if err != nil {
-		return nil, err
+	targets := make([]apitxn.ProposalProcessor, len(action.Peers()))
+	for i, p := range action.Peers() {
+		targets[i] = p
 	}
 
-	return response, nil
+	responses, _, err := channel.SendTransactionProposal(apitxn.ChaincodeInvokeRequest{
+		Targets:     targets,
+		Fcn:         fctn,
+		Args:        args,
+		ChaincodeID: common.Config().ChaincodeID(),
+	})
+	return responses, err
 }

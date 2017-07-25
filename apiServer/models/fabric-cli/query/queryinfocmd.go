@@ -41,8 +41,17 @@ func getQueryInfoCmd() *cobra.Command {
 	common.Config().InitPeerURL(flags)
 	return queryInfoCmd
 }
-*/
 
+type queryInfoAction struct {
+	common.Action
+}
+
+func newQueryInfoAction(flags *pflag.FlagSet) (*queryInfoAction, error) {
+	action := &queryInfoAction{}
+	err := action.Initialize(flags)
+	return action, err
+}
+*/
 type QueryChainInfoArgs struct {
 	//	TxID      string `json:"txID"`
 	ChannelID string `json:"channelId"`
@@ -63,14 +72,13 @@ func NewQueryChainInfoAction(args *QueryChainInfoArgs) (*queryInfoAction, error)
 	err := action.Initialize(flags)
 	return action, err
 }
-
 func (action *queryInfoAction) Execute() error {
 	channelClient, err := action.ChannelClient()
 	if err != nil {
 		return fmt.Errorf("Error getting channel client: %v", err)
 	}
 
-	context := action.SetUserContext(action.OrgAdminUser(common.Config().OrgID()))
+	context := action.SetUserContext(action.OrgAdminUser(action.OrgID()))
 	defer context.Restore()
 
 	info, err := channelClient.QueryInfo()

@@ -11,8 +11,8 @@ import (
 	"io/ioutil"
 
 	"github.com/hyperledger/fabric-sdk-go/api/apifabclient"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
 	fabricCommon "github.com/hyperledger/fabric/protos/common"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
 	"github.com/spf13/pflag"
 )
 
@@ -44,8 +44,17 @@ func getChannelCreateCmd() *cobra.Command {
 	common.Config().InitTxFile(flags)
 	return channelCreateCmd
 }
-*/
 
+type channelCreateAction struct {
+	common.Action
+}
+
+func newChannelCreateAction(flags *pflag.FlagSet) (*channelCreateAction, error) {
+	action := &channelCreateAction{}
+	err := action.Initialize(flags)
+	return action, err
+}
+*/
 type ChannelCreateArgs struct {
 	ChannelID  string `json:"channelId"`  //Default mychannel
 	TxFile     string `json:"txFile"`     //The path of txFile
@@ -59,7 +68,6 @@ type channelCreateAction struct {
 func NewChannelCreateAction(args *ChannelCreateArgs) (*channelCreateAction, error) {
 	flags := &pflag.FlagSet{}
 	//Custom: InitChannelID(flags, "xxchannel", "description")
-	//FIXME, why len(args.xxx) is not set, but the deeper func parameter len is 1 ??? wired
 	common.Config().InitChannelID(flags, args.ChannelID)
 	common.Config().InitOrdererURL(flags, args.OrdererUrl)
 	common.Config().InitTxFile(flags, args.TxFile)

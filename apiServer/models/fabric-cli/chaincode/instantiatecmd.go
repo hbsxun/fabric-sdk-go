@@ -14,6 +14,8 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
 	admin "github.com/hyperledger/fabric-sdk-go/pkg/fabric-txn/admin"
+	"github.com/hyperledger/fabric/common/cauthdsl"
+	fabricCommon "github.com/hyperledger/fabric/protos/common"
 	"github.com/spf13/pflag"
 )
 
@@ -56,7 +58,21 @@ func getInstantiateCmd() *cobra.Command {
 	common.Config().InitChaincodePath(flags)
 	common.Config().InitChaincodeVersion(flags)
 	common.Config().InitArgs(flags)
+	common.Config().InitChaincodePolicy(flags)
 	return instantiateCmd
+}
+
+type instantiateAction struct {
+	common.Action
+}
+
+func newInstantiateAction(flags *pflag.FlagSet) (*instantiateAction, error) {
+	action := &instantiateAction{}
+	err := action.Initialize(flags)
+	if len(action.Peers()) == 0 {
+		return nil, fmt.Errorf("a peer must be specified")
+	}
+	return action, err
 }
 */
 type InstantiateArgs struct {
@@ -68,6 +84,7 @@ type InstantiateArgs struct {
 	ChaincodePath    string   `json:"chaincodePath"`
 	ChaincodeVersion string   `json:"chaincodeVersion"`
 	Args             []string `json:"args"`
+	ChaincodePolicy  string   `json:"chaincodePolicy"`
 }
 
 type instantiateAction struct {
@@ -82,6 +99,7 @@ func NewInstantiateAction(iargs *InstantiateArgs) (*instantiateAction, error) {
 	common.Config().InitChaincodePath(flags, iargs.ChaincodePath)
 	common.Config().InitChaincodeVersion(flags, iargs.ChaincodeVersion)
 	common.Config().InitArgs(flags, common.GetArgs(iargs.Args))
+	common.Config().InitArgs(flags, iargs.ChaincodePolicy)
 
 	action := &instantiateAction{}
 	err := action.Initialize(flags)
@@ -100,18 +118,9 @@ func (action *instantiateAction) Execute() error {
 	argBytes := []byte(common.Config().Args())
 	args := &common.ArgStruct{}
 	err = json.Unmarshal(argBytes, args)
-	fmt.Println("args:", args)
 	if err != nil {
 		return fmt.Errorf("Error unmarshalling JSON arg string: %v", err)
 	}
-
-	peer := action.Peers()[0]
-	orgID, err := action.OrgOfPeer(peer.URL())
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("instantiating chaincode on peer: %s...\n", peer.URL())
 
 	eventHub, err := action.EventHub()
 	if err != nil {
@@ -119,12 +128,19 @@ func (action *instantiateAction) Execute() error {
 	}
 
 	// InstantiateCC requires AdminUser privileges so setting user context with Admin User
-	context := action.SetUserContext(action.OrgAdminUser(orgID))
+	context := action.SetUserContext(action.OrgAdminUser(action.OrgID()))
 	defer context.Restore()
 
-	common.Config().Logger().Infof("Sending instantiate %s with policy...\n", common.Config().ChaincodeID())
+	common.Config().Logger().Infof("Sending instantiate %s ...\n", common.Config().ChaincodeID())
 
-	err = admin.SendInstantiateCC(channelClient, common.Config().ChaincodeID(), args.Args, common.Config().ChaincodePath(), common.Config().ChaincodeVersion(), []apitxn.ProposalProcessor{peer}, eventHub)
+	chaincodePolicy, err := action.newChaincodePolicy()
+	if err != nil {
+		return err
+	}
+
+	err = admin.SendInstantiateCC(
+		channelClient, common.Config().ChaincodeID(), args.Args, common.Config().ChaincodePath(), common.Config().ChaincodeVersion(),
+		chaincodePolicy, []apitxn.ProposalProcessor{action.Peer()}, eventHub)
 	if err != nil {
 		if strings.Contains(err.Error(), "chaincode exists "+common.Config().ChaincodeID()) {
 			// Ignore
@@ -138,4 +154,30 @@ func (action *instantiateAction) Execute() error {
 	fmt.Printf("...successfuly instantiated chaincode %s on channel %s.\n", common.Config().ChaincodeID(), common.Config().ChannelID())
 
 	return nil
+}
+
+func (action *instantiateAction) newChaincodePolicy() (*fabricCommon.SignaturePolicyEnvelope, error) {
+	if common.Config().ChaincodePolicy() != "" {
+		// Create a signature policy from the policy expression passed in
+		return newChaincodePolicy(common.Config().ChaincodePolicy())
+	}
+
+	// Default policy is 'signed my any member' for all known orgs
+	var mspIDs []string
+	for _, orgID := range common.Config().OrgIDs() {
+		mspID, err := common.Config().MspID(orgID)
+		if err != nil {
+			return nil, fmt.Errorf("Unable to get the MSP ID from org ID %s: %s", orgID, err)
+		}
+		mspIDs = append(mspIDs, mspID)
+	}
+	return cauthdsl.SignedByAnyMember(mspIDs), nil
+}
+
+func newChaincodePolicy(policyString string) (*fabricCommon.SignaturePolicyEnvelope, error) {
+	ccPolicy, err := cauthdsl.FromString(policyString)
+	if err != nil {
+		return nil, fmt.Errorf("invalid chaincode policy [%s]: %s", policyString, err)
+	}
+	return ccPolicy, nil
 }

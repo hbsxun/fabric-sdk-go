@@ -42,6 +42,22 @@ func getChannelJoinCmd() *cobra.Command {
 	common.Config().InitPeerURL(flags)
 	return chainJoinCmd
 }
+
+type channelJoinAction struct {
+	common.Action
+}
+
+func newChannelJoinAction(flags *pflag.FlagSet) (*channelJoinAction, error) {
+	action := &channelJoinAction{}
+	err := action.Initialize(flags)
+	if err != nil {
+		return nil, err
+	}
+	if len(action.Peers()) == 0 {
+		return nil, fmt.Errorf("at least one peer is required for join")
+	}
+	return action, nil
+}
 */
 
 type ChannelJoinArgs struct {
