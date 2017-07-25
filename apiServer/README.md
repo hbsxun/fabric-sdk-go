@@ -1,5 +1,8 @@
 ## apiServer
 apiServer based-on a micro-service platform, it provide flexibility and hot-plugin ability
+### SETUP
+1. Setup the fabric network using docker-compose.yaml in `fabric-cli/fixtures/docker-compose.yaml`
+2. Go test `channel`,`chaincode` and `query` in `fabric-cli/xxx`
 
 ### Dependencies
 The project `apiServer` depends on the `fabric-cli` tools and `beego` project. 
