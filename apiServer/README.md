@@ -43,7 +43,7 @@ There are two steps for this `apiServer` authorization:
 2. put `fabric-cli` in `apiServer/models`
 3. modify .go files `import` path
 ```
-grep -ri "securekey/fabric-examples/fabric-cli/cmd" | \
+grep -rl "securekey/fabric-examples/fabric-cli/cmd" | \
 xargs sed -i "s/securekey\/fabric-examples\/fabric-cli\/cmd/hyperledger\/fabric-sdk-go\/apiServer\/models/g"
 ```
 4. comment the code about `corda.command` and delete the primary cmd go file.
