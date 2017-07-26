@@ -25,6 +25,5 @@ func (u *InitializeController) Post() {
 	} else {
 		u.Data["json"] = fmt.Sprintf("Initialize successfully")
 	}
-
 	u.ServeJSON()
 }

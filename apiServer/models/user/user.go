@@ -23,6 +23,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -120,8 +121,12 @@ func init() {
 	//register driver
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	//set default database
-	//orm.RegisterDataBase("default", "mysql", "hxy:hxy@tcp(10.0.48.50:3306)/hxydb?charset=utf8", 30)
-	orm.RegisterDataBase("default", "mysql", "someone:123@tcp(localhost:3306)/someonedb?charset=utf8", 30)
+	user := beego.AppConfig.String("mysqluser")
+	pwd := beego.AppConfig.String("mysqlpass")
+	url := beego.AppConfig.String("mysqlurls")
+	db := beego.AppConfig.String("mysqldb")
+	connection := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8", user, pwd, url, db)
+	orm.RegisterDataBase("default", "mysql", connection, 30)
 
 	/*
 		//max idle connections
