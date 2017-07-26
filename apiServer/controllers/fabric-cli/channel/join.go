@@ -4,38 +4,41 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/channel"
 )
-
-// Operations about ChannelJoin
-type ChannelJoinController struct {
-	beego.Controller
-}
 
 // @Title ChannelJoin
 // @Description ChannelJoin on peers
 // @Param	body		body	channel.ChannelJoinArgs   true		"body for ChannelJoin Description"
 // @Success 200 {string}
 // @Failure 403 body is empty
-// @router / [post]
-func (u *ChannelJoinController) Post() {
+// @router /JoinChannel [post]
+func (u *ChannelController) JoinChannel() {
 	var req channel.ChannelJoinArgs
+	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-	}
-	fmt.Println(req)
-	action, err := channel.NewChannelJoinAction(&req)
-	if err != nil {
-		fmt.Printf("ChannelJoin Initialize error...")
-	}
-	err = action.Execute()
-	if err != nil {
-		u.Data["json"] = err.Error()
+		res["status"] = 301
+		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
-		u.Data["json"] = fmt.Sprintf("Peer [%s] Joinchannel [%s] successful\n", req.PeerUrl, req.ChannelID)
+		fmt.Println(req)
+		action, err := channel.NewChannelJoinAction(&req)
+		if err != nil {
+			fmt.Printf("ChannelJoin Initialize error...")
+			res["status"] = 303
+			res["message"] = fmt.Sprintf("ChannelJoin action error [%s]", err)
+		} else {
+			err = action.Execute()
+			if err != nil {
+				res["status"] = 303
+				res["message"] = fmt.Sprintf("ChannelJoin execute error [%s]", err)
+			} else {
+				res["status"] = 200
+				res["message"] = fmt.Sprintf("Peer [%s] Joinchannel [%s] successfully", req.PeerUrl, req.ChannelID)
+			}
+		}
 	}
-
+	u.Data["json"] = res
 	u.ServeJSON()
 }

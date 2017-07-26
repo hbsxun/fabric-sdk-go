@@ -3,8 +3,8 @@ package assetApp
 import (
 	"time"
 
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/chaincode"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/channel"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/chaincode"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/channel"
 )
 
 func Initialize() error {

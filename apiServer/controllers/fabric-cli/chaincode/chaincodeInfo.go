@@ -9,7 +9,7 @@ import (
 )
 
 // Operations about ChaincodeInfo
-type ChaincodeInfoController struct {
+type ChaincodeController struct {
 	beego.Controller
 }
 
@@ -18,24 +18,33 @@ type ChaincodeInfoController struct {
 // @Param	body		body	chaincode.ChaincodeInfoArgs  true		"body for chaincode Description"
 // @Success 200 {string} string
 // @Failure 403 body is empty
-// @router / [post]
-func (u *ChaincodeInfoController) Post() {
+// @router /ChaincodeInfo [post]
+func (u *ChaincodeController) Post() {
 	var req chaincode.ChaincodeInfoArgs
+	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-	}
-	fmt.Println(req)
-	action, err := chaincode.NewChaincodeInfoAction(&req)
-	if err != nil {
-		fmt.Printf("ChaincodeInfo Initialize error...")
-	}
-	resp, err := action.Execute()
-	if err != nil {
-		u.Data["json"] = err.Error()
+		res["status"] = 301
+		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
-		u.Data["json"] = resp
+		fmt.Println(req)
+		action, err := chaincode.NewChaincodeInfoAction(&req)
+		if err != nil {
+			fmt.Printf("Query Initialize error...")
+			res["status"] = 308
+			res["message"] = fmt.Sprintf("GetChaincodeInfo action error [%s]", err)
+		} else {
+			err := action.Execute()
+			if err != nil {
+				res["status"] = 308
+				res["message"] = fmt.Sprintf("GetChaincodeInfo execute error [%s]", err)
+			} else {
+				res["status"] = 200
+				res["message"] = fmt.Sprintf("get chaincode info [%s] successfully", req.ChaincodeID)
+			}
+		}
 	}
-
+	u.Data["json"] = res
 	u.ServeJSON()
 }

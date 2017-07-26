@@ -9,7 +9,7 @@ import (
 )
 
 // Operations about QueryBlock
-type QueryBlockController struct {
+type QueryController struct {
 	beego.Controller
 }
 
@@ -18,25 +18,33 @@ type QueryBlockController struct {
 // @Param	body		body 	query.QueryBlockArgs		true	"body for Query Block"
 // @Success 200 {string} []string
 // @Failure 403 body is empty
-// @router / [post]
-func (u *QueryBlockController) Post() {
+// @router /QueryBlock [post]
+func (u *QueryController) Post() {
 	var req query.QueryBlockArgs
+	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-	}
-	fmt.Println(req)
-	action, err := query.NewQueryBlockAction(&req)
-	if err != nil {
-		u.Data["json"] = err.Error()
+		res["status"] = 301
+		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
-		resp, err := action.Execute()
+		fmt.Println(req)
+		action, err := query.NewQueryBlockAction(&req)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			fmt.Printf("QueryBlock Initialize error...")
+			res["status"] = 400
+			res["message"] = fmt.Sprintf("QueryBlock action error [%s]", err)
 		} else {
-			u.Data["json"] = resp
+			err := action.Execute()
+			if err != nil {
+				res["status"] = 400
+				res["message"] = fmt.Sprintf("QueryBlock execute error [%s]", err)
+			} else {
+				res["status"] = 200
+				res["message"] = fmt.Sprintf("query block [%s] successfully", req.BlockNum)
+			}
 		}
 	}
-
+	u.Data["json"] = res
 	u.ServeJSON()
 }

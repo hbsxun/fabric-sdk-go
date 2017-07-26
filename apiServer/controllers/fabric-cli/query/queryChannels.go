@@ -1,38 +1,44 @@
 package query
 
 import (
+	"encoding/json"
 	"fmt"
 
-	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/query"
 )
 
-// Operations about QueryChannels
-type QueryChannelsController struct {
-	beego.Controller
-}
-
-// @Title QueryChannelsChaincodes
-// @Description Query Chaincodes installed on the peerUrl
-// @Param	peerUrl		path 	string		true	"The URL of peer to query"
+// @Title QueryChannels
+// @Description Query Channels
+// @Param	body		body 	query.QueryChannelsArgs		true	"body for Query Channel"
 // @Success 200 {string} string
 // @Failure 403 body is empty
-// @router /:peerUrl [get]
-func (u *QueryChannelsController) Get() {
-	peerUrl := u.GetString(":peerUrl")
-	fmt.Println("peerUrl:", peerUrl)
-
-	action, err := query.NewQueryChannelsAction(peerUrl)
+// @router /QueryChannels [post]
+func (u *QueryController) QueryChannels() {
+	var req query.QueryChannelsArgs
+	res := make(map[string]interface{})
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		u.Data["json"] = err.Error()
+		fmt.Printf("Unmarshal failed [%s]", err)
+		res["status"] = 301
+		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
-		resp, err := action.Execute()
+		fmt.Println(req)
+		action, err := query.NewQueryChannelsAction(&req)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			fmt.Printf("QueryChannel Initialize error...")
+			res["status"] = 401
+			res["message"] = fmt.Sprintf("QueryChannel action error [%s]", err)
 		} else {
-			u.Data["json"] = resp
+			err := action.Execute()
+			if err != nil {
+				res["status"] = 401
+				res["message"] = fmt.Sprintf("QueryChannel execute error [%s]", err)
+			} else {
+				res["status"] = 200
+				res["message"] = "query channel successfully"
+			}
 		}
 	}
-
+	u.Data["json"] = res
 	u.ServeJSON()
 }

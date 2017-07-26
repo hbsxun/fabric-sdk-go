@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"os"
 
 	"strings"
 
@@ -61,11 +62,12 @@ const (
 	chaincodePathFlag        = "ccp"
 	chaincodePathDescription = "The chaincode path"
 	defaultChaincodePath     = ""
-
+/*
 	configFileFlag        = "config"
 	configFileDescription = "The path of the config.yaml file"
-	//defaultConfigFile     = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/config/config_test.yaml"
+	//defaultConfigFile     = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/config/config_test.yaml"
 	defaultConfigFile = "../fixtures/config/config_test.yaml"
+*/
 
 	peerURLFlag        = "peer"
 	peerURLDescription = "The URL of the peer to connect to, e.g. localhost:7051"
@@ -93,10 +95,11 @@ const (
 	sleepTimeDescription = "The number of milliseconds to sleep between invocations of the chaincode."
 	defaultSleepTime     = "100"
 
-	txFileFlag        = "txfile"
+/*	txFileFlag        = "txfile"
 	txFileDescription = "The path of the channel.tx file"
-	//defaultTxFile     = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/mychannel.tx"
+	//defaultTxFile     = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/mychannel.tx"
 	defaultTxFile = "../fixtures/channel/mychannel.tx"
+*/
 
 	chaincodeEventFlag        = "event"
 	chaincodeEventDescription = "The name of the chaincode event to listen for"
@@ -117,6 +120,17 @@ const (
 	traverseFlag        = "traverse"
 	traverseDescription = "Blocks will be traversed starting with the given block in reverse order up to the given number of blocks"
 	defaultTraverse     = "0"
+)
+var (
+	configFileFlag        = "config"
+	configFileDescription = "The path of the config.yaml file"
+	defaultConfigFile     = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/config/config_test.yaml"
+	//defaultConfigFile = "../fixtures/config/config_test.yaml"
+
+	txFileFlag        = "txfile"
+	txFileDescription = "The path of the channel.tx file"
+	defaultTxFile     = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/mychannel.tx"
+	//defaultTxFile = "../fixtures/channel/mychannel.tx"
 )
 
 var configInstance *cliConfig

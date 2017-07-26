@@ -4,39 +4,41 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/query"
 )
 
-// Operations about QueryInfo
-type QueryInfoController struct {
-	beego.Controller
-}
-
-// @Title QueryInfo
-// @Description Query Info
-// @Param	body		body 	query.QueryInfoArgs		true	"body for Query BlockChain Info"
+// @Title QueryChainInfo
+// @Description Query Chain Info
+// @Param	body		body 	query.QueryChainInfoArgs		true	"body for Query BlockChain Info"
 // @Success 200 {string} string
 // @Failure 403 body is empty
-// @router / [post]
-func (u *QueryInfoController) Post() {
-	var req query.QueryInfoArgs
+// @router /QueryChainInfo [post]
+func (u *QueryController) QueryChainInfo() {
+	var req query.QueryChainInfoArgs
+	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-	}
-	fmt.Println(req)
-	action, err := query.NewQueryInfoAction(&req)
-	if err != nil {
-		u.Data["json"] = err.Error()
+		res["status"] = 301
+		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
-		resp, err := action.Execute()
+		fmt.Println(req)
+		action, err := query.NewQueryChainInfoAction(&req)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			fmt.Printf("QueryChainInfo Initialize error...")
+			res["status"] = 402
+			res["message"] = fmt.Sprintf("QueryChainInfo action error [%s]", err)
 		} else {
-			u.Data["json"] = resp
+			err := action.Execute()
+			if err != nil {
+				res["status"] = 402
+				res["message"] = fmt.Sprintf("QueryChainInfo execute error [%s]", err)
+			} else {
+				res["status"] = 200
+				res["message"] = "query chain info successfully"
+			}
 		}
 	}
-
+	u.Data["json"] = res
 	u.ServeJSON()
 }

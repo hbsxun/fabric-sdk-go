@@ -9,7 +9,7 @@ import (
 )
 
 // Operations about ChannelCreate
-type ChannelCreateController struct {
+type ChannelController struct {
 	beego.Controller
 }
 
@@ -18,24 +18,33 @@ type ChannelCreateController struct {
 // @Param	body		body	channel.ChannelCreateArgs   true		"body for ChannelCreate Description"
 // @Success 200 {string}
 // @Failure 403 body is empty
-// @router / [post]
-func (u *ChannelCreateController) Post() {
+// @router /CreateChannel [post]
+func (u *ChannelController) Post() {
 	var req channel.ChannelCreateArgs
+	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-	}
-	fmt.Println(req)
-	action, err := channel.NewChannelCreateAction(&req)
-	if err != nil {
-		fmt.Printf("ChannelCreate Initialize error...")
-	}
-	err = action.Execute()
-	if err != nil {
-		u.Data["json"] = err.Error()
+		res["status"] = 301
+		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
-		u.Data["json"] = fmt.Sprintf("Channel create  [%s] successful\n", req.ChannelID)
+		fmt.Println(req)
+		fmt.Println(len(req.ChannelID), len(req.OrdererUrl), len(req.TxFile))
+		action, err := channel.NewChannelCreateAction(&req)
+		if err != nil {
+			res["status"] = 302
+			res["message"] = fmt.Sprintf("ChannelCreate action error [%s]", err)
+		} else {
+			err = action.Execute()
+			if err != nil {
+				res["status"] = 302
+				res["message"] = fmt.Sprintf("ChannelCreate execute error [%s]", err)
+			} else {
+				res["status"] = 200
+				res["message"] = fmt.Sprintf("Channel create [%s] successfully", req.ChannelID)
+			}
+		}
 	}
-
+	u.Data["json"] = res
 	u.ServeJSON()
 }
