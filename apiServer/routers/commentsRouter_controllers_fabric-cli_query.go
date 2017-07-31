@@ -9,14 +9,6 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/fabric-cli/query:QueryController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/fabric-cli/query:QueryController"],
 		beego.ControllerComments{
-			Method: "QueryChannels",
-			Router: `/QueryChannels`,
-			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/fabric-cli/query:QueryController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/fabric-cli/query:QueryController"],
-		beego.ControllerComments{
 			Method: "Post",
 			Router: `/QueryBlock`,
 			AllowHTTPMethods: []string{"post"},
@@ -43,6 +35,14 @@ func init() {
 		beego.ControllerComments{
 			Method: "QueryInstalledChaincodes",
 			Router: `/QueryInstalledChaincodes`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/fabric-cli/query:QueryController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/apiServer/controllers/fabric-cli/query:QueryController"],
+		beego.ControllerComments{
+			Method: "QueryChannels",
+			Router: `/QueryChannels`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
