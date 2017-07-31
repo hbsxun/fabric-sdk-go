@@ -268,7 +268,12 @@
                 "cn": {
                     "type": "string"
                 },
-                "hosts": {}
+                "hosts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
             }
         },
         "models.EnrollRequest": {
@@ -345,11 +350,13 @@
                 "detail": {
                     "type": "string"
                 },
-                "endorsers": {},
-                "nonce": {
-                    "type": "string"
+                "endorsers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
-                "payload": {
+                "nonce": {
                     "type": "string"
                 },
                 "signature": {

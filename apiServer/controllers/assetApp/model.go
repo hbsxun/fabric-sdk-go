@@ -32,7 +32,7 @@ func (u *AssetController) AddModel() {
 		resp, err := assetApp.AddModel(&req)
 		if err != nil {
 			res["message"] = fmt.Sprintf("Add model error:%s", err.Error())
-			res["status"] = 308
+			res["status"] = 310
 		} else {
 			res["status"] = 200
 			res["message"] = fmt.Sprintf("Add model successfully")
@@ -57,7 +57,7 @@ func (u *AssetController) QueryModel() {
 		resp, err := assetApp.QueryModel(name)
 		if err != nil {
 			res["message"] = fmt.Sprintf("query model error:%s", err.Error())
-			res["status"] = 309
+			res["status"] = 311
 		} else {
 			var modelJSON assetApp.AddModelArgs
 			err = json.Unmarshal([]byte(resp), &modelJSON)
@@ -88,7 +88,7 @@ func (u *AssetController) TransferModel() {
 	resp, err := assetApp.TransferModel(&req)
 	if err != nil {
 		fmt.Printf("Transfer model error:%s", err.Error())
-		res["status"] = 308
+		res["status"] = 312
 		res["message"] = fmt.Sprintf("transfer model error:%s", err.Error())
 	} else {
 		res["status"] = 200
@@ -112,7 +112,7 @@ func (u *AssetController) QueryModelsByOwner() {
 	if owner != "" {
 		resp, err := assetApp.QueryModelsByOwner(owner)
 		if err != nil {
-			res["status"] = 309
+			res["status"] = 313
 			res["message"] = fmt.Sprintf("query model by owner error:%s", err.Error())
 		} else {
 			res["status"] = 200
@@ -136,7 +136,7 @@ func (u *AssetController) GetHistoryForModel() {
 	if name != "" {
 		resp, err := assetApp.GetHistoryForModel(name)
 		if err != nil {
-			res["status"] = 309
+			res["status"] = 314
 			res["message"] = fmt.Sprintf("get history for model error:%s", err.Error())
 		} else {
 			res["status"] = 200
@@ -160,7 +160,7 @@ func (u *AssetController) DeleteModel() {
 	if name != "" {
 		resp, err := assetApp.DelModel(name)
 		if err != nil {
-			res["status"] = 308
+			res["status"] = 315
 			res["message"] = fmt.Sprintf("Delete model error:%s", err.Error())
 		} else {
 			res["status"] = 200

@@ -15,7 +15,7 @@ type Transaction struct {
 	Signature string   `json:"signature"`
 	Endorsers []string `json:"endorsers"`
 	Detail    string   `json:"detail"`
-	Payload   string   `json:"payload"`
+	//Payload   string   `json:"payload"`
 }
 type Block struct {
 	Number       int    `json:"number"`
@@ -39,7 +39,7 @@ func GetTx(txId string) (trans *Transaction, err error) {
 		Signature: txInfo.Signature,
 		Endorsers: txInfo.Endorsers,
 		Detail:    txInfo.Detail,
-		Payload:   txInfo.Payload,
+		//Payload:   txInfo.Payload,
 	}
 	return trans, nil
 }

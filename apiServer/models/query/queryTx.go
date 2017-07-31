@@ -23,6 +23,7 @@ import (
 	"fmt"
 
 	"github.com/hyperledger/fabric-sdk-go/fabric-cli/common"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/spf13/pflag"
 )
 
@@ -34,7 +35,7 @@ var txID string
 
 type QueryTxArgs struct {
 	ChannelID string `json:"channelId"`
-	txID      string `json:"txId"`
+	TxID      string `json:"txId"`
 }
 
 type queryTXAction struct {
@@ -48,24 +49,24 @@ func NewQueryTXAction(args *QueryTxArgs) (*queryTXAction, error) {
 		common.Logger.Infof("using default ChannelID: %s", common.ChannelID)
 	}
 	flags.StringVar(&common.ChannelID, common.ChaincodeIDFlag, args.ChannelID, "The Channel ID")
-	flags.StringVar(&txID, txIDFlag, args.txID, "The tx id")
+	flags.StringVar(&txID, txIDFlag, args.TxID, "The tx id")
 	err := action.Initialize(flags)
 	return action, err
 }
 
-func (action *queryTXAction) Execute() (string, error) {
+func (action *queryTXAction) Execute() (*pb.ProcessedTransaction, error) {
 	chain, err := action.NewChain()
 	if err != nil {
-		return "", fmt.Errorf("Error initializing chain: %v", err)
+		return nil, fmt.Errorf("Error initializing chain: %v", err)
 	}
 
 	tx, err := chain.QueryTransaction(txID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	fmt.Printf("Transaction #%s in chain %s\n", txID, common.ChannelID)
 	action.Printer().PrintProcessedTransaction(tx)
 
-	return tx.String(), nil
+	return tx, nil
 }

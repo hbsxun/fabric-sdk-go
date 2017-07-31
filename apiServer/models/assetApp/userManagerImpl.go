@@ -32,6 +32,15 @@ func (this *UserManagerImpl) Login(ss *user.Secret) (signedToken string, err err
 	return signedToken, nil
 }
 
+func (this *UserManagerImpl) VerifyUser(ss *user.Secret) error {
+	_, err := user.Login(ss)
+	if err != nil {
+		appLogger.Debugf("Verify user failed [%v]\n", err)
+		return err
+	}
+	return nil
+}
+
 func (this *UserManagerImpl) UpdateInfo(u *user.User) error {
 	err := user.UpdateUser(u)
 	if err != nil {

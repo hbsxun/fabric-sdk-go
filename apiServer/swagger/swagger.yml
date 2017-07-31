@@ -2,6 +2,42 @@ swagger: "2.0"
 info: {}
 basePath: /fabric
 paths:
+  /certificate/Enroll:
+    post:
+      tags:
+      - certificate
+      description: Get Key and Ecert
+      operationId: CertificateController.Enroll
+      parameters:
+      - in: body
+        name: body
+        description: body for Ecert content
+        required: true
+        schema:
+          $ref: '#/definitions/cert.EnrollArgs'
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: body is empty
+  /certificate/Register:
+    post:
+      tags:
+      - certificate
+      description: Get a OTP secret
+      operationId: CertificateController.Register
+      parameters:
+      - in: body
+        name: body
+        description: body for Secret content
+        required: true
+        schema:
+          $ref: '#/definitions/cert.RegisterArgs'
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
   /initialize/:
     post:
       tags:
@@ -11,6 +47,94 @@ paths:
       responses:
         "200":
           description: '{string} install and instantiate chaincode successfully'
+        "403":
+          description: body is empty
+  /ledger/QueryBlocks:
+    post:
+      tags:
+      - ledger
+      description: Query blocks
+      operationId: LedgerController.QueryBlocks
+      parameters:
+      - in: body
+        name: body
+        description: body for querytx Description
+        required: true
+        schema:
+          $ref: '#/definitions/query.QueryBlockArgs'
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: body is empty
+  /ledger/QueryChannels/{peerUrl}:
+    get:
+      tags:
+      - ledger
+      description: Query channels the peerUrl join
+      operationId: LedgerController.QueryChannels
+      parameters:
+      - in: path
+        name: peerUrl
+        description: The URL of peer to query
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
+  /ledger/QueryInfo:
+    post:
+      tags:
+      - ledger
+      description: Query information of peerUrl in the channel
+      operationId: LedgerController.QueryInfo
+      parameters:
+      - in: body
+        name: body
+        description: body for Query BlockChain Info
+        required: true
+        schema:
+          $ref: '#/definitions/query.QueryInfoArgs'
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
+  /ledger/QueryInstalledChaincodes/{peerUrl}:
+    get:
+      tags:
+      - ledger
+      description: Query chaincodes installed on the peerUrl
+      operationId: LedgerController.QueryInstalledChaincodes
+      parameters:
+      - in: path
+        name: peerUrl
+        description: The URL of peer to query
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
+  /ledger/QueryTX:
+    post:
+      tags:
+      - ledger
+      description: Query transaction
+      operationId: LedgerController.QueryTX
+      parameters:
+      - in: body
+        name: body
+        description: body for querytx Description
+        required: true
+        schema:
+          $ref: '#/definitions/query.QueryTxArgs'
+      responses:
+        "200":
+          description: '{string}'
         "403":
           description: body is empty
   /model/AddModel:
@@ -117,6 +241,24 @@ paths:
           description: '{string} txId'
         "403":
           description: body is empty
+  /user/VerifyUser:
+    post:
+      tags:
+      - user
+      description: verify user
+      operationId: UserManageController.VerifyUser
+      parameters:
+      - in: body
+        name: body
+        description: body for user login
+        required: true
+        schema:
+          $ref: '#/definitions/user.Secret'
+      responses:
+        "200":
+          description: '{string} verify successfully'
+        "403":
+          description: user not exist or login failed
   /user/addUser:
     post:
       tags:
@@ -237,6 +379,70 @@ definitions:
         type: string
       newOwner:
         type: string
+  cert.Attribute:
+    title: Attribute
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  cert.EnrollArgs:
+    title: EnrollArgs
+    type: object
+    properties:
+      name:
+        type: string
+      secret:
+        type: string
+  cert.RegisterArgs:
+    title: RegisterArgs
+    type: object
+    properties:
+      affiliation:
+        type: string
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/cert.Attribute'
+      maxEnrollments:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+  query.QueryBlockArgs:
+    title: QueryBlockArgs
+    type: object
+    properties:
+      blockHash:
+        type: string
+      blockNum:
+        type: integer
+        format: int64
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+      traverse:
+        type: integer
+        format: int64
+  query.QueryInfoArgs:
+    title: QueryInfoArgs
+    type: object
+    properties:
+      ChannelID:
+        type: string
+      PeerUrl:
+        type: string
+  query.QueryTxArgs:
+    title: QueryTxArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      txId:
+        type: string
   user.Secret:
     title: Secret
     type: object
@@ -264,6 +470,9 @@ definitions:
         type: integer
         format: int64
 tags:
+- name: ledger
+  description: |
+    Operations about Ledger
 - name: user
   description: |
     Operations about Users
@@ -273,3 +482,6 @@ tags:
 - name: model
   description: |
     Operations about Invoke
+- name: certificate
+  description: |
+    Operations about Register

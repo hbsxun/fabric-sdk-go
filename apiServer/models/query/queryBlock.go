@@ -37,7 +37,7 @@ const (
 var blockNum int
 var blockHash string
 var traverse int = 0
-var blocksSlice []string
+var blocksSlice []*fabricCommon.Block
 
 /*
 	flags.StringVar(&common.ChannelID, common.ChannelIDFlag, common.ChannelID, "The channel ID")
@@ -68,12 +68,12 @@ func NewQueryBlockAction(args *QueryBlockArgs) (*queryBlockAction, error) {
 	flags.IntVar(&traverse, traverseFlag, args.Traverse, "The number of blocks to traverse")
 	flags.StringVar(&common.PeerURL, common.PeerFlag, args.PeerUrl, "The URL of the peer on which to query block, e.g. localhost:7051")
 
-	blocksSlice = make([]string, 1)
+	blocksSlice = make([]*fabricCommon.Block, 1)
 	err := action.Initialize(flags)
 	return action, err
 }
 
-func (action *queryBlockAction) Execute() ([]string, error) {
+func (action *queryBlockAction) Execute() ([]*fabricCommon.Block, error) {
 	chain, err := action.NewChain()
 	if err != nil {
 		return nil, fmt.Errorf("Error initializing chain: %v", err)
@@ -99,11 +99,11 @@ func (action *queryBlockAction) Execute() ([]string, error) {
 			return nil, err
 		}
 	} else {
-		return nil, fmt.Errorf("must specify either a block number of a block hash")
+		return nil, fmt.Errorf("must specify either a block number or a block hash")
 	}
 
 	action.Printer().PrintBlock(block)
-	blocksSlice = append(blocksSlice, block.String())
+	blocksSlice = append(blocksSlice, block)
 
 	action.traverse(chain, block, traverse-1)
 
@@ -121,7 +121,7 @@ func (action *queryBlockAction) traverse(chain fabricClient.Chain, currentBlock 
 	}
 
 	action.Printer().PrintBlock(block)
-	blocksSlice = append(blocksSlice, block.String())
+	blocksSlice = append(blocksSlice, block)
 
 	if block.Header.PreviousHash != nil {
 		return action.traverse(chain, block, num-1)

@@ -165,3 +165,27 @@ func (u *UserManageController) Logout() {
 
 	u.ServeJSON()
 }
+
+// @Title VerifyUser
+// @Description verify user
+// @Param	body		body 	user.Secret	true		"body for user login"
+// @Success 200 {string} verify successfully
+// @Failure 403 user not exist or login failed
+// @router /VerifyUser [post]
+func (u *UserManageController) VerifyUser() {
+	var ss user.Secret
+	json.Unmarshal(u.Ctx.Input.RequestBody, &ss)
+	impl := assetApp.UserManagerImpl{}
+	err := impl.VerifyUser(&ss)
+	fmt.Println("User Secret:", ss)
+	res := make(map[string]interface{})
+	if err != nil {
+		res["status"] = 305
+		res["message"] = "Verify failed"
+	} else {
+		res["status"] = 200
+		res["message"] = "Verify successfully"
+	}
+	u.Data["json"] = res
+	u.ServeJSON()
+}
