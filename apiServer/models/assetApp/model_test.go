@@ -10,8 +10,11 @@ import (
 func TestChaincode(t *testing.T) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	modelName := "Asset" + strconv.Itoa(r.Int())
+
 	invoke(modelName, t)
+
 	time.Sleep(time.Second * 3)
+
 	queryModelByXX(modelName, t)
 }
 

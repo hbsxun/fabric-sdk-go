@@ -2,225 +2,425 @@ swagger: "2.0"
 info: {}
 basePath: /fabric
 paths:
-  /initialize/:
+  /chaincodeInfo/:
     post:
       tags:
-      - initialize
-      description: create channel, join channel, and instantiate chaincode
-      operationId: InitializeController.Initialize
-      responses:
-        "200":
-          description: '{string} install and instantiate chaincode successfully'
-        "403":
-          description: body is empty
-  /model/AddModel:
-    post:
-      tags:
-      - model
-      description: Invoke chaincode on peers
-      operationId: AssetController.AddModel
+      - chaincodeInfo
+      description: ChaincodeInfo chaincode on peers
+      operationId: ChaincodeInfoController.ChaincodeInfo
       parameters:
       - in: body
         name: body
         description: body for chaincode Description
         required: true
         schema:
-          $ref: '#/definitions/assetApp.AddModelArgs'
+          $ref: '#/definitions/chaincode.ChaincodeInfoArgs'
       responses:
         "200":
-          description: '{string} txId'
+          description: '{string} string'
         "403":
           description: body is empty
-  /model/DeleteModel/{ModelName}:
-    put:
-      tags:
-      - model
-      description: delete model
-      operationId: AssetController.DeleteModel
-      parameters:
-      - in: path
-        name: ModelName
-        description: The key for staticblock
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} txId'
-        "403":
-          description: :ModelName is empty
-  /model/GetHistoryForModel/{ModelName}:
-    get:
-      tags:
-      - model
-      description: get history for model
-      operationId: AssetController.GetHistoryForModel
-      parameters:
-      - in: path
-        name: ModelName
-        description: The key for staticblock
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} ModelHistory'
-        "403":
-          description: :ModelName is empty
-  /model/QueryModel/{ModelName}:
-    get:
-      tags:
-      - model
-      description: get model by name
-      operationId: AssetController.QueryModel
-      parameters:
-      - in: path
-        name: ModelName
-        description: The key for staticblock
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{object}assetApp.AddModelArgs'
-        "403":
-          description: :ModelName is empty
-  /model/QueryModelsByOwner/{owner}:
-    get:
-      tags:
-      - model
-      description: query models by owner
-      operationId: AssetController.QueryModelsByOwner
-      parameters:
-      - in: path
-        name: owner
-        description: The key for staticblock
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} ModelList'
-        "403":
-          description: :owner is empty
-  /model/TransferModel:
-    put:
-      tags:
-      - model
-      description: Invoke chaincode on peers
-      operationId: AssetController.TransferModel
-      parameters:
-      - in: body
-        name: body
-        description: body for chaincode content
-        required: true
-        schema:
-          $ref: '#/definitions/assetApp.TransferModelArgs'
-      responses:
-        "200":
-          description: '{string} txId'
-        "403":
-          description: body is empty
-  /user/addUser:
+  /createChannel/:
     post:
       tags:
-      - user
-      description: register user
-      operationId: UserManageController.Register
+      - createChannel
+      description: ChannelCreate on peers
+      operationId: ChannelCreateController.ChannelCreate
       parameters:
       - in: body
         name: body
-        description: body for user content
+        description: body for ChannelCreate Description
         required: true
         schema:
-          $ref: '#/definitions/user.User'
+          $ref: '#/definitions/channel.ChannelCreateArgs'
       responses:
         "200":
-          description: '{int} user.User.Id'
+          description: '{string}'
         "403":
           description: body is empty
-  /user/updateUser:
-    put:
+  /enroll/:
+    post:
       tags:
-      - user
-      description: update the user
-      operationId: UserManageController.UpdateInfo
+      - enroll
+      description: Get Key and Ecert
+      operationId: EnrollController.Enroll
       parameters:
       - in: body
         name: body
-        description: body for user content
+        description: body for Ecert content
         required: true
         schema:
-          $ref: '#/definitions/user.User'
+          $ref: '#/definitions/cert.EnrollArgs'
       responses:
         "200":
-          description: '{string} update successfully'
+          description: '{string}'
         "403":
-          description: :uid is not int
-  /user/userLogin:
+          description: body is empty
+  /install/:
+    post:
+      tags:
+      - install
+      description: InstallCC on peers
+      operationId: InstallCCController.InstallCC
+      parameters:
+      - in: body
+        name: body
+        description: body for chaincode Description
+        required: true
+        schema:
+          $ref: '#/definitions/chaincode.InstallCCArgs'
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: body is empty
+  /instantiate/:
+    post:
+      tags:
+      - instantiate
+      description: Instantiate chaincode on peers
+      operationId: InstantiateController.Instantiate
+      parameters:
+      - in: body
+        name: body
+        description: body for chaincode Description
+        required: true
+        schema:
+          $ref: '#/definitions/chaincode.InstantiateArgs'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: body is empty
+  /invokeCC/:
+    post:
+      tags:
+      - invokeCC
+      description: Invoke chaincode on peers
+      operationId: InvokeController.Invoke
+      parameters:
+      - in: body
+        name: body
+        description: body for chaincode Description
+        required: true
+        schema:
+          $ref: '#/definitions/chaincode.InvokeArgs'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: body is empty
+  /joinChannel/:
+    post:
+      tags:
+      - joinChannel
+      description: ChannelJoin on peers
+      operationId: ChannelJoinController.ChannelJoin
+      parameters:
+      - in: body
+        name: body
+        description: body for ChannelJoin Description
+        required: true
+        schema:
+          $ref: '#/definitions/channel.ChannelJoinArgs'
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: body is empty
+  /queryBlock/:
+    post:
+      tags:
+      - queryBlock
+      description: Query Block
+      operationId: QueryBlockController.QueryBlock
+      parameters:
+      - in: body
+        name: body
+        description: body for Query Block
+        required: true
+        schema:
+          $ref: '#/definitions/query.QueryBlockArgs'
+      responses:
+        "200":
+          description: '{string} []string'
+        "403":
+          description: body is empty
+  /queryBlockchainInfo/:
+    post:
+      tags:
+      - queryBlockchainInfo
+      description: Query Info
+      operationId: QueryInfoController.QueryInfo
+      parameters:
+      - in: body
+        name: body
+        description: body for Query BlockChain Info
+        required: true
+        schema:
+          $ref: '#/definitions/.QueryInfoArgs'
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
+  /queryCC/:
+    post:
+      tags:
+      - queryCC
+      description: Query chaincode on peers
+      operationId: QueryController.Query
+      parameters:
+      - in: body
+        name: body
+        description: body for chaincode Description
+        required: true
+        schema:
+          $ref: '#/definitions/chaincode.QueryArgs'
+      responses:
+        "200":
+          description: '{string} txId'
+        "403":
+          description: body is empty
+  /queryChannels/{peerUrl}:
     get:
       tags:
-      - user
-      description: Logs user into the system
-      operationId: UserManageController.Login
+      - queryChannels
+      description: Query Chaincodes installed on the peerUrl
+      operationId: QueryChannelsController.QueryChannelsChaincodes
       parameters:
-      - in: query
-        name: username
-        description: The username for login
-        required: true
-        type: string
-      - in: query
-        name: password
-        description: The password for login
+      - in: path
+        name: peerUrl
+        description: The URL of peer to query
         required: true
         type: string
       responses:
         "200":
-          description: '{string} login successfully'
+          description: '{string} string'
         "403":
-          description: user not exist
+          description: body is empty
+  /queryInstalled/{peerUrl}:
+    get:
+      tags:
+      - queryInstalled
+      description: Query Chaincodes installed on the peerUrl
+      operationId: QueryInstalledController.QueryInstalledChaincodes
+      parameters:
+      - in: path
+        name: peerUrl
+        description: The URL of peer to query
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
+  /register/:
+    post:
+      tags:
+      - register
+      description: Get a OTP secret
+      operationId: RegisterController.Register
+      parameters:
+      - in: body
+        name: body
+        description: body for Secret content
+        required: true
+        schema:
+          $ref: '#/definitions/cert.RegisterArgs'
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
 definitions:
-  assetApp.AddModelArgs:
-    title: AddModelArgs
+  .AssertArgs:
+    type: object
+  .DeleteArgs:
+    type: object
+  .QueryInfoArgs:
+    type: object
+  .UpdateArgs:
+    type: object
+  .UserArgs:
+    type: object
+  cert.Attribute:
+    title: Attribute
     type: object
     properties:
-      desc:
+      key:
         type: string
-      name:
+      value:
         type: string
-      owner:
-        type: string
-      price:
-        type: string
-  assetApp.TransferModelArgs:
-    title: TransferModelArgs
+  cert.EnrollArgs:
+    title: EnrollArgs
     type: object
     properties:
       name:
         type: string
-      newOwner:
+      secret:
         type: string
-  user.User:
-    title: User
+  cert.RegisterArgs:
+    title: RegisterArgs
     type: object
     properties:
-      id:
-        type: integer
-        format: int64
-      mail:
+      affiliation:
+        type: string
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/cert.Attribute'
+      caName:
+        type: string
+      maxEnrollments:
         type: string
       name:
-        type: string
-      passwd:
-        type: string
-      phone:
         type: string
       type:
-        type: integer
-        format: int64
+        type: string
+  chaincode.ChaincodeInfoArgs:
+    title: ChaincodeInfoArgs
+    type: object
+    properties:
+      chaincodeId:
+        type: string
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+  chaincode.InstallCCArgs:
+    title: InstallCCArgs
+    type: object
+    properties:
+      chaincodeID:
+        type: string
+      chaincodePath:
+        type: string
+      chaincodeVersion:
+        type: string
+      channelID:
+        type: string
+      peerUrl:
+        type: string
+  chaincode.InstantiateArgs:
+    title: InstantiateArgs
+    type: object
+    properties:
+      args: {}
+      chaincodeID:
+        type: string
+      chaincodePath:
+        type: string
+      chaincodeVersion:
+        type: string
+      channelID:
+        type: string
+      peerUrl:
+        type: string
+  chaincode.InvokeArgs:
+    title: InvokeArgs
+    type: object
+    properties:
+      args: {}
+      chaincodeId:
+        type: string
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+  chaincode.QueryArgs:
+    title: QueryArgs
+    type: object
+    properties:
+      args: {}
+      chaincodeId:
+        type: string
+      channelID:
+        type: string
+      peerUrl:
+        type: string
+  channel.ChannelCreateArgs:
+    title: ChannelCreateArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      ordererUrl:
+        type: string
+      txFile:
+        type: string
+  channel.ChannelJoinArgs:
+    title: ChannelJoinArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      ordererUrl:
+        type: string
+      peerUrl:
+        type: string
+  query.QueryBlockArgs:
+    title: QueryBlockArgs
+    type: object
+    properties:
+      blockHash:
+        type: string
+      blockNum:
+        type: string
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+      traverse:
+        type: string
+  query.QueryTxArgs:
+    title: QueryTxArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+      txId:
+        type: string
 tags:
-- name: user
+- name: enroll
   description: |
-    Operations about Users
-- name: initialize
+    Operations about Enroll
+- name: register
   description: |
-    Operations about Initialize
-- name: model
+    Operations about Register
+- name: install
+  description: |
+    Operations about InstallCC
+- name: instantiate
+  description: |
+    Operations about Instantiate
+- name: invokeCC
   description: |
     Operations about Invoke
+- name: queryCC
+  description: |
+    Operations about Query
+- name: chaincodeInfo
+  description: |
+    Operations about ChaincodeInfo
+- name: createChannel
+  description: |
+    Operations about ChannelCreate
+- name: joinChannel
+  description: |
+    Operations about ChannelJoin
+- name: queryInstalled
+  description: |
+    Operations about QueryInstalled
+- name: queryBlock
+  description: |
+    Operations about QueryBlock
+- name: queryChannels
+  description: |
+    Operations about QueryChannels
+- name: queryBlockchainInfo
+  description: |
+    Operations about QueryInfo
