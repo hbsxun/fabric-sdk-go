@@ -14,7 +14,7 @@ func TestChannel(t *testing.T) {
 	createAction, err := NewChannelCreateAction(&ChannelCreateArgs{
 	//ChannelID: channelID,
 	//TxFile:    txFile,
-	//OrdererID: ordererID,
+	//OrdererUrl: ordererID,
 	})
 	if err != nil {
 		t.Fatal("NewChannelCreateAction failed, %v", err)

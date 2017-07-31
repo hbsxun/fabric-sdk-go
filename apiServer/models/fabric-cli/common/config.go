@@ -60,12 +60,12 @@ const (
 
 	chaincodePathFlag        = "ccp"
 	chaincodePathDescription = "The chaincode path"
-	defaultChaincodePath     = ""
+	defaultChaincodePath     = "github.com/hyperledger/fabric-sdk-go/test/fixtures/src/github.com/"
 
 	configFileFlag        = "config"
 	configFileDescription = "The path of the config.yaml file"
-	//defaultConfigFile     = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/config/config_test.yaml"
-	defaultConfigFile = "../fixtures/config/config_test.yaml"
+	defaultConfigFile     = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/config/config_test.yaml"
+	//defaultConfigFile = "../fixtures/config/config_test.yaml"
 
 	peerURLFlag        = "peer"
 	peerURLDescription = "The URL of the peer to connect to, e.g. localhost:7051"
@@ -95,8 +95,8 @@ const (
 
 	txFileFlag        = "txfile"
 	txFileDescription = "The path of the channel.tx file"
-	//defaultTxFile     = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/mychannel.tx"
-	defaultTxFile = "../fixtures/channel/mychannel.tx"
+	defaultTxFile     = "/home/hxy/gopath/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/mychannel.tx"
+	//defaultTxFile = "../fixtures/channel/mychannel.tx"
 
 	chaincodeEventFlag        = "event"
 	chaincodeEventDescription = "The name of the chaincode event to listen for"

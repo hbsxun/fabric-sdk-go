@@ -1,0 +1,50 @@
+package chaincode
+
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/astaxie/beego"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/chaincode"
+)
+
+// Operations about ChaincodeInfo
+type ChaincodeController struct {
+	beego.Controller
+}
+
+// @Title ChaincodeInfo
+// @Description ChaincodeInfo chaincode on peers
+// @Param	body		body	chaincode.ChaincodeInfoArgs  true		"body for chaincode Description"
+// @Success 200 {string} string
+// @Failure 403 body is empty
+// @router /ChaincodeInfo [post]
+func (u *ChaincodeController) Post() {
+	var req chaincode.ChaincodeInfoArgs
+	res := make(map[string]interface{})
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
+	if err != nil {
+		fmt.Printf("Unmarshal failed [%s]", err)
+		res["status"] = 301
+		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
+	} else {
+		fmt.Println(req)
+		action, err := chaincode.NewChaincodeInfoAction(&req)
+		if err != nil {
+			fmt.Printf("Query Initialize error...")
+			res["status"] = 308
+			res["message"] = fmt.Sprintf("GetChaincodeInfo action error [%s]", err)
+		} else {
+			err := action.Execute()
+			if err != nil {
+				res["status"] = 308
+				res["message"] = fmt.Sprintf("GetChaincodeInfo execute error [%s]", err)
+			} else {
+				res["status"] = 200
+				res["message"] = fmt.Sprintf("get chaincode info [%s] successfully", req.ChaincodeID)
+			}
+		}
+	}
+	u.Data["json"] = res
+	u.ServeJSON()
+}

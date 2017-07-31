@@ -11,72 +11,26 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/fabric",
-		beego.NSNamespace("/enroll",
+		beego.NSNamespace("/cert",
 			beego.NSInclude(
-				&cert.EnrollController{},
-			),
-		),
-		beego.NSNamespace("/register",
-			beego.NSInclude(
-				&cert.RegisterController{},
+				&cert.CertController{},
 			),
 		),
 
-		beego.NSNamespace("/install",
+		beego.NSNamespace("/channel",
 			beego.NSInclude(
-				&chaincode.InstallCCController{},
+				&channel.ChannelController{},
 			),
 		),
-		beego.NSNamespace("/instantiate",
+		beego.NSNamespace("/chaincode",
 			beego.NSInclude(
-				&chaincode.InstantiateController{},
-			),
-		),
-		beego.NSNamespace("/invokeCC",
-			beego.NSInclude(
-				&chaincode.InvokeController{},
-			),
-		),
-		beego.NSNamespace("/queryCC",
-			beego.NSInclude(
-				&chaincode.QueryController{},
-			),
-		),
-		beego.NSNamespace("/chaincodeInfo",
-			beego.NSInclude(
-				&chaincode.ChaincodeInfoController{},
+				&chaincode.ChaincodeController{},
 			),
 		),
 
-		beego.NSNamespace("/createChannel",
+		beego.NSNamespace("/query",
 			beego.NSInclude(
-				&channel.ChannelCreateController{},
-			),
-		),
-		beego.NSNamespace("/joinChannel",
-			beego.NSInclude(
-				&channel.ChannelJoinController{},
-			),
-		),
-
-		beego.NSNamespace("/queryInstalled",
-			beego.NSInclude(
-				&query.QueryInstalledController{},
-			),
-		),
-		beego.NSNamespace("/queryBlock",
-			beego.NSInclude(
-				&query.QueryBlockController{},
-			),
-		),
-		beego.NSNamespace("/queryChannels",
-			beego.NSInclude(
-				&query.QueryChannelsController{},
-			),
-		),
-		beego.NSNamespace("/queryBlockchainInfo",
-			beego.NSInclude(
-				&query.QueryInfoController{},
+				&query.QueryController{},
 			),
 		),
 		/*
