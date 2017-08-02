@@ -159,13 +159,14 @@ func (fabricCAServices *FabricCA) Register(registrar sdkApi.User,
 			Attributes[i].Key, Value: request.Attributes[i].Value})
 	}
 	var req = api.RegistrationRequest{
-		CAName:         request.CAName,
-		Name:           request.Name,
-		Type:           request.Type,
-		MaxEnrollments: request.MaxEnrollments,
-		Affiliation:    request.Affiliation,
-		Secret:         request.Secret,
-		Attributes:     attributes}
+		CAName: request.CAName,
+		Name:   request.Name,
+		Type:   request.Type,
+		//MaxEnrollments: request.MaxEnrollments,
+		Affiliation: request.Affiliation,
+		//Secret:         request.Secret,
+		//Attributes:     attributes,
+	}
 	// Make registration request
 	response, err := identity.Register(&req)
 	if err != nil {

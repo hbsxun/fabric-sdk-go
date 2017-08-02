@@ -1,5 +1,8 @@
 ## apiServer
 apiServer based-on a micro-service platform, it provide flexibility and hot-plugin ability
+### SETUP
+1. Setup the fabric network using docker-compose.yaml in `fabric-cli/fixtures/docker-compose.yaml`
+2. Go test `channel`,`chaincode` and `query` in `fabric-cli/xxx`
 
 ### Dependencies
 The project `apiServer` depends on the `fabric-cli` tools and `beego` project. 
@@ -40,7 +43,7 @@ There are two steps for this `apiServer` authorization:
 2. put `fabric-cli` in `apiServer/models`
 3. modify .go files `import` path
 ```
-grep -ri "securekey/fabric-examples/fabric-cli/cmd" | \
+grep -rl "securekey/fabric-examples/fabric-cli/cmd" | \
 xargs sed -i "s/securekey\/fabric-examples\/fabric-cli\/cmd/hyperledger\/fabric-sdk-go\/apiServer\/models/g"
 ```
 4. comment the code about `corda.command` and delete the primary cmd go file.

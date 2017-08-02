@@ -23,7 +23,7 @@ client:
   path: /tmp/msp
 
  cryptoconfig:
-  path: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/channel/crypto-config"
+  path: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/crypto-config"
 
  connection:
    timeout:
@@ -43,8 +43,8 @@ client:
     port: 7050
     tls:
      # Certificate location absolute path
-     certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/channel/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/cacerts/example.com-cert.pem"
-     # For testing only: overrides the virtual host name of the authority
+     certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/cacerts/example.com-cert.pem"
+     # For apiServer/models/fabric-cliing only: overrides the virtual host name of the authority
      serverHostOverride: "orderer.example.com"
   # ap of member organizations forming the network
   organizations:
@@ -63,10 +63,10 @@ client:
        # Configuration for mutual TLS with the CA
        tls:
         # Comma-Separated list of paths
-        certfiles : "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/fabricca/ca/ca_root.pem"
+        certfiles : "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/tls/fabricca/ca/ca_root.pem"
         client:
-         keyfile: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/fabricca/client/client_client1-key.pem"
-         certfile: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/fabricca/client/client_client1.pem"
+         keyfile: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/tls/fabricca/client/client_client1-key.pem"
+         certfile: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/tls/fabricca/client/client_client1.pem"
       # Peers that are part of this organization
       peers:
        # Peer name
@@ -78,7 +78,7 @@ client:
         primary: true
         tls:
          # Certificate location absolute path
-         certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/cacerts/org1.example.com-cert.pem"
+         certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/cacerts/org1.example.com-cert.pem"
          serverHostOverride: "peer0.org1.example.com"
     # Org2
     org2:
@@ -89,10 +89,10 @@ client:
        serverURL: "https://localhost:8054"
        tls:
         # Comma-Separated list of paths
-        certfiles : "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/fabricca/ca/ca_root.pem"
+        certfiles : "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/tls/fabricca/ca/ca_root.pem"
         client:
-         keyfile: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/fabricca/client/client_client1-key.pem"
-         certfile: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/fabricca/client/client_client1.pem"
+         keyfile: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/tls/fabricca/client/client_client1-key.pem"
+         certfile: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/tls/fabricca/client/client_client1.pem"
       peers:
        peer0:
         host: "localhost"
@@ -102,5 +102,5 @@ client:
         primary: true
         tls:
          # Certificate location absolute path
-         certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/channel/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/cacerts/org2.example.com-cert.pem"
+         certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/channel/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/cacerts/org2.example.com-cert.pem"
          serverHostOverride: "peer0.org2.example.com"

@@ -1,13 +1,10 @@
 package assetApp
 
-import (
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/chaincode"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/user"
-	"github.com/op/go-logging"
-)
+import "github.com/op/go-logging"
 
 var appLogger = logging.MustGetLogger("AssetApp")
 
+/*
 type UserManager interface {
 	Register(*user.User) bool
 	Login(name, passwd string) bool
@@ -34,3 +31,4 @@ type Certificate interface {
 	GetIdentity(string) (string, string) //name --> key, cert
 	SaveToDB(string, string, string) error
 }
+*/

@@ -12,9 +12,15 @@ func TestChannel(t *testing.T) {
 	//if params above aren't set, will use the default values from config_test.yaml and common/config.go
 	//createAction, err := NewChannelCreateAction(&ChannelCreateArgs{TxFile: txFile})
 	createAction, err := NewChannelCreateAction(&ChannelCreateArgs{
+<<<<<<< HEAD
 		ChannelID: channelID,
 		//TxFile:    txFile,
 		OrdererUrl: ordererID,
+=======
+	//ChannelID: channelID,
+	//TxFile:    txFile,
+	//OrdererUrl: ordererID,
+>>>>>>> upstream/v1.0.0
 	})
 	if err != nil {
 		t.Fatal("NewChannelCreateAction failed, %v", err)

@@ -2,9 +2,51 @@ swagger: "2.0"
 info: {}
 basePath: /fabric
 paths:
+<<<<<<< HEAD
   /chaincode/ChaincodeInfo:
     post:
       tags:
+=======
+  /cert/Enroll:
+    post:
+      tags:
+      - cert
+      description: Get Key and Ecert
+      operationId: CertController.Enroll
+      parameters:
+      - in: body
+        name: body
+        description: body for Ecert content
+        required: true
+        schema:
+          $ref: '#/definitions/cert.EnrollArgs'
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: body is empty
+  /cert/Register:
+    post:
+      tags:
+      - cert
+      description: Get a OTP secret
+      operationId: CertController.Register
+      parameters:
+      - in: body
+        name: body
+        description: body for Secret content
+        required: true
+        schema:
+          $ref: '#/definitions/cert.RegisterArgs'
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
+  /chaincode/ChaincodeInfo:
+    post:
+      tags:
+>>>>>>> upstream/v1.0.0
       - chaincode
       description: ChaincodeInfo chaincode on peers
       operationId: ChaincodeController.ChaincodeInfo
@@ -15,6 +57,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/chaincode.ChaincodeInfoArgs'
+<<<<<<< HEAD
       responses:
         "200":
           description: '{string} string'
@@ -42,6 +85,35 @@ paths:
     post:
       tags:
       - chaincode
+=======
+      responses:
+        "200":
+          description: '{string} string'
+        "403":
+          description: body is empty
+  /chaincode/InstallCC:
+    post:
+      tags:
+      - chaincode
+      description: InstallCC on peers
+      operationId: ChaincodeController.InstallCC
+      parameters:
+      - in: body
+        name: body
+        description: body for chaincode Description
+        required: true
+        schema:
+          $ref: '#/definitions/chaincode.InstallCCArgs'
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: body is empty
+  /chaincode/InstantiateCC:
+    post:
+      tags:
+      - chaincode
+>>>>>>> upstream/v1.0.0
       description: Instantiate chaincode on peers
       operationId: ChaincodeController.InstantiateCC
       parameters:
@@ -219,6 +291,7 @@ paths:
         "403":
           description: body is empty
 definitions:
+<<<<<<< HEAD
   chaincode.ChaincodeInfoArgs:
     title: ChaincodeInfoArgs
     type: object
@@ -347,6 +420,166 @@ definitions:
     title: QueryTxArgs
     type: object
     properties:
+=======
+  cert.Attribute:
+    title: Attribute
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  cert.EnrollArgs:
+    title: EnrollArgs
+    type: object
+    properties:
+      name:
+        type: string
+      secret:
+        type: string
+  cert.RegisterArgs:
+    title: RegisterArgs
+    type: object
+    properties:
+      affiliation:
+        type: string
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/cert.Attribute'
+      caName:
+        type: string
+      maxEnrollments:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+  chaincode.ChaincodeInfoArgs:
+    title: ChaincodeInfoArgs
+    type: object
+    properties:
+      chaincodeId:
+        type: string
+>>>>>>> upstream/v1.0.0
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+<<<<<<< HEAD
+      txId:
+        type: string
+tags:
+=======
+  chaincode.InstallCCArgs:
+    title: InstallCCArgs
+    type: object
+    properties:
+      chaincodeID:
+        type: string
+      chaincodePath:
+        type: string
+      chaincodeVersion:
+        type: string
+      channelID:
+        type: string
+      peerUrl:
+        type: string
+  chaincode.InstantiateArgs:
+    title: InstantiateArgs
+    type: object
+    properties:
+      args: {}
+      chaincodeID:
+        type: string
+      chaincodePath:
+        type: string
+      chaincodeVersion:
+        type: string
+      channelID:
+        type: string
+      peerUrl:
+        type: string
+  chaincode.InvokeArgs:
+    title: InvokeArgs
+    type: object
+    properties:
+      args: {}
+      chaincodeId:
+        type: string
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+  chaincode.QueryArgs:
+    title: QueryArgs
+    type: object
+    properties:
+      args: {}
+      chaincodeId:
+        type: string
+      channelID:
+        type: string
+      peerUrl:
+        type: string
+  channel.ChannelCreateArgs:
+    title: ChannelCreateArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      ordererUrl:
+        type: string
+      txFile:
+        type: string
+  channel.ChannelJoinArgs:
+    title: ChannelJoinArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      ordererUrl:
+        type: string
+      peerUrl:
+        type: string
+  query.QueryBlockArgs:
+    title: QueryBlockArgs
+    type: object
+    properties:
+      blockHash:
+        type: string
+      blockNum:
+        type: string
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+      traverse:
+        type: string
+  query.QueryChainInfoArgs:
+    title: QueryChainInfoArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+  query.QueryChannelsArgs:
+    title: QueryChannelsArgs
+    type: object
+    properties:
+      peerUrl:
+        type: string
+  query.QueryInstalledArgs:
+    title: QueryInstalledArgs
+    type: object
+    properties:
+      peerUrl:
+        type: string
+  query.QueryTxArgs:
+    title: QueryTxArgs
+    type: object
+    properties:
       channelId:
         type: string
       peerUrl:
@@ -354,6 +587,10 @@ definitions:
       txId:
         type: string
 tags:
+- name: cert
+  description: |
+    Operations about Register
+>>>>>>> upstream/v1.0.0
 - name: channel
   description: |
     Operations about ChannelCreate
