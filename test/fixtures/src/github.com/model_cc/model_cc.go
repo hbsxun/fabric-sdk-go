@@ -314,7 +314,7 @@ func (t *ModelChaincode) queryModels(stub shim.ChaincodeStubInterface, args []st
 // Result set is built and returned as a byte array containing the JSON results.
 // =========================================================================================
 func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
-
+	//var queryResult string
 	fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
 
 	resultsIterator, err := stub.GetQueryResult(queryString)
@@ -344,6 +344,7 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 
 		buffer.WriteString(", \"Record\":")
 		// Record is a JSON object, so we write as-is
+		//queryResult = strings.Replace(string(queryResultRecord), "\"", "", -1)
 		buffer.WriteString(string(queryResultRecord))
 		buffer.WriteString("}")
 		bArrayMemberAlreadyWritten = true
@@ -356,7 +357,7 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 }
 
 func (t *ModelChaincode) getHistoryForModel(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-
+	var historyResult string
 	if len(args) < 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
@@ -391,8 +392,14 @@ func (t *ModelChaincode) getHistoryForModel(stub shim.ChaincodeStubInterface, ar
 		buffer.WriteString("\"")
 
 		buffer.WriteString(", \"Value\":")
+		//historyResult = strings.Replace(string(historicValue), "\"", "", -1)
 		// historicValue is a JSON model, so we write as-is
-		buffer.WriteString(string(historicValue))
+		historyResult = string(historicValue)
+		if historyResult == "" {
+			buffer.WriteString("{\"docType\":\"\",\"name\":\"\",\"desc\":\"\",\"price\":\"\",\"owner\":\"\"}")
+		} else {
+			buffer.WriteString(historyResult)
+		}
 		buffer.WriteString("}")
 		bArrayMemberAlreadyWritten = true
 	}

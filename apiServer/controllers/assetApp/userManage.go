@@ -68,12 +68,12 @@ func (u *UserManageController) Login() {
 
 // @Title UpdateInfo
 // @Description update the user
-// @Param	body		body 	user.User	true		"body for user content"
+// @Param	body		body 	user.UpdateUserArgs	true		"body for user content"
 // @Success 200 {string} update successfully
 // @Failure 403 :uid is not int
 // @router /updateUser [put]
 func (u *UserManageController) UpdateInfo() {
-	var ur user.User
+	var ur user.UpdateUserArgs
 	json.Unmarshal(u.Ctx.Input.RequestBody, &ur)
 	fmt.Println("updateUser:", ur)
 	impl := assetApp.UserManagerImpl{}
@@ -87,6 +87,38 @@ func (u *UserManageController) UpdateInfo() {
 		res["message"] = "User update successfully"
 	}
 	u.Data["json"] = res
+	u.ServeJSON()
+}
+
+// @Title UpdatePasswd
+// @Description update password
+// @Param	name		path 	string	true		"The name of user"
+// @Param	oldPassword		path 	string	true		"The old password of user"
+// @Param	newPassword		path 	string	true		"The new password of user"
+// @Success 200 {string}
+// @Failure 403 :name is empty
+// @router /UpdatePasswd/:name/:oldPassword/:newPassword [put]
+func (u *UserManageController) UpdatePasswd() {
+	name := u.GetString(":name")
+	fmt.Println("userName: ", name)
+	oldPwd := u.GetString(":oldPassword")
+	fmt.Println("oldPwd: ", oldPwd)
+	newPwd := u.GetString(":newPassword")
+	fmt.Println("newPwd: ", newPwd)
+	if name != "" && oldPwd != "" && newPwd != "" {
+		impl := assetApp.UserManagerImpl{}
+		err := impl.UpdatePwd(name, oldPwd, newPwd)
+		res := make(map[string]interface{})
+		if err != nil {
+			res["status"] = 304
+			res["message"] = fmt.Sprintf("update password:%s", err.Error())
+		} else {
+			res["status"] = 200
+			res["message"] = "update password successfully"
+		}
+		u.Data["json"] = res
+	}
+
 	u.ServeJSON()
 }
 
@@ -163,5 +195,29 @@ func (u *UserManageController) Logout() {
 
 	u.Data["json"] = res
 
+	u.ServeJSON()
+}
+
+// @Title VerifyUser
+// @Description verify user
+// @Param	body		body 	user.Secret	true		"body for user login"
+// @Success 200 {string} verify successfully
+// @Failure 403 user not exist or login failed
+// @router /VerifyUser [post]
+func (u *UserManageController) VerifyUser() {
+	var ss user.Secret
+	json.Unmarshal(u.Ctx.Input.RequestBody, &ss)
+	impl := assetApp.UserManagerImpl{}
+	err := impl.VerifyUser(&ss)
+	fmt.Println("User Secret:", ss)
+	res := make(map[string]interface{})
+	if err != nil {
+		res["status"] = 305
+		res["message"] = "Verify failed"
+	} else {
+		res["status"] = 200
+		res["message"] = "Verify successfully"
+	}
+	u.Data["json"] = res
 	u.ServeJSON()
 }

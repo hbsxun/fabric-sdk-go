@@ -176,7 +176,10 @@ definitions:
     properties:
       cn:
         type: string
-      hosts: {}
+      hosts:
+        type: array
+        items:
+          type: string
   models.EnrollRequest:
     title: EnrollRequest
     type: object
@@ -228,10 +231,11 @@ definitions:
         type: string
       detail:
         type: string
-      endorsers: {}
+      endorsers:
+        type: array
+        items:
+          type: string
       nonce:
-        type: string
-      payload:
         type: string
       signature:
         type: string

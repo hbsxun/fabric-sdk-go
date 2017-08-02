@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context/param"
 )
 
 func init() {
@@ -11,6 +12,7 @@ func init() {
 			Method: "Post",
 			Router: `/`,
 			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:AssetController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:AssetController"],
@@ -18,6 +20,7 @@ func init() {
 			Method: "Get",
 			Router: `/:uid`,
 			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:BlockController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:BlockController"],
@@ -25,6 +28,7 @@ func init() {
 			Method: "GetAll",
 			Router: `/`,
 			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:BlockController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:BlockController"],
@@ -32,6 +36,7 @@ func init() {
 			Method: "Get",
 			Router: `/:number`,
 			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:EnrollController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:EnrollController"],
@@ -39,6 +44,7 @@ func init() {
 			Method: "Post",
 			Router: `/`,
 			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:LedgerController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:LedgerController"],
@@ -46,6 +52,7 @@ func init() {
 			Method: "Get",
 			Router: `/:uid`,
 			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:RegisterController"] = append(beego.GlobalControllerRouter["github.com/hyperledger/fabric-sdk-go/test/apiServer/controllers:RegisterController"],
@@ -53,6 +60,7 @@ func init() {
 			Method: "Post",
 			Router: `/`,
 			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
 			Params: nil})
 
 }
