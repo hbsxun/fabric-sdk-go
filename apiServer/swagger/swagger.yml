@@ -241,6 +241,33 @@ paths:
           description: '{string} txId'
         "403":
           description: body is empty
+  /user/UpdatePasswd/{name}/{oldPassword}/{newPassword}:
+    put:
+      tags:
+      - user
+      description: update password
+      operationId: UserManageController.UpdatePasswd
+      parameters:
+      - in: path
+        name: name
+        description: The name of user
+        required: true
+        type: string
+      - in: path
+        name: oldPassword
+        description: The old password of user
+        required: true
+        type: string
+      - in: path
+        name: newPassword
+        description: The new password of user
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: :name is empty
   /user/VerifyUser:
     post:
       tags:
@@ -334,7 +361,7 @@ paths:
         description: body for user content
         required: true
         schema:
-          $ref: '#/definitions/user.User'
+          $ref: '#/definitions/user.UpdateUserArgs'
       responses:
         "200":
           description: '{string} update successfully'
@@ -450,6 +477,18 @@ definitions:
       name:
         type: string
       passwd:
+        type: string
+  user.UpdateUserArgs:
+    title: UpdateUserArgs
+    type: object
+    properties:
+      mail:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      type:
         type: string
   user.User:
     title: User

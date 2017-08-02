@@ -41,10 +41,19 @@ func (this *UserManagerImpl) VerifyUser(ss *user.Secret) error {
 	return nil
 }
 
-func (this *UserManagerImpl) UpdateInfo(u *user.User) error {
+func (this *UserManagerImpl) UpdateInfo(u *user.UpdateUserArgs) error {
 	err := user.UpdateUser(u)
 	if err != nil {
 		appLogger.Debugf("User UpdateInfo err [%v]\n", err)
+		return err
+	}
+	return nil
+}
+
+func (this *UserManagerImpl) UpdatePwd(name string, oldPwd string, newPwd string) error {
+	err := user.UpdatePasswd(name, oldPwd, newPwd)
+	if err != nil {
+		appLogger.Debugf("User UpdatePwd err [%v]\n", err)
 		return err
 	}
 	return nil
@@ -71,7 +80,3 @@ func (this *UserManagerImpl) GetUserInfoById(userid int) (*user.User, error) {
 /*func (this *UserManagerImpl) Logout() error {
 
 }*/
-func (this *UserManagerImpl) UpdatePasswd(username, passwd string) bool {
-	appLogger.Debug("Not implemented")
-	return false
-}

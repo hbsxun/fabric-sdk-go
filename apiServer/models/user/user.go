@@ -20,6 +20,7 @@ package user
 import (
 	"errors"
 	"fmt"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -38,6 +39,12 @@ type User struct {
 type Secret struct {
 	Name   string `json:"name"`
 	Passwd string `json:"passwd"`
+}
+type UpdateUserArgs struct {
+	Type  string `json:"type"` //0: admin, 1: user
+	Name  string `json:"name"` //unique
+	Email string `json:"mail"`
+	Phone string `json:"phone"`
 }
 
 /*
@@ -80,17 +87,46 @@ func GetUserById(userid int) (*User, error) {
 	}
 	return &u, nil
 }
-func UpdateUser(newU *User) error {
+func UpdateUser(newU *UpdateUserArgs) error {
 	o := orm.NewOrm()
 	oldU := User{}
 
-	err := o.Raw("SELECT id from user WHERE name = ?", newU.Name).QueryRow(&oldU)
+	err := o.Raw("SELECT * from user WHERE name = ?", newU.Name).QueryRow(&oldU)
 	if err != nil {
 		return err
 	}
-	newU.Id = oldU.Id
+	if newU.Email != "" {
+		oldU.Email = newU.Email
+	}
+	if newU.Phone != "" {
+		oldU.Phone = newU.Phone
+	}
+	if newU.Type != "" {
+		typ, err := strconv.Atoi(newU.Type)
+		if err != nil {
+			return err
+		}
+		oldU.Type = typ
+	}
+	_, err = o.Update(&oldU)
+	if err != nil {
+		return err
+	}
 
-	_, err = o.Update(newU)
+	return nil
+}
+func UpdatePasswd(name string, oldPwd string, newPwd string) error {
+	o := orm.NewOrm()
+	oldU := User{}
+	err := o.Raw("SELECT * from user WHERE name = ?", name).QueryRow(&oldU)
+	if err != nil {
+		return err
+	}
+	if oldPwd != oldU.Passwd {
+		return errors.New("passwd incorrect")
+	}
+	oldU.Passwd = newPwd
+	_, err = o.Update(&oldU)
 	if err != nil {
 		return err
 	}

@@ -4,14 +4,12 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"math/big"
 
 	"github.com/golang/protobuf/proto"
-	google_protobuf "github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/query"
 	"github.com/hyperledger/fabric/protos/common"
-	fabricCommon "github.com/hyperledger/fabric/protos/common"
 	pb "github.com/hyperledger/fabric/protos/peer"
-	fabricUtils "github.com/hyperledger/fabric/protos/utils"
 )
 
 type TxInfo struct {
@@ -22,20 +20,18 @@ type TxInfo struct {
 	Endorsers []string `json:"endorsers"`
 	Detail    string   `json:"detail"`
 }
-type TransactionInfo struct {
+
+/*type TransactionInfo struct {
 	Signature string      `json:"signature"`
 	Payload   PayloadInfo `json:"payload"`
 }
 type PayloadInfo struct {
-	Header HeaderInfo `json:"header"`
-	Data   DataInfo   `json:"data"`
+	Header HeaderInfo  `json:"header"`
+	Data   interface{} `json:"data"`
 }
 type HeaderInfo struct {
 	ChannelHeader   ChannelHeaderInfo   `json:"channelHeader"`
 	SignatureHeader SignatureHeaderInfo `json:"signatureHeader"`
-}
-type DataInfo struct {
-	Type fabricCommon.HeaderType `json:"type"`
 }
 type ChannelHeaderInfo struct {
 	Type      int32                      `json:"type"`
@@ -59,8 +55,38 @@ type ChaincodeIdInfo struct {
 	Version string `json:"version"`
 	Path    string `json:"path"`
 }
+type ConfigEnvelopeInfo struct {
+	Type       fabricCommon.HeaderType `json:"type"`
+	Config     ConfigInfo              `json:"config"`
+	LastUpdate LastUpdateInfo          `json:"lastUpdate"`
+}
 
-func QueryTX(queryTxArgs *query.QueryTxArgs) (*TransactionInfo, error) {
+type ConfigInfo struct {
+	Sequence     uint64           `json:"sequence"`
+	ChannelGroup ChannelGroupInfo `json:"channelGroup"`
+}
+
+type ChannelGroupInfo struct {
+	Version   uint64             `json:"version"`
+	ModPolicy string             `json:"modPolicy"`
+	Groups    []ChannelGroupInfo `json:"groups"`
+	Values    []ConfigValueInfo  `json:"values"`
+	Policies  []ConfigPolicyInfo `json:"policies"`
+}
+
+type ConfigValueInfo struct {
+	Version   uint64      `json:"version"`
+	ModPolicy string      `json:"modPolicy"`
+	Detail    interface{} `json:"detail"`
+}
+
+type ConfigPolicyInfo struct {
+	ModPolicy string      `json:"modPolicy"`
+	Version   string      `json:"version"`
+	Detail    interface{} `json:"detail"`
+}*/        
+
+func QueryTX(queryTxArgs *query.QueryTxArgs) (*TxInfo, error) {
 	queryTxAction, err := query.NewQueryTXAction(queryTxArgs)
 	if err != nil {
 		return nil, fmt.Errorf("NewQueryTXAction err [%s]", err)
@@ -69,12 +95,12 @@ func QueryTX(queryTxArgs *query.QueryTxArgs) (*TransactionInfo, error) {
 	if err != nil {
 		return nil, fmt.Errorf("queryTxAction err [%s]", err)
 	}
-	transactionInfo, err := parseProcessedTransaction(processedTransaction)
+	/*transactionInfo, err := parseProcessedTransaction(processedTransaction)
 	if err != nil {
 		return nil, fmt.Errorf("parseProcessedTransaction err [%s]", err)
 	}
-	return transactionInfo, nil
-	/*if processedTransaction.TransactionEnvelope == nil {
+	return transactionInfo, nil*/
+	if processedTransaction.TransactionEnvelope == nil {
 		return nil, errors.New("QueryTransaction failed to return transaction envelope")
 	}
 	signedData, err := processedTransaction.GetTransactionEnvelope().AsSignedData()
@@ -98,7 +124,7 @@ func QueryTX(queryTxArgs *query.QueryTxArgs) (*TransactionInfo, error) {
 		Nonce:     new(big.Int).SetBytes(nonce).String(),
 		Detail:    spec,
 		Endorsers: endorsers,
-	}, nil*/
+	}, nil
 }
 
 func parseBody(payload *common.Payload) (creator, nonce []byte, spec string, endorsers []string, err error) {
@@ -182,7 +208,7 @@ func parseEndorsedAction(action *pb.ChaincodeEndorsedAction) (endorsers []string
 	return endorsers, nil
 }
 
-func parseProcessedTransaction(tx *pb.ProcessedTransaction) (*TransactionInfo, error) {
+/*func parseProcessedTransaction(tx *pb.ProcessedTransaction) (*TransactionInfo, error) {
 	var err error
 	var transactionInfo TransactionInfo
 	envelope := tx.TransactionEnvelope
@@ -207,8 +233,28 @@ func parsePayload(payload *fabricCommon.Payload) (PayloadInfo, error) {
 		return PayloadInfo{}, fmt.Errorf("GetSignatureHeader error [%s]", err)
 	}
 	payloadInfo.Header.SignatureHeader = parseSignatureHeader(sigHeader)
-	payloadInfo.Data = parseData(fabricCommon.HeaderType(chdr.Type), payload.Data)
-	payloadInfo.Data.Type = fabricCommon.HeaderType(chdr.Type)
+	headerType := fabricCommon.HeaderType(chdr.Type)
+	if headerType == fabricCommon.HeaderType_CONFIG {
+		envelope := &fabricCommon.ConfigEnvelope{}
+		if err := proto.Unmarshal(payload.Data, envelope); err != nil {
+			return PayloadInfo{}, fmt.Errorf("Unmarshal ConfigEnvelope error [%s]", err)
+		}
+		payloadInfo.Data = parseConfigEnvelope(envelope)
+	} else if headerType == fabricCommon.HeaderType_CONFIG_UPDATE {
+		envelope := &fabricCommon.ConfigUpdateEnvelope{}
+		if err := proto.Unmarshal(payload.Data, envelope); err != nil {
+			return PayloadInfo{}, fmt.Errorf("Unmarshal ConfigUpdateEnvelope error [%s]", err)
+		}
+		payloadInfo.Data = parseConfigUpdateEnvelope(envelope)
+	} else if headerType == fabricCommon.HeaderType_ENDORSER_TRANSACTION {
+		tx, err := fabricUtils.GetTransaction(data)
+		if err != nil {
+			return PayloadInfo{}, fmt.Errorf("GetTransaction error [%s]", err)
+		}
+		payloadInfo.Data = parseTransaction(tx)
+	} else {
+		payloadInfo.Data = base64.StdEncoding.EncodeToString(payload.Data)
+	}
 	return payloadInfo, nil
 }
 
@@ -244,35 +290,13 @@ func parseSignatureHeader(sigHdr *fabricCommon.SignatureHeader) SignatureHeaderI
 	signatureHeader.Creator = base64.StdEncoding.EncodeToString(sigHdr.Creator)
 	return signatureHeader
 }
-func parseData(headerType fabricCommon.HeaderType, data []byte) (DataInfo, error) {
-	if headerType == fabricCommon.HeaderType_CONFIG {
-		envelope := &fabricCommon.ConfigEnvelope{}
-		if err := proto.Unmarshal(data, envelope); err != nil {
-			panic(fmt.Errorf("Bad envelope: %v", err))
-		}
-		p.print("Config Envelope:")
-		p.printConfigEnvelope(envelope)
-	} else if headerType == fabricCommon.HeaderType_CONFIG_UPDATE {
-		envelope := &fabricCommon.ConfigUpdateEnvelope{}
-		if err := proto.Unmarshal(data, envelope); err != nil {
-			panic(fmt.Errorf("Bad envelope: %v", err))
-		}
-		p.print("Config Update Envelope:")
-		p.printConfigUpdateEnvelope(envelope)
-	} else if headerType == fabricCommon.HeaderType_ENDORSER_TRANSACTION {
-		tx, err := fabricUtils.GetTransaction(data)
-		if err != nil {
-			panic(fmt.Errorf("Bad envelope: %v", err))
-		}
-		p.print("Transaction:")
-		p.printTransaction(tx)
-	} else {
-		p.field("Unsupported Envelope", Base64URLEncode(data))
-	}
+func parseConfigEnvelope(envelope *fabricCommon.ConfigEnvelope) ConfigEnvelopeInfo {
+	var configEnvelope ConfigEnvelopeInfo
+	CONFIG
 }
 func unmarshalOrPanic(buf []byte, pb proto.Message) {
 	err := proto.Unmarshal(buf, pb)
 	if err != nil {
 		fmt.Println("unmarshalOrPanic error")
 	}
-}
+}*/

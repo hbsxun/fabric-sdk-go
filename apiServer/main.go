@@ -23,7 +23,7 @@ func main() {
 		uri := ctx.Input.URI()
 		if strings.HasPrefix(uri, "/fabric/user/addUser") || strings.HasPrefix(uri, "/fabric/user/userLogin") {
 			return
-		} else if strings.HasPrefix(uri, "/fabric/user/updateUser") || strings.HasPrefix(uri, "/fabric/user/getUserByName") || strings.HasPrefix(uri, "/fabric/user/getUserById") {
+		} else if strings.HasPrefix(uri, "/fabric/user/updateUser") || strings.HasPrefix(uri, "/fabric/user/getUserByName") || strings.HasPrefix(uri, "/fabric/user/getUserById") || strings.HasPrefix(uri, "/fabric/user/UpdatePasswd") {
 			token := ctx.Input.Cookie("Bearer")
 			//token := ctx.Request.Header.Get("Authorization")
 			fmt.Println(token)
