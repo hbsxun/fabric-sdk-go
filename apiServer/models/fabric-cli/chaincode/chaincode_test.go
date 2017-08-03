@@ -90,7 +90,7 @@ func query(args *QueryArgs, t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = action.Query()
+	_, err = action.Query()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -110,7 +110,7 @@ func chaincodeInfo(args *ChaincodeInfoArgs, t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = action.Execute()
+	_, err = action.Execute()
 	if err != nil {
 		t.Fatal(err)
 	}

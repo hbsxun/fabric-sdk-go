@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/spf13/pflag"
 )
 
@@ -62,15 +63,15 @@ func NewQueryChannelsAction(args *QueryChannelsArgs) (*queryChannelsAction, erro
 	return action, err
 }
 
-func (action *queryChannelsAction) Execute() error {
+func (action *queryChannelsAction) Execute() ([]*pb.ChannelInfo, error) {
 	peer := action.PeerFromURL(common.Config().PeerURL())
 	if peer == nil {
-		return fmt.Errorf("unknown peer URL: %s", common.Config().PeerURL())
+		return nil, fmt.Errorf("unknown peer URL: %s", common.Config().PeerURL())
 	}
 
 	orgID, err := action.OrgOfPeer(peer.URL())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	context := action.SetUserContext(action.OrgAdminUser(orgID))
@@ -78,12 +79,12 @@ func (action *queryChannelsAction) Execute() error {
 
 	response, err := action.Client().QueryChannels(peer)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	fmt.Printf("Channels for peer [%s]\n", peer.URL())
 
 	action.Printer().PrintChannels(response.Channels)
 
-	return nil
+	return response.Channels, nil
 }

@@ -25,23 +25,27 @@ func (u *ChannelController) Post() {
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-		res["status"] = 301
+		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		fmt.Println(len(req.ChannelID), len(req.OrdererUrl), len(req.TxFile))
 		action, err := channel.NewChannelCreateAction(&req)
 		if err != nil {
-			res["status"] = 302
-			res["message"] = fmt.Sprintf("ChannelCreate action error [%s]", err)
+			res["status"] = 80402
+			res["message"] = fmt.Sprintf("CreateChannel action error [%s]", err)
 		} else {
 			err = action.Execute()
 			if err != nil {
-				res["status"] = 302
-				res["message"] = fmt.Sprintf("ChannelCreate execute error [%s]", err)
+				res["status"] = 80403
+				res["message"] = fmt.Sprintf("CreateChannel execute error [%s]", err)
 			} else {
-				res["status"] = 200
-				res["message"] = fmt.Sprintf("Channel create [%s] successfully", req.ChannelID)
+				res["status"] = 80200
+				if req.ChannelID == "" {
+					res["message"] = fmt.Sprintf("Channel create [mychannel] successfully")
+				} else {
+					res["message"] = fmt.Sprintf("Channel create [%s] successfully", req.ChannelID)
+				}
 			}
 		}
 	}

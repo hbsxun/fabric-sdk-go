@@ -16,7 +16,7 @@ type QueryController struct {
 // @Title QueryBlock
 // @Description Query Block
 // @Param	body		body 	query.QueryBlockArgs		true	"body for Query Block"
-// @Success 200 {string} []string
+// @Success 200 {body}
 // @Failure 403 body is empty
 // @router /QueryBlock [post]
 func (u *QueryController) Post() {
@@ -25,23 +25,23 @@ func (u *QueryController) Post() {
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-		res["status"] = 301
+		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := query.NewQueryBlockAction(&req)
 		if err != nil {
 			fmt.Printf("QueryBlock Initialize error...")
-			res["status"] = 400
+			res["status"] = 80402
 			res["message"] = fmt.Sprintf("QueryBlock action error [%s]", err)
 		} else {
-			err := action.Execute()
+			resp, err := action.Execute()
 			if err != nil {
-				res["status"] = 400
+				res["status"] = 80403
 				res["message"] = fmt.Sprintf("QueryBlock execute error [%s]", err)
 			} else {
-				res["status"] = 200
-				res["message"] = fmt.Sprintf("query block [%s] successfully", req.BlockNum)
+				res["status"] = 80200
+				res["message"] = resp
 			}
 		}
 	}
