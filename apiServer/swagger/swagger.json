@@ -5,62 +5,7 @@
     },
     "basePath": "/fabric",
     "paths": {
-        "/cert/Enroll": {
-            "post": {
-                "tags": [
-                    "cert"
-                ],
-                "description": "Get Key and Ecert",
-                "operationId": "CertController.Enroll",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Ecert content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/cert.EnrollArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/cert/Register": {
-            "post": {
-                "tags": [
-                    "cert"
-                ],
-                "description": "Get a OTP secret",
-                "operationId": "CertController.Register",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Secret content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/cert.RegisterArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
+<<<<<<< HEAD
         "/chaincode/ChaincodeInfo": {
             "post": {
                 "tags": [
@@ -68,6 +13,109 @@
                 ],
                 "description": "ChaincodeInfo chaincode on peers",
                 "operationId": "ChaincodeController.ChaincodeInfo",
+=======
+        "/cert/Enroll": {
+            "post": {
+                "tags": [
+                    "cert"
+                ],
+                "description": "Get Key and Ecert",
+                "operationId": "CertController.Enroll",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+<<<<<<< HEAD
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chaincode.ChaincodeInfoArgs"
+=======
+                        "description": "body for Ecert content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cert.EnrollArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+<<<<<<< HEAD
+                        "description": "{string} string"
+=======
+                        "description": "{string}"
+>>>>>>> upstream/v1.0.0
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/chaincode/InstallCC": {
+            "post": {
+                "tags": [
+                    "chaincode"
+                ],
+                "description": "InstallCC on peers",
+                "operationId": "ChaincodeController.InstallCC",
+=======
+        "/cert/Register": {
+            "post": {
+                "tags": [
+                    "cert"
+                ],
+                "description": "Get a OTP secret",
+                "operationId": "CertController.Register",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Secret content",
+                        "required": true,
+                        "schema": {
+<<<<<<< HEAD
+                            "$ref": "#/definitions/chaincode.InstallCCArgs"
+=======
+                            "$ref": "#/definitions/cert.RegisterArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+<<<<<<< HEAD
+                        "description": "{string}"
+=======
+                        "description": "{string} string"
+>>>>>>> upstream/v1.0.0
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/chaincode/InstantiateCC": {
+=======
+        "/chaincode/ChaincodeInfo": {
+>>>>>>> upstream/v1.0.0
+            "post": {
+                "tags": [
+                    "chaincode"
+                ],
+<<<<<<< HEAD
+                "description": "Instantiate chaincode on peers",
+                "operationId": "ChaincodeController.InstantiateCC",
+=======
+                "description": "ChaincodeInfo chaincode on peers",
+                "operationId": "ChaincodeController.ChaincodeInfo",
+>>>>>>> upstream/v1.0.0
                 "parameters": [
                     {
                         "in": "body",
@@ -75,7 +123,375 @@
                         "description": "body for chaincode Description",
                         "required": true,
                         "schema": {
+<<<<<<< HEAD
+                            "$ref": "#/definitions/chaincode.InstantiateArgs"
+=======
                             "$ref": "#/definitions/chaincode.ChaincodeInfoArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+<<<<<<< HEAD
+                        "description": "{string}"
+=======
+                        "description": "{string} string"
+>>>>>>> upstream/v1.0.0
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/chaincode/InvokeCC": {
+=======
+        "/chaincode/InstallCC": {
+>>>>>>> upstream/v1.0.0
+            "post": {
+                "tags": [
+                    "chaincode"
+                ],
+<<<<<<< HEAD
+                "description": "Invoke chaincode on peers",
+                "operationId": "ChaincodeController.InvokeCC",
+=======
+                "description": "InstallCC on peers",
+                "operationId": "ChaincodeController.InstallCC",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+<<<<<<< HEAD
+                            "$ref": "#/definitions/chaincode.InvokeArgs"
+=======
+                            "$ref": "#/definitions/chaincode.InstallCCArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/chaincode/QueryCC": {
+=======
+        "/chaincode/InstantiateCC": {
+>>>>>>> upstream/v1.0.0
+            "post": {
+                "tags": [
+                    "chaincode"
+                ],
+<<<<<<< HEAD
+                "description": "Query chaincode on peers",
+                "operationId": "ChaincodeController.QueryCC",
+=======
+                "description": "Instantiate chaincode on peers",
+                "operationId": "ChaincodeController.InstantiateCC",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+<<<<<<< HEAD
+                            "$ref": "#/definitions/chaincode.QueryArgs"
+=======
+                            "$ref": "#/definitions/chaincode.InstantiateArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+<<<<<<< HEAD
+                        "description": "{string} txId"
+=======
+                        "description": "{string}"
+>>>>>>> upstream/v1.0.0
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/channel/CreateChannel": {
+            "post": {
+                "tags": [
+                    "channel"
+                ],
+                "description": "ChannelCreate on peers",
+                "operationId": "ChannelController.ChannelCreate",
+=======
+        "/chaincode/InvokeCC": {
+            "post": {
+                "tags": [
+                    "chaincode"
+                ],
+                "description": "Invoke chaincode on peers",
+                "operationId": "ChaincodeController.InvokeCC",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+<<<<<<< HEAD
+                        "description": "body for ChannelCreate Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.ChannelCreateArgs"
+=======
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chaincode.InvokeArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/channel/JoinChannel": {
+            "post": {
+                "tags": [
+                    "channel"
+                ],
+                "description": "ChannelJoin on peers",
+                "operationId": "ChannelController.ChannelJoin",
+=======
+        "/chaincode/QueryCC": {
+            "post": {
+                "tags": [
+                    "chaincode"
+                ],
+                "description": "Query chaincode on peers",
+                "operationId": "ChaincodeController.QueryCC",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+<<<<<<< HEAD
+                        "description": "body for ChannelJoin Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.ChannelJoinArgs"
+=======
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chaincode.QueryArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/query/QueryBlock": {
+            "post": {
+                "tags": [
+                    "query"
+                ],
+                "description": "Query Block",
+                "operationId": "QueryController.QueryBlock",
+=======
+        "/channel/CreateChannel": {
+            "post": {
+                "tags": [
+                    "channel"
+                ],
+                "description": "ChannelCreate on peers",
+                "operationId": "ChannelController.ChannelCreate",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+<<<<<<< HEAD
+                        "description": "body for Query Block",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/query.QueryBlockArgs"
+=======
+                        "description": "body for ChannelCreate Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.ChannelCreateArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+<<<<<<< HEAD
+                        "description": "{string} []string"
+=======
+                        "description": "{string}"
+>>>>>>> upstream/v1.0.0
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/query/QueryChainInfo": {
+            "post": {
+                "tags": [
+                    "query"
+                ],
+                "description": "Query Chain Info",
+                "operationId": "QueryController.QueryChainInfo",
+=======
+        "/channel/JoinChannel": {
+            "post": {
+                "tags": [
+                    "channel"
+                ],
+                "description": "ChannelJoin on peers",
+                "operationId": "ChannelController.ChannelJoin",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+<<<<<<< HEAD
+                        "description": "body for Query BlockChain Info",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/query.QueryChainInfoArgs"
+=======
+                        "description": "body for ChannelJoin Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.ChannelJoinArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+<<<<<<< HEAD
+                        "description": "{string} string"
+=======
+                        "description": "{string}"
+>>>>>>> upstream/v1.0.0
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/query/QueryChannels": {
+=======
+        "/query/QueryBlock": {
+>>>>>>> upstream/v1.0.0
+            "post": {
+                "tags": [
+                    "query"
+                ],
+<<<<<<< HEAD
+                "description": "Query Channels",
+                "operationId": "QueryController.QueryChannels",
+=======
+                "description": "Query Block",
+                "operationId": "QueryController.QueryBlock",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+<<<<<<< HEAD
+                        "description": "body for Query Channel",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/query.QueryChannelsArgs"
+=======
+                        "description": "body for Query Block",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/query.QueryBlockArgs"
+>>>>>>> upstream/v1.0.0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+<<<<<<< HEAD
+                        "description": "{string} string"
+=======
+                        "description": "{string} []string"
+>>>>>>> upstream/v1.0.0
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+<<<<<<< HEAD
+        "/query/QueryInstalledChaincodes": {
+=======
+        "/query/QueryChainInfo": {
+>>>>>>> upstream/v1.0.0
+            "post": {
+                "tags": [
+                    "query"
+                ],
+<<<<<<< HEAD
+                "description": "Query Chaincodes installed on the peerUrl",
+                "operationId": "QueryController.QueryInstalledChaincodes",
+=======
+                "description": "Query Chain Info",
+                "operationId": "QueryController.QueryChainInfo",
+>>>>>>> upstream/v1.0.0
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+<<<<<<< HEAD
+                        "description": "body for Query Installed Chaincode Info",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/query.QueryInstalledArgs"
                         }
                     }
                 ],
@@ -89,222 +505,38 @@
                 }
             }
         },
-        "/chaincode/InstallCC": {
-            "post": {
-                "tags": [
-                    "chaincode"
-                ],
-                "description": "InstallCC on peers",
-                "operationId": "ChaincodeController.InstallCC",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.InstallCCArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/chaincode/InstantiateCC": {
-            "post": {
-                "tags": [
-                    "chaincode"
-                ],
-                "description": "Instantiate chaincode on peers",
-                "operationId": "ChaincodeController.InstantiateCC",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.InstantiateArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/chaincode/InvokeCC": {
-            "post": {
-                "tags": [
-                    "chaincode"
-                ],
-                "description": "Invoke chaincode on peers",
-                "operationId": "ChaincodeController.InvokeCC",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.InvokeArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/chaincode/QueryCC": {
-            "post": {
-                "tags": [
-                    "chaincode"
-                ],
-                "description": "Query chaincode on peers",
-                "operationId": "ChaincodeController.QueryCC",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for chaincode Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chaincode.QueryArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} txId"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/channel/CreateChannel": {
-            "post": {
-                "tags": [
-                    "channel"
-                ],
-                "description": "ChannelCreate on peers",
-                "operationId": "ChannelController.ChannelCreate",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for ChannelCreate Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/channel.ChannelCreateArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/channel/JoinChannel": {
-            "post": {
-                "tags": [
-                    "channel"
-                ],
-                "description": "ChannelJoin on peers",
-                "operationId": "ChannelController.ChannelJoin",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for ChannelJoin Description",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/channel.ChannelJoinArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/query/QueryBlock": {
+        "/query/QueryTx": {
             "post": {
                 "tags": [
                     "query"
                 ],
-                "description": "Query Block",
-                "operationId": "QueryController.QueryBlock",
+                "description": "query transaction",
+                "operationId": "QueryController.QueryTx",
                 "parameters": [
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "body for Query Block",
+                        "description": "body for querytx Description",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/query.QueryBlockArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} []string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/query/QueryChainInfo": {
-            "post": {
-                "tags": [
-                    "query"
-                ],
-                "description": "Query Chain Info",
-                "operationId": "QueryController.QueryChainInfo",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
+                            "$ref": "#/definitions/query.QueryTxArgs"
+=======
                         "description": "body for Query BlockChain Info",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/query.QueryChainInfoArgs"
+>>>>>>> upstream/v1.0.0
                         }
                     }
                 ],
                 "responses": {
                     "200": {
+<<<<<<< HEAD
+                        "description": "{string}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+=======
                         "description": "{string} string"
                     },
                     "403": {
@@ -393,12 +625,35 @@
                     },
                     "403": {
                         "description": "body is empty"
+>>>>>>> upstream/v1.0.0
                     }
                 }
             }
         }
     },
     "definitions": {
+<<<<<<< HEAD
+        "chaincode.ChaincodeInfoArgs": {
+            "title": "ChaincodeInfoArgs",
+            "type": "object",
+            "properties": {
+                "chaincodeId": {
+                    "type": "string"
+                },
+                "channelId": {
+                    "type": "string"
+                },
+                "peerUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "chaincode.InstallCCArgs": {
+            "title": "InstallCCArgs",
+            "type": "object",
+            "properties": {
+                "chaincodeID": {
+=======
         "cert.Attribute": {
             "title": "Attribute",
             "type": "object",
@@ -419,6 +674,7 @@
                     "type": "string"
                 },
                 "secret": {
+>>>>>>> upstream/v1.0.0
                     "type": "string"
                 }
             }
@@ -436,6 +692,18 @@
                         "$ref": "#/definitions/cert.Attribute"
                     }
                 },
+<<<<<<< HEAD
+                "chaincodePath": {
+                    "type": "string"
+                },
+                "chaincodeVersion": {
+                    "type": "string"
+                },
+                "channelID": {
+                    "type": "string"
+                },
+                "peerUrl": {
+=======
                 "caName": {
                     "type": "string"
                 },
@@ -446,14 +714,62 @@
                     "type": "string"
                 },
                 "type": {
+>>>>>>> upstream/v1.0.0
                     "type": "string"
                 }
             }
         },
+<<<<<<< HEAD
+        "chaincode.InstantiateArgs": {
+            "title": "InstantiateArgs",
+            "type": "object",
+            "properties": {
+                "args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "chaincodeID": {
+                    "type": "string"
+                },
+                "chaincodePath": {
+                    "type": "string"
+                },
+                "chaincodeVersion": {
+                    "type": "string"
+                },
+                "channelID": {
+                    "type": "string"
+                },
+=======
         "chaincode.ChaincodeInfoArgs": {
             "title": "ChaincodeInfoArgs",
             "type": "object",
             "properties": {
+                "chaincodeId": {
+                    "type": "string"
+                },
+                "channelId": {
+                    "type": "string"
+                },
+>>>>>>> upstream/v1.0.0
+                "peerUrl": {
+                    "type": "string"
+                }
+            }
+        },
+<<<<<<< HEAD
+        "chaincode.InvokeArgs": {
+            "title": "InvokeArgs",
+            "type": "object",
+            "properties": {
+                "args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "chaincodeId": {
                     "type": "string"
                 },
@@ -465,6 +781,38 @@
                 }
             }
         },
+        "chaincode.QueryArgs": {
+            "title": "QueryArgs",
+            "type": "object",
+            "properties": {
+                "args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "chaincodeId": {
+                    "type": "string"
+                },
+                "channelID": {
+                    "type": "string"
+                },
+                "peerUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "channel.ChannelCreateArgs": {
+            "title": "ChannelCreateArgs",
+            "type": "object",
+            "properties": {
+                "channelId": {
+                    "type": "string"
+                },
+                "ordererUrl": {
+                    "type": "string"
+                },
+=======
         "chaincode.InstallCCArgs": {
             "title": "InstallCCArgs",
             "type": "object",
@@ -550,6 +898,7 @@
                 "ordererUrl": {
                     "type": "string"
                 },
+>>>>>>> upstream/v1.0.0
                 "txFile": {
                     "type": "string"
                 }
@@ -639,10 +988,13 @@
     },
     "tags": [
         {
+<<<<<<< HEAD
+=======
             "name": "cert",
             "description": "Operations about Register\n"
         },
         {
+>>>>>>> upstream/v1.0.0
             "name": "channel",
             "description": "Operations about ChannelCreate\n"
         },
