@@ -19,23 +19,23 @@ func (u *QueryController) QueryChainInfo() {
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-		res["status"] = 301
+		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := query.NewQueryChainInfoAction(&req)
 		if err != nil {
 			fmt.Printf("QueryChainInfo Initialize error...")
-			res["status"] = 402
+			res["status"] = 80402
 			res["message"] = fmt.Sprintf("QueryChainInfo action error [%s]", err)
 		} else {
-			err := action.Execute()
+			resp, err := action.Execute()
 			if err != nil {
-				res["status"] = 402
+				res["status"] = 80403
 				res["message"] = fmt.Sprintf("QueryChainInfo execute error [%s]", err)
 			} else {
-				res["status"] = 200
-				res["message"] = "query chain info successfully"
+				res["status"] = 80200
+				res["message"] = resp
 			}
 		}
 	}

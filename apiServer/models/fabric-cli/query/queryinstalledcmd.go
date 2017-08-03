@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/spf13/pflag"
 )
 
@@ -61,15 +62,15 @@ func NewqueryInstalledAction(args *QueryInstalledArgs) (*queryInstalledAction, e
 	return action, err
 }
 
-func (action *queryInstalledAction) Execute() error {
+func (action *queryInstalledAction) Execute() ([]*pb.ChaincodeInfo, error) {
 	peer := action.PeerFromURL(common.Config().PeerURL())
 	if peer == nil {
-		return fmt.Errorf("unknown peer URL: %s", common.Config().PeerURL())
+		return nil, fmt.Errorf("unknown peer URL: %s", common.Config().PeerURL())
 	}
 
 	orgID, err := action.OrgOfPeer(peer.URL())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	context := action.SetUserContext(action.OrgAdminUser(orgID))
@@ -77,10 +78,10 @@ func (action *queryInstalledAction) Execute() error {
 
 	response, err := action.Client().QueryInstalledChaincodes(peer)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	fmt.Printf("Chaincodes for peer [%s]\n", peer.URL())
 	action.Printer().PrintChaincodes(response.Chaincodes)
-	return nil
+	return response.Chaincodes, nil
 }

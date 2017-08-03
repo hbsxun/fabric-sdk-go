@@ -19,23 +19,23 @@ func (u *QueryController) QueryInstalledChaincodes() {
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-		res["status"] = 301
+		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := query.NewqueryInstalledAction(&req)
 		if err != nil {
 			fmt.Printf("QueryInstalledChaincode Initialize error...")
-			res["status"] = 403
+			res["status"] = 80402
 			res["message"] = fmt.Sprintf("QueryInstalledChaincode action error [%s]", err)
 		} else {
-			err := action.Execute()
+			resp, err := action.Execute()
 			if err != nil {
-				res["status"] = 403
+				res["status"] = 80403
 				res["message"] = fmt.Sprintf("QueryInstalledChaincode execute error [%s]", err)
 			} else {
-				res["status"] = 200
-				res["message"] = fmt.Sprintf("query chaincodes installed on the [%s] successfully", req.PeerUrl)
+				res["status"] = 80200
+				res["message"] = resp
 			}
 		}
 	}

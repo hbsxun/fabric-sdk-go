@@ -8,6 +8,7 @@ package chaincode
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sync/atomic"
 	"time"
@@ -83,17 +84,17 @@ func NewQueryAction(args *QueryArgs) (*queryAction, error) {
 	return action, err
 }
 
-func (action *queryAction) Query() error {
+func (action *queryAction) Query() (string, error) {
 	channelClient, err := action.ChannelClient()
 	if err != nil {
-		return fmt.Errorf("Error getting channel client: %v", err)
+		return "", fmt.Errorf("Error getting channel client: %v", err)
 	}
 
 	argBytes := []byte(common.Config().Args())
 	args := &common.ArgStruct{}
 	err = json.Unmarshal(argBytes, args)
 	if err != nil {
-		return fmt.Errorf("Error unmarshaling JSON arg string: %v", err)
+		return "", fmt.Errorf("Error unmarshaling JSON arg string: %v", err)
 	}
 
 	if common.Config().Iterations() > 1 {
@@ -112,12 +113,14 @@ func (action *queryAction) Query() error {
 		response, err := action.doQuery(channelClient, args.Func, args.Args)
 		if err != nil {
 			fmt.Printf("Error invoking chaincode: %v\n", err)
+			return "", fmt.Errorf("Error invoking chaincode: %v", err)
 		} else {
 			fmt.Printf("***** Response: %s\n", response)
+			return string(response), nil
 		}
 	}
 
-	return nil
+	return "", errors.New("Error query chaincode")
 }
 
 func (action *queryAction) queryMultiple(channel apifabclient.Channel, fctn string, args []string, iterations int) {

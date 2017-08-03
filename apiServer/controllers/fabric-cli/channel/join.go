@@ -19,23 +19,31 @@ func (u *ChannelController) JoinChannel() {
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-		res["status"] = 301
+		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := channel.NewChannelJoinAction(&req)
 		if err != nil {
 			fmt.Printf("ChannelJoin Initialize error...")
-			res["status"] = 303
+			res["status"] = 80402
 			res["message"] = fmt.Sprintf("ChannelJoin action error [%s]", err)
 		} else {
 			err = action.Execute()
 			if err != nil {
-				res["status"] = 303
+				res["status"] = 80403
 				res["message"] = fmt.Sprintf("ChannelJoin execute error [%s]", err)
 			} else {
-				res["status"] = 200
-				res["message"] = fmt.Sprintf("Peer [%s] Joinchannel [%s] successfully", req.PeerUrl, req.ChannelID)
+				res["status"] = 80200
+				if req.ChannelID == "" && req.PeerUrl == "" {
+					res["message"] = fmt.Sprintf("All peers Joinchannel [mychannel] successfully")
+				} else if req.ChannelID == "" && req.PeerUrl != "" {
+					res["message"] = fmt.Sprintf("Peer [%s] Joinchannel [mychannel] successfully", req.PeerUrl)
+				} else if req.ChannelID != "" && req.PeerUrl == "" {
+					res["message"] = fmt.Sprintf("All peers Joinchannel [%s] successfully", req.ChannelID)
+				} else {
+					res["message"] = fmt.Sprintf("Peer [%s] Joinchannel [%s] successfully", req.PeerUrl, req.ChannelID)
+				}
 			}
 		}
 	}

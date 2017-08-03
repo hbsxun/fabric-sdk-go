@@ -19,22 +19,22 @@ func (u *ChaincodeController) InstallCC() {
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		fmt.Printf("Unmarshal failed [%s]", err)
-		res["status"] = 301
+		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := chaincode.NewInstallAction(&req)
 		if err != nil {
 			fmt.Printf("InstallCC Initialize error...")
-			res["status"] = 304
+			res["status"] = 80402
 			res["message"] = fmt.Sprintf("InstallCC action error [%s]", err)
 		} else {
 			err = action.Execute()
 			if err != nil {
-				res["status"] = 304
+				res["status"] = 80403
 				res["message"] = fmt.Sprintf("InstallCC execute error [%s]", err)
 			} else {
-				res["status"] = 200
+				res["status"] = 80200
 				res["message"] = fmt.Sprintf("Install chaincode [%s] successfully", req.ChaincodeID)
 			}
 		}

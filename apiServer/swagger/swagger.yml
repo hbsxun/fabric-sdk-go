@@ -2,11 +2,6 @@ swagger: "2.0"
 info: {}
 basePath: /fabric
 paths:
-<<<<<<< HEAD
-  /chaincode/ChaincodeInfo:
-    post:
-      tags:
-=======
   /cert/Enroll:
     post:
       tags:
@@ -46,7 +41,6 @@ paths:
   /chaincode/ChaincodeInfo:
     post:
       tags:
->>>>>>> upstream/v1.0.0
       - chaincode
       description: ChaincodeInfo chaincode on peers
       operationId: ChaincodeController.ChaincodeInfo
@@ -57,10 +51,9 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/chaincode.ChaincodeInfoArgs'
-<<<<<<< HEAD
       responses:
         "200":
-          description: '{string} string'
+          description: '{body}'
         "403":
           description: body is empty
   /chaincode/InstallCC:
@@ -85,35 +78,6 @@ paths:
     post:
       tags:
       - chaincode
-=======
-      responses:
-        "200":
-          description: '{string} string'
-        "403":
-          description: body is empty
-  /chaincode/InstallCC:
-    post:
-      tags:
-      - chaincode
-      description: InstallCC on peers
-      operationId: ChaincodeController.InstallCC
-      parameters:
-      - in: body
-        name: body
-        description: body for chaincode Description
-        required: true
-        schema:
-          $ref: '#/definitions/chaincode.InstallCCArgs'
-      responses:
-        "200":
-          description: '{string}'
-        "403":
-          description: body is empty
-  /chaincode/InstantiateCC:
-    post:
-      tags:
-      - chaincode
->>>>>>> upstream/v1.0.0
       description: Instantiate chaincode on peers
       operationId: ChaincodeController.InstantiateCC
       parameters:
@@ -161,7 +125,7 @@ paths:
           $ref: '#/definitions/chaincode.QueryArgs'
       responses:
         "200":
-          description: '{string} txId'
+          description: '{body}'
         "403":
           description: body is empty
   /channel/CreateChannel:
@@ -215,7 +179,7 @@ paths:
           $ref: '#/definitions/query.QueryBlockArgs'
       responses:
         "200":
-          description: '{string} []string'
+          description: '{body}'
         "403":
           description: body is empty
   /query/QueryChainInfo:
@@ -251,7 +215,7 @@ paths:
           $ref: '#/definitions/query.QueryChannelsArgs'
       responses:
         "200":
-          description: '{string} string'
+          description: '{body}'
         "403":
           description: body is empty
   /query/QueryInstalledChaincodes:
@@ -291,136 +255,6 @@ paths:
         "403":
           description: body is empty
 definitions:
-<<<<<<< HEAD
-  chaincode.ChaincodeInfoArgs:
-    title: ChaincodeInfoArgs
-    type: object
-    properties:
-      chaincodeId:
-        type: string
-      channelId:
-        type: string
-      peerUrl:
-        type: string
-  chaincode.InstallCCArgs:
-    title: InstallCCArgs
-    type: object
-    properties:
-      chaincodeID:
-        type: string
-      chaincodePath:
-        type: string
-      chaincodeVersion:
-        type: string
-      channelID:
-        type: string
-      peerUrl:
-        type: string
-  chaincode.InstantiateArgs:
-    title: InstantiateArgs
-    type: object
-    properties:
-      args:
-        type: array
-        items:
-          type: string
-      chaincodeID:
-        type: string
-      chaincodePath:
-        type: string
-      chaincodeVersion:
-        type: string
-      channelID:
-        type: string
-      peerUrl:
-        type: string
-  chaincode.InvokeArgs:
-    title: InvokeArgs
-    type: object
-    properties:
-      args:
-        type: array
-        items:
-          type: string
-      chaincodeId:
-        type: string
-      channelId:
-        type: string
-      peerUrl:
-        type: string
-  chaincode.QueryArgs:
-    title: QueryArgs
-    type: object
-    properties:
-      args:
-        type: array
-        items:
-          type: string
-      chaincodeId:
-        type: string
-      channelID:
-        type: string
-      peerUrl:
-        type: string
-  channel.ChannelCreateArgs:
-    title: ChannelCreateArgs
-    type: object
-    properties:
-      channelId:
-        type: string
-      ordererUrl:
-        type: string
-      txFile:
-        type: string
-  channel.ChannelJoinArgs:
-    title: ChannelJoinArgs
-    type: object
-    properties:
-      channelId:
-        type: string
-      ordererUrl:
-        type: string
-      peerUrl:
-        type: string
-  query.QueryBlockArgs:
-    title: QueryBlockArgs
-    type: object
-    properties:
-      blockHash:
-        type: string
-      blockNum:
-        type: string
-      channelId:
-        type: string
-      peerUrl:
-        type: string
-      traverse:
-        type: string
-  query.QueryChainInfoArgs:
-    title: QueryChainInfoArgs
-    type: object
-    properties:
-      channelId:
-        type: string
-      peerUrl:
-        type: string
-  query.QueryChannelsArgs:
-    title: QueryChannelsArgs
-    type: object
-    properties:
-      peerUrl:
-        type: string
-  query.QueryInstalledArgs:
-    title: QueryInstalledArgs
-    type: object
-    properties:
-      peerUrl:
-        type: string
-  query.QueryTxArgs:
-    title: QueryTxArgs
-    type: object
-    properties:
-=======
   cert.Attribute:
     title: Attribute
     type: object
@@ -461,16 +295,10 @@ definitions:
     properties:
       chaincodeId:
         type: string
->>>>>>> upstream/v1.0.0
       channelId:
         type: string
       peerUrl:
         type: string
-<<<<<<< HEAD
-      txId:
-        type: string
-tags:
-=======
   chaincode.InstallCCArgs:
     title: InstallCCArgs
     type: object
@@ -489,7 +317,10 @@ tags:
     title: InstantiateArgs
     type: object
     properties:
-      args: {}
+      args:
+        type: array
+        items:
+          type: string
       chaincodeID:
         type: string
       chaincodePath:
@@ -504,7 +335,10 @@ tags:
     title: InvokeArgs
     type: object
     properties:
-      args: {}
+      args:
+        type: array
+        items:
+          type: string
       chaincodeId:
         type: string
       channelId:
@@ -515,7 +349,10 @@ tags:
     title: QueryArgs
     type: object
     properties:
-      args: {}
+      args:
+        type: array
+        items:
+          type: string
       chaincodeId:
         type: string
       channelID:
@@ -590,7 +427,6 @@ tags:
 - name: cert
   description: |
     Operations about Register
->>>>>>> upstream/v1.0.0
 - name: channel
   description: |
     Operations about ChannelCreate

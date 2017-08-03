@@ -34,7 +34,7 @@ func queryBlock(args *QueryBlockArgs, t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = action.Execute(); err != nil {
+	if _, err = action.Execute(); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -44,7 +44,7 @@ func queryChannels(args *QueryChannelsArgs, t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = action.Execute(); err != nil {
+	if _, err = action.Execute(); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -54,7 +54,7 @@ func queryChainInfo(args *QueryChainInfoArgs, t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = action.Execute(); err != nil {
+	if _, err = action.Execute(); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -63,7 +63,7 @@ func queryTx(args *QueryTxArgs, t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = action.Execute(); err != nil {
+	if _, err = action.Execute(); err != nil {
 		t.Fatal(err)
 	}
 }

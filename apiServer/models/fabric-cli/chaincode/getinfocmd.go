@@ -78,10 +78,10 @@ func NewChaincodeInfoAction(iargs *ChaincodeInfoArgs) (*getInfoAction, error) {
 	return action, err
 }
 
-func (action *getInfoAction) Execute() error {
+func (action *getInfoAction) Execute() (*ccprovider.ChaincodeData, error) {
 	channel, err := action.ChannelClient()
 	if err != nil {
-		return fmt.Errorf("Error retrieving channel client: %v", err)
+		return nil, fmt.Errorf("Error retrieving channel client: %v", err)
 	}
 
 	var args []string
@@ -91,7 +91,7 @@ func (action *getInfoAction) Execute() error {
 	peer := action.Peers()[0]
 	orgID, err := action.OrgOfPeer(peer.URL())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	context := action.SetUserContext(action.OrgUser(orgID))
@@ -101,16 +101,16 @@ func (action *getInfoAction) Execute() error {
 
 	cdbytes, err := QueryChaincode(channel, []apifabclient.Peer{peer}, lifecycleSCC, common.Config().ChannelID(), "getccdata", args)
 	if err != nil {
-		return fmt.Errorf("Error querying for chaincode info: %v", err)
+		return nil, fmt.Errorf("Error querying for chaincode info: %v", err)
 	}
 
 	ccData := &ccprovider.ChaincodeData{}
 	err = proto.Unmarshal(cdbytes, ccData)
 	if err != nil {
-		return fmt.Errorf("Error unmarshalling chaincode data: %v", err)
+		return nil, fmt.Errorf("Error unmarshalling chaincode data: %v", err)
 	}
 
 	action.Printer().PrintChaincodeData(ccData)
 
-	return nil
+	return ccData, nil
 }

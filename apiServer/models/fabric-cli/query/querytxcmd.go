@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/spf13/pflag"
 )
 
@@ -69,10 +70,10 @@ func NewQueryTXAction(args *QueryTxArgs) (*queryTXAction, error) {
 	return action, err
 }
 
-func (action *queryTXAction) Execute() error {
+func (action *queryTXAction) Execute() (*pb.ProcessedTransaction, error) {
 	channelClient, err := action.ChannelClient()
 	if err != nil {
-		return fmt.Errorf("Error getting channel client: %v", err)
+		return nil, fmt.Errorf("Error getting channel client: %v", err)
 	}
 
 	context := action.SetUserContext(action.OrgAdminUser(common.Config().OrgID()))
@@ -80,11 +81,11 @@ func (action *queryTXAction) Execute() error {
 
 	tx, err := channelClient.QueryTransaction(common.Config().TxID())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	fmt.Printf("Transaction %s in chain %s\n", common.Config().TxID(), common.Config().ChannelID())
 	action.Printer().PrintProcessedTransaction(tx)
 
-	return nil
+	return tx, nil
 }

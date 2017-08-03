@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/common"
+	fabricCommon "github.com/hyperledger/fabric/protos/common"
 	"github.com/spf13/pflag"
 )
 
@@ -64,10 +65,10 @@ func NewQueryChainInfoAction(args *QueryChainInfoArgs) (*queryInfoAction, error)
 	return action, err
 }
 
-func (action *queryInfoAction) Execute() error {
+func (action *queryInfoAction) Execute() (*fabricCommon.BlockchainInfo, error) {
 	channelClient, err := action.ChannelClient()
 	if err != nil {
-		return fmt.Errorf("Error getting channel client: %v", err)
+		return nil, fmt.Errorf("Error getting channel client: %v", err)
 	}
 
 	context := action.SetUserContext(action.OrgAdminUser(common.Config().OrgID()))
@@ -75,10 +76,10 @@ func (action *queryInfoAction) Execute() error {
 
 	info, err := channelClient.QueryInfo()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	action.Printer().PrintBlockchainInfo(info)
 
-	return nil
+	return info, nil
 }

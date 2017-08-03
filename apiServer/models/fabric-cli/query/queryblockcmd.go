@@ -51,6 +51,8 @@ func getQueryBlockCmd() *cobra.Command {
 	return queryBlockCmd
 }
 */
+var blocksSlice []*fabricCommon.Block
+
 type QueryBlockArgs struct {
 	ChannelID string `json:"channelId"`
 	BlockNum  string `json:"blockNum"`
@@ -76,10 +78,10 @@ func NewQueryBlockAction(args *QueryBlockArgs) (*queryBlockAction, error) {
 	return action, err
 }
 
-func (action *queryBlockAction) Execute() error {
+func (action *queryBlockAction) Execute() ([]*fabricCommon.Block, error) {
 	channelClient, err := action.ChannelClient()
 	if err != nil {
-		return fmt.Errorf("Error getting channel client: %v", err)
+		return nil, fmt.Errorf("Error getting channel client: %v", err)
 	}
 
 	context := action.SetUserContext(action.OrgAdminUser(common.Config().OrgID()))
@@ -90,29 +92,29 @@ func (action *queryBlockAction) Execute() error {
 		var err error
 		block, err = channelClient.QueryBlock(common.Config().BlockNum())
 		if err != nil {
-			return err
+			return nil, err
 		}
 	} else if common.Config().BlockHash() != "" {
 		var err error
 
 		hashBytes, err := common.Base64URLDecode(common.Config().BlockHash())
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		block, err = channelClient.QueryBlockByHash(hashBytes)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	} else {
-		return fmt.Errorf("must specify either a block number of a block hash")
+		return nil, fmt.Errorf("must specify either a block number of a block hash")
 	}
 
 	action.Printer().PrintBlock(block)
-
+	blocksSlice = append(blocksSlice, block)
 	action.traverse(channelClient, block, common.Config().Traverse()-1)
 
-	return nil
+	return blocksSlice, nil
 }
 
 func (action *queryBlockAction) traverse(chain apifabclient.Channel, currentBlock *fabricCommon.Block, num int) error {
@@ -126,7 +128,7 @@ func (action *queryBlockAction) traverse(chain apifabclient.Channel, currentBloc
 	}
 
 	action.Printer().PrintBlock(block)
-
+	blocksSlice = append(blocksSlice, block)
 	if block.Header.PreviousHash != nil {
 		return action.traverse(chain, block, num-1)
 	}
