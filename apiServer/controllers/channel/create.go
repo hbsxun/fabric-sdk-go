@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/channel"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/channel"
 )
 
 // Operations about ChannelCreate

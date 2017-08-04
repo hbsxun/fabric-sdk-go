@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/cert"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabricca/cert"
 )
 
 // @Title Enroll

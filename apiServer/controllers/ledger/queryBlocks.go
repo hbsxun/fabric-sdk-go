@@ -5,8 +5,8 @@ import (
 
 	"encoding/json"
 
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/query"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/ledger"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/query"
 )
 
 // @Title QueryBlocks

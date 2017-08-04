@@ -47,6 +47,14 @@ type UpdateUserArgs struct {
 	Phone string `json:"phone"`
 }
 
+//temporary data structure, will use hardware device in the fulture.
+type UserIdentity struct {
+	UserId       int    `json:"userId"`
+	UserName     string `json:"userName"`
+	EnrollName   string `json:"enrollName"`
+	EnrollSecret string `json:"enrollSecret"`
+}
+
 /*
 type Identity struct {
 	Id          int    `json:"id"`

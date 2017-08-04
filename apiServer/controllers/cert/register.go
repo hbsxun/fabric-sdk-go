@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/cert"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabricca/cert"
 )
 
 // Operations about Register

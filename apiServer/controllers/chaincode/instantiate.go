@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/chaincode"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/chaincode"
 )
 
 // Operations about Instantiate

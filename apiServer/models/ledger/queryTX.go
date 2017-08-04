@@ -7,7 +7,7 @@ import (
 	"math/big"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/query"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/query"
 	"github.com/hyperledger/fabric/protos/common"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
@@ -84,7 +84,7 @@ type ConfigPolicyInfo struct {
 	ModPolicy string      `json:"modPolicy"`
 	Version   string      `json:"version"`
 	Detail    interface{} `json:"detail"`
-}*/        
+}*/
 
 func QueryTX(queryTxArgs *query.QueryTxArgs) (*TxInfo, error) {
 	queryTxAction, err := query.NewQueryTXAction(queryTxArgs)

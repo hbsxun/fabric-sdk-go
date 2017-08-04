@@ -5,10 +5,10 @@
     },
     "basePath": "/fabric",
     "paths": {
-        "/certificate/Enroll": {
+        "/cert/Enroll": {
             "post": {
                 "tags": [
-                    "certificate"
+                    "cert"
                 ],
                 "description": "Get Key and Ecert",
                 "operationId": "CertificateController.Enroll",
@@ -19,7 +19,7 @@
                         "description": "body for Ecert content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/cert.EnrollArgs"
+                            "$ref": "#/definitions/fabricca.EnrollArgs"
                         }
                     }
                 ],
@@ -33,10 +33,10 @@
                 }
             }
         },
-        "/certificate/Register": {
+        "/cert/Register": {
             "post": {
                 "tags": [
-                    "certificate"
+                    "cert"
                 ],
                 "description": "Get a OTP secret",
                 "operationId": "CertificateController.Register",
@@ -47,7 +47,7 @@
                         "description": "body for Secret content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/cert.RegisterArgs"
+                            "$ref": "#/definitions/fabricca.RegisterArgs"
                         }
                     }
                 ],
@@ -61,10 +61,10 @@
                 }
             }
         },
-        "/initialize/": {
+        "/initFabric/": {
             "post": {
                 "tags": [
-                    "initialize"
+                    "initFabric"
                 ],
                 "description": "create channel, join channel, and instantiate chaincode",
                 "operationId": "InitializeController.Initialize",
@@ -99,86 +99,6 @@
                 "responses": {
                     "200": {
                         "description": "{string}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/ledger/QueryChannels/{peerUrl}": {
-            "get": {
-                "tags": [
-                    "ledger"
-                ],
-                "description": "Query channels the peerUrl join",
-                "operationId": "LedgerController.QueryChannels",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "peerUrl",
-                        "description": "The URL of peer to query",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/ledger/QueryInfo": {
-            "post": {
-                "tags": [
-                    "ledger"
-                ],
-                "description": "Query information of peerUrl in the channel",
-                "operationId": "LedgerController.QueryInfo",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Query BlockChain Info",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/query.QueryInfoArgs"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/ledger/QueryInstalledChaincodes/{peerUrl}": {
-            "get": {
-                "tags": [
-                    "ledger"
-                ],
-                "description": "Query chaincodes installed on the peerUrl",
-                "operationId": "LedgerController.QueryInstalledChaincodes",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "peerUrl",
-                        "description": "The URL of peer to query",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string"
                     },
                     "403": {
                         "description": "body is empty"
@@ -627,7 +547,7 @@
                 }
             }
         },
-        "cert.Attribute": {
+        "fabricca.Attribute": {
             "title": "Attribute",
             "type": "object",
             "properties": {
@@ -639,7 +559,7 @@
                 }
             }
         },
-        "cert.EnrollArgs": {
+        "fabricca.EnrollArgs": {
             "title": "EnrollArgs",
             "type": "object",
             "properties": {
@@ -651,7 +571,7 @@
                 }
             }
         },
-        "cert.RegisterArgs": {
+        "fabricca.RegisterArgs": {
             "title": "RegisterArgs",
             "type": "object",
             "properties": {
@@ -661,7 +581,7 @@
                 "attributes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/cert.Attribute"
+                        "$ref": "#/definitions/fabricca.Attribute"
                     }
                 },
                 "maxEnrollments": {
@@ -695,18 +615,6 @@
                 "traverse": {
                     "type": "integer",
                     "format": "int64"
-                }
-            }
-        },
-        "query.QueryInfoArgs": {
-            "title": "QueryInfoArgs",
-            "type": "object",
-            "properties": {
-                "ChannelID": {
-                    "type": "string"
-                },
-                "PeerUrl": {
-                    "type": "string"
                 }
             }
         },
@@ -789,7 +697,7 @@
             "description": "Operations about Users\n"
         },
         {
-            "name": "initialize",
+            "name": "initFabric",
             "description": "Operations about Initialize\n"
         },
         {
@@ -797,7 +705,7 @@
             "description": "Operations about Invoke\n"
         },
         {
-            "name": "certificate",
+            "name": "cert",
             "description": "Operations about Register\n"
         }
     ]

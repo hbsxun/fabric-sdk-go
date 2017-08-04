@@ -2,10 +2,10 @@ swagger: "2.0"
 info: {}
 basePath: /fabric
 paths:
-  /certificate/Enroll:
+  /cert/Enroll:
     post:
       tags:
-      - certificate
+      - cert
       description: Get Key and Ecert
       operationId: CertificateController.Enroll
       parameters:
@@ -14,16 +14,16 @@ paths:
         description: body for Ecert content
         required: true
         schema:
-          $ref: '#/definitions/cert.EnrollArgs'
+          $ref: '#/definitions/fabricca.EnrollArgs'
       responses:
         "200":
           description: '{string}'
         "403":
           description: body is empty
-  /certificate/Register:
+  /cert/Register:
     post:
       tags:
-      - certificate
+      - cert
       description: Get a OTP secret
       operationId: CertificateController.Register
       parameters:
@@ -32,16 +32,16 @@ paths:
         description: body for Secret content
         required: true
         schema:
-          $ref: '#/definitions/cert.RegisterArgs'
+          $ref: '#/definitions/fabricca.RegisterArgs'
       responses:
         "200":
           description: '{string} string'
         "403":
           description: body is empty
-  /initialize/:
+  /initFabric/:
     post:
       tags:
-      - initialize
+      - initFabric
       description: create channel, join channel, and instantiate chaincode
       operationId: InitializeController.Initialize
       responses:
@@ -65,58 +65,6 @@ paths:
       responses:
         "200":
           description: '{string}'
-        "403":
-          description: body is empty
-  /ledger/QueryChannels/{peerUrl}:
-    get:
-      tags:
-      - ledger
-      description: Query channels the peerUrl join
-      operationId: LedgerController.QueryChannels
-      parameters:
-      - in: path
-        name: peerUrl
-        description: The URL of peer to query
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} string'
-        "403":
-          description: body is empty
-  /ledger/QueryInfo:
-    post:
-      tags:
-      - ledger
-      description: Query information of peerUrl in the channel
-      operationId: LedgerController.QueryInfo
-      parameters:
-      - in: body
-        name: body
-        description: body for Query BlockChain Info
-        required: true
-        schema:
-          $ref: '#/definitions/query.QueryInfoArgs'
-      responses:
-        "200":
-          description: '{string} string'
-        "403":
-          description: body is empty
-  /ledger/QueryInstalledChaincodes/{peerUrl}:
-    get:
-      tags:
-      - ledger
-      description: Query chaincodes installed on the peerUrl
-      operationId: LedgerController.QueryInstalledChaincodes
-      parameters:
-      - in: path
-        name: peerUrl
-        description: The URL of peer to query
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} string'
         "403":
           description: body is empty
   /ledger/QueryTX:
@@ -406,7 +354,7 @@ definitions:
         type: string
       newOwner:
         type: string
-  cert.Attribute:
+  fabricca.Attribute:
     title: Attribute
     type: object
     properties:
@@ -414,7 +362,7 @@ definitions:
         type: string
       value:
         type: string
-  cert.EnrollArgs:
+  fabricca.EnrollArgs:
     title: EnrollArgs
     type: object
     properties:
@@ -422,7 +370,7 @@ definitions:
         type: string
       secret:
         type: string
-  cert.RegisterArgs:
+  fabricca.RegisterArgs:
     title: RegisterArgs
     type: object
     properties:
@@ -431,7 +379,7 @@ definitions:
       attributes:
         type: array
         items:
-          $ref: '#/definitions/cert.Attribute'
+          $ref: '#/definitions/fabricca.Attribute'
       maxEnrollments:
         type: string
       name:
@@ -454,14 +402,6 @@ definitions:
       traverse:
         type: integer
         format: int64
-  query.QueryInfoArgs:
-    title: QueryInfoArgs
-    type: object
-    properties:
-      ChannelID:
-        type: string
-      PeerUrl:
-        type: string
   query.QueryTxArgs:
     title: QueryTxArgs
     type: object
@@ -515,12 +455,12 @@ tags:
 - name: user
   description: |
     Operations about Users
-- name: initialize
+- name: initFabric
   description: |
     Operations about Initialize
 - name: model
   description: |
     Operations about Invoke
-- name: certificate
+- name: cert
   description: |
     Operations about Register

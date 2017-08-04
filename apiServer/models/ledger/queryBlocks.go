@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/query"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/query"
 )
 
 type BlockInfo struct {

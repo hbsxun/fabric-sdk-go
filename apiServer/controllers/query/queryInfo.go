@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/query"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/query"
 )
 
 // Operations about QueryInfo

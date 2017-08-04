@@ -3,7 +3,6 @@ package routers
 import (
 	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/assetApp"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/cert"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/ledger"
 	//"github.com/hyperledger/fabric-sdk-go/apiServer/controllers/channel"
 )
@@ -11,90 +10,81 @@ import (
 func init() {
 	ns := beego.NewNamespace("/fabric",
 
-		/*beego.NSNamespace("/enroll",
-				beego.NSInclude(
-					&cert.EnrollController{},
+		/*
+				beego.NSNamespace("/install",
+					beego.NSInclude(
+						&chaincode.InstallCCController{},
+					),
 				),
-			),
-			beego.NSNamespace("/register",
-				beego.NSInclude(
-					&cert.RegisterController{},
+				beego.NSNamespace("/instantiate",
+					beego.NSInclude(
+						&chaincode.InstantiateController{},
+					),
 				),
-			),
+				beego.NSNamespace("/invokeCC",
+					beego.NSInclude(
+						&chaincode.InvokeController{},
+					),
+				),
+				beego.NSNamespace("/queryCC",
+					beego.NSInclude(
+						&chaincode.QueryController{},
+					),
+				),
+				beego.NSNamespace("/chaincodeInfo",
+					beego.NSInclude(
+						&chaincode.ChaincodeInfoController{},
+					),
+				),
 
-			beego.NSNamespace("/install",
-				beego.NSInclude(
-					&chaincode.InstallCCController{},
+				beego.NSNamespace("/createChannel",
+					beego.NSInclude(
+						&channel.ChannelCreateController{},
+					),
 				),
-			),
-			beego.NSNamespace("/instantiate",
-				beego.NSInclude(
-					&chaincode.InstantiateController{},
+				beego.NSNamespace("/joinChannel",
+					beego.NSInclude(
+						&channel.ChannelJoinController{},
+					),
 				),
-			),
-			beego.NSNamespace("/invokeCC",
-				beego.NSInclude(
-					&chaincode.InvokeController{},
-				),
-			),
-			beego.NSNamespace("/queryCC",
-				beego.NSInclude(
-					&chaincode.QueryController{},
-				),
-			),
-			beego.NSNamespace("/chaincodeInfo",
-				beego.NSInclude(
-					&chaincode.ChaincodeInfoController{},
-				),
-			),
 
-			beego.NSNamespace("/createChannel",
-				beego.NSInclude(
-					&channel.ChannelCreateController{},
+				beego.NSNamespace("/queryInstalled",
+					beego.NSInclude(
+						&query.QueryInstalledController{},
+					),
 				),
-			),
-			beego.NSNamespace("/joinChannel",
-				beego.NSInclude(
-					&channel.ChannelJoinController{},
+				beego.NSNamespace("/queryBlock",
+					beego.NSInclude(
+						&query.QueryBlockController{},
+					),
 				),
-			),
-
-			beego.NSNamespace("/queryInstalled",
-				beego.NSInclude(
-					&query.QueryInstalledController{},
+				beego.NSNamespace("/queryChannels",
+					beego.NSInclude(
+						&query.QueryChannelsController{},
+					),
 				),
-			),
-			beego.NSNamespace("/queryBlock",
-				beego.NSInclude(
-					&query.QueryBlockController{},
+				beego.NSNamespace("/queryBlockchainInfo",
+					beego.NSInclude(
+						&query.QueryInfoController{},
+					),
 				),
-			),
-			beego.NSNamespace("/queryChannels",
+			beego.NSNamespace("/user",
 				beego.NSInclude(
-					&query.QueryChannelsController{},
+					&user.UserController{},
 				),
-			),
-			beego.NSNamespace("/queryBlockchainInfo",
-				beego.NSInclude(
-					&query.QueryInfoController{},
-				),
-			),
-		beego.NSNamespace("/user",
-			beego.NSInclude(
-				&user.UserController{},
-			),
-		),*/
+			),*/
 		beego.NSNamespace("/ledger",
 			beego.NSInclude(
 				&ledger.LedgerController{},
 			),
 		),
+
 		beego.NSNamespace("/user",
 			beego.NSInclude(
 				&assetApp.UserManageController{},
 			),
 		),
-		beego.NSNamespace("/initialize",
+		beego.NSNamespace("/initFabric",
 			beego.NSInclude(
 				&assetApp.InitializeController{},
 			),
@@ -104,9 +94,9 @@ func init() {
 				&assetApp.AssetController{},
 			),
 		),
-		beego.NSNamespace("/certificate",
+		beego.NSNamespace("/cert",
 			beego.NSInclude(
-				&cert.CertificateController{},
+				&assetApp.CertificateController{},
 			),
 		),
 	)
