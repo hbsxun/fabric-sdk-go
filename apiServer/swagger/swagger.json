@@ -257,6 +257,183 @@
                 }
             }
         },
+        "/initialize/": {
+            "post": {
+                "tags": [
+                    "initialize"
+                ],
+                "description": "create channel, join channel, and instantiate chaincode",
+                "operationId": "InitializeController.Initialize",
+                "responses": {
+                    "200": {
+                        "description": "{string} install and instantiate chaincode successfully"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/model/AddModel": {
+            "post": {
+                "tags": [
+                    "model"
+                ],
+                "description": "Invoke chaincode on peers",
+                "operationId": "AssetController.AddModel",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for chaincode Description",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/assetApp.AddModelArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} txId"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/model/DeleteModel/{ModelName}": {
+            "put": {
+                "tags": [
+                    "model"
+                ],
+                "description": "delete model",
+                "operationId": "AssetController.DeleteModel",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ModelName",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} txId"
+                    },
+                    "403": {
+                        "description": ":ModelName is empty"
+                    }
+                }
+            }
+        },
+        "/model/GetHistoryForModel/{ModelName}": {
+            "get": {
+                "tags": [
+                    "model"
+                ],
+                "description": "get history for model",
+                "operationId": "AssetController.GetHistoryForModel",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ModelName",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} ModelHistory"
+                    },
+                    "403": {
+                        "description": ":ModelName is empty"
+                    }
+                }
+            }
+        },
+        "/model/QueryModel/{ModelName}": {
+            "get": {
+                "tags": [
+                    "model"
+                ],
+                "description": "get model by name",
+                "operationId": "AssetController.QueryModel",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ModelName",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{object}assetApp.AddModelArgs"
+                    },
+                    "403": {
+                        "description": ":ModelName is empty"
+                    }
+                }
+            }
+        },
+        "/model/QueryModelsByOwner/{owner}": {
+            "get": {
+                "tags": [
+                    "model"
+                ],
+                "description": "query models by owner",
+                "operationId": "AssetController.QueryModelsByOwner",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "owner",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} ModelList"
+                    },
+                    "403": {
+                        "description": ":owner is empty"
+                    }
+                }
+            }
+        },
+        "/model/TransferModel": {
+            "put": {
+                "tags": [
+                    "model"
+                ],
+                "description": "Invoke chaincode on peers",
+                "operationId": "AssetController.TransferModel",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for chaincode content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/assetApp.TransferModelArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} txId"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/query/QueryBlock": {
             "post": {
                 "tags": [
@@ -396,9 +573,260 @@
                     }
                 }
             }
+        },
+        "/user/UpdatePasswd/{name}/{oldPassword}/{newPassword}": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "description": "update password",
+                "operationId": "UserManageController.UpdatePasswd",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "name",
+                        "description": "The name of user",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "oldPassword",
+                        "description": "The old password of user",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "newPassword",
+                        "description": "The new password of user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string}"
+                    },
+                    "403": {
+                        "description": ":name is empty"
+                    }
+                }
+            }
+        },
+        "/user/VerifyUser": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "verify user",
+                "operationId": "UserManageController.VerifyUser",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user login",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.Secret"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} verify successfully"
+                    },
+                    "403": {
+                        "description": "user not exist or login failed"
+                    }
+                }
+            }
+        },
+        "/user/addUser": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "register user",
+                "operationId": "UserManageController.Register",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{int} user.User.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/user/getUserById/{userId}": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "get user by userid",
+                "operationId": "UserManageController.GetUserById",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{object}user.User"
+                    },
+                    "403": {
+                        "description": ":userId is empty"
+                    }
+                }
+            }
+        },
+        "/user/getUserByName/{userName}": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "get user by username",
+                "operationId": "UserManageController.GetUserByName",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userName",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{object}user.User"
+                    },
+                    "403": {
+                        "description": ":userName is empty"
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "logout",
+                "operationId": "UserManageController.Logout",
+                "responses": {
+                    "200": {
+                        "description": "{string}logout successfully"
+                    },
+                    "403": {
+                        "description": ":logout failed"
+                    }
+                }
+            }
+        },
+        "/user/updateUser": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "description": "update the user",
+                "operationId": "UserManageController.UpdateInfo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UpdateUserArgs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} update successfully"
+                    },
+                    "403": {
+                        "description": ":uid is not int"
+                    }
+                }
+            }
+        },
+        "/user/userLogin": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "Logs user into the system",
+                "operationId": "UserManageController.Login",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user login",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.Secret"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} login successfully"
+                    },
+                    "403": {
+                        "description": "user not exist or login failed"
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "assetApp.AddModelArgs": {
+            "title": "AddModelArgs",
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                }
+            }
+        },
+        "assetApp.TransferModelArgs": {
+            "title": "TransferModelArgs",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "newOwner": {
+                    "type": "string"
+                }
+            }
+        },
         "cert.Attribute": {
             "title": "Attribute",
             "type": "object",
@@ -650,6 +1078,62 @@
                     "type": "string"
                 }
             }
+        },
+        "user.Secret": {
+            "title": "Secret",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "passwd": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UpdateUserArgs": {
+            "title": "UpdateUserArgs",
+            "type": "object",
+            "properties": {
+                "mail": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.User": {
+            "title": "User",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "passwd": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
         }
     },
     "tags": [
@@ -668,6 +1152,18 @@
         {
             "name": "query",
             "description": "Operations about QueryBlock\n"
+        },
+        {
+            "name": "user",
+            "description": "Operations about Users\n"
+        },
+        {
+            "name": "initialize",
+            "description": "Operations about Initialize\n"
+        },
+        {
+            "name": "model",
+            "description": "Operations about Invoke\n"
         }
     ]
 }
