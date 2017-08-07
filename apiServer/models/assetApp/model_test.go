@@ -20,7 +20,7 @@ func TestChaincode(t *testing.T) {
 
 func invoke(modelName string, t *testing.T) {
 	//add asset
-	if _, err := AddModel(&AddModelArgs{
+	if err := AddModel(&AddModelArgs{
 		Name:  modelName,
 		Desc:  "desc",
 		Price: "13.14",
@@ -30,7 +30,7 @@ func invoke(modelName string, t *testing.T) {
 	}
 
 	//move asset
-	if _, err := TransferModel(&TransferModelArgs{
+	if err := TransferModel(&TransferModelArgs{
 		Name:     modelName,
 		NewOwner: "bob",
 	}); err != nil {

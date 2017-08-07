@@ -1,12 +1,13 @@
 package assetApp
 
 import (
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/chaincode"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/chaincode"
 )
 
 const (
-	defaultChannelID   = "testchannel"
+	defaultChannelID   = "mychannel"
 	defaultChaincodeID = "model_cc"
+	defaultPeerUrl     = "localhost:7051"
 )
 
 //Asset = Model in model_cc chaincode
@@ -22,9 +23,10 @@ type TransferModelArgs struct {
 }
 
 //AddModel returns a transaction id
-func AddModel(model *AddModelArgs) (string, error) {
+func AddModel(model *AddModelArgs) error {
 	args := []string{model.Name, model.Desc, model.Price, model.Owner}
 	invokeArgs := &chaincode.InvokeArgs{
+		PeerUrl:     defaultPeerUrl,
 		ChannelID:   defaultChannelID,
 		ChaincodeID: defaultChaincodeID,
 		Args:        append([]string{"addModel"}, args...),
@@ -32,18 +34,19 @@ func AddModel(model *AddModelArgs) (string, error) {
 	invokeAction, err := chaincode.NewInvokeAction(invokeArgs)
 	if err != nil {
 		appLogger.Debugf("NewInvokeAction err [%s]\n", err.Error())
-		return "", err
+		return err
 	}
-	txId, err := invokeAction.Execute()
+	err = invokeAction.Execute()
 	if err != nil {
 		appLogger.Debugf("invokeAction err [%s]\n", err.Error())
-		return "", err
+		return err
 	}
-	return txId, nil
+	return nil
 }
 
 func QueryModel(modelName string) (string, error) {
 	queryArgs := &chaincode.QueryArgs{
+		PeerUrl:     defaultPeerUrl,
 		ChannelID:   defaultChannelID,
 		ChaincodeID: defaultChaincodeID,
 		Args:        append([]string{"queryModel"}, modelName),
@@ -53,7 +56,7 @@ func QueryModel(modelName string) (string, error) {
 		appLogger.Debugf("NewQueryAction err [%s]\n", err.Error())
 		return "", err
 	}
-	res, err := queryAction.Execute()
+	res, err := queryAction.Query()
 	if err != nil {
 		appLogger.Debugf("queryAction err [%s]\n", err.Error())
 		return "", err
@@ -61,9 +64,10 @@ func QueryModel(modelName string) (string, error) {
 	return res, err
 }
 
-func TransferModel(model *TransferModelArgs) (string, error) {
+func TransferModel(model *TransferModelArgs) error {
 	args := []string{model.Name, model.NewOwner}
 	invokeArgs := &chaincode.InvokeArgs{
+		PeerUrl:     defaultPeerUrl,
 		ChannelID:   defaultChannelID,
 		ChaincodeID: defaultChaincodeID,
 		Args:        append([]string{"transferModel"}, args...),
@@ -71,19 +75,20 @@ func TransferModel(model *TransferModelArgs) (string, error) {
 	invokeAction, err := chaincode.NewInvokeAction(invokeArgs)
 	if err != nil {
 		appLogger.Debugf("NewInvokeAction err [%s]\n", err.Error())
-		return "", err
+		return err
 	}
-	txId, err := invokeAction.Execute()
+	err = invokeAction.Execute()
 	if err != nil {
 		appLogger.Debugf("invokeAction err [%s]\n", err.Error())
-		return "", err
+		return err
 	}
-	return txId, nil
+	return nil
 
 }
 
 func GetHistoryForModel(modelName string) (string, error) {
 	queryArgs := &chaincode.QueryArgs{
+		PeerUrl:     defaultPeerUrl,
 		ChannelID:   defaultChannelID,
 		ChaincodeID: defaultChaincodeID,
 		Args:        append([]string{"getHistoryForModel"}, modelName),
@@ -93,7 +98,7 @@ func GetHistoryForModel(modelName string) (string, error) {
 		appLogger.Debugf("NewQueryAction err [%s]\n", err.Error())
 		return "", err
 	}
-	res, err := queryAction.Execute()
+	res, err := queryAction.Query()
 	if err != nil {
 		appLogger.Debugf("queryAction err [%s]\n", err.Error())
 		return "", err
@@ -104,6 +109,7 @@ func GetHistoryForModel(modelName string) (string, error) {
 
 func QueryModelsByOwner(owner string) (string, error) {
 	queryArgs := &chaincode.QueryArgs{
+		PeerUrl:     defaultPeerUrl,
 		ChannelID:   defaultChannelID,
 		ChaincodeID: defaultChaincodeID,
 		Args:        append([]string{"queryModelsByOwner"}, owner),
@@ -113,7 +119,7 @@ func QueryModelsByOwner(owner string) (string, error) {
 		appLogger.Debugf("NewQueryAction err [%s]\n", err.Error())
 		return "", err
 	}
-	res, err := queryAction.Execute()
+	res, err := queryAction.Query()
 	if err != nil {
 		appLogger.Debugf("queryAction err [%s]\n", err.Error())
 		return "", err
@@ -121,7 +127,7 @@ func QueryModelsByOwner(owner string) (string, error) {
 	return res, err
 }
 
-func DelModel(modelName string) (string, error) {
+func DelModel(modelName string) error {
 	args := []string{modelName}
 	invokeArgs := &chaincode.InvokeArgs{
 		ChannelID:   defaultChannelID,
@@ -131,14 +137,14 @@ func DelModel(modelName string) (string, error) {
 	invokeAction, err := chaincode.NewInvokeAction(invokeArgs)
 	if err != nil {
 		appLogger.Debugf("NewInvokeAction err [%s]\n", err.Error())
-		return "", err
+		return err
 	}
-	txId, err := invokeAction.Execute()
+	err = invokeAction.Execute()
 	if err != nil {
 		appLogger.Debugf("invokeAction err [%s]\n", err.Error())
-		return "", err
+		return err
 	}
-	return txId, nil
+	return nil
 
 }
 

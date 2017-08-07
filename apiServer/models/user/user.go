@@ -20,9 +20,11 @@ package user
 import (
 	"errors"
 	"fmt"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -33,6 +35,16 @@ type User struct {
 	Passwd string `json:"passwd"`
 	Email  string `json:"mail"`
 	Phone  string `json:"phone"`
+}
+type Secret struct {
+	Name   string `json:"name"`
+	Passwd string `json:"passwd"`
+}
+type UpdateUserArgs struct {
+	Type  string `json:"type"` //0: admin, 1: user
+	Name  string `json:"name"` //unique
+	Email string `json:"mail"`
+	Phone string `json:"phone"`
 }
 
 /*
@@ -55,28 +67,66 @@ func AddUser(user *User) (id int64, err error) {
 	return id64, nil
 }
 
-func GetUser(username string) (*User, error) {
+func GetUserByName(username string) (*User, error) {
 	o := orm.NewOrm()
 	u := User{}
 
-	err := o.Raw("SELECT type, name, passwd, phone, email FROM user WHERE name = ?", username).QueryRow(&u)
+	err := o.Raw("SELECT id, type, name, passwd, phone, email FROM user WHERE name = ?", username).QueryRow(&u)
 	if err != nil {
 		return nil, err
 	}
 	return &u, nil
 }
 
-func UpdateUser(newU *User) error {
+func GetUserById(userid int) (*User, error) {
+	o := orm.NewOrm()
+	u := User{}
+	err := o.Raw("SELECT id, type, name, passwd, phone, email FROM user WHERE id = ?", userid).QueryRow(&u)
+	if err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+func UpdateUser(newU *UpdateUserArgs) error {
 	o := orm.NewOrm()
 	oldU := User{}
 
-	err := o.Raw("SELECT id from user WHERE name = ?", newU.Name).QueryRow(&oldU)
+	err := o.Raw("SELECT * from user WHERE name = ?", newU.Name).QueryRow(&oldU)
 	if err != nil {
 		return err
 	}
-	newU.Id = oldU.Id
+	if newU.Email != "" {
+		oldU.Email = newU.Email
+	}
+	if newU.Phone != "" {
+		oldU.Phone = newU.Phone
+	}
+	if newU.Type != "" {
+		typ, err := strconv.Atoi(newU.Type)
+		if err != nil {
+			return err
+		}
+		oldU.Type = typ
+	}
+	_, err = o.Update(&oldU)
+	if err != nil {
+		return err
+	}
 
-	_, err = o.Update(newU)
+	return nil
+}
+func UpdatePasswd(name string, oldPwd string, newPwd string) error {
+	o := orm.NewOrm()
+	oldU := User{}
+	err := o.Raw("SELECT * from user WHERE name = ?", name).QueryRow(&oldU)
+	if err != nil {
+		return err
+	}
+	if oldPwd != oldU.Passwd {
+		return errors.New("passwd incorrect")
+	}
+	oldU.Passwd = newPwd
+	_, err = o.Update(&oldU)
 	if err != nil {
 		return err
 	}
@@ -84,18 +134,18 @@ func UpdateUser(newU *User) error {
 	return nil
 }
 
-func Login(username, passwd string) (*User, error) {
+func Login(ss *Secret) (*User, error) {
 	o := orm.NewOrm()
 	u := User{}
 
-	err := o.Raw("SELECT * FROM user WHERE name = ?", username).QueryRow(&u)
+	err := o.Raw("SELECT * FROM user WHERE name = ?", ss.Name).QueryRow(&u)
 	if err != nil {
 		return nil, err
 	}
 
 	//	fmt.Println(reflect.TypeOf(passwd), reflect.TypeOf(u.Passwd))
 
-	if passwd == u.Passwd {
+	if u.Passwd == ss.Passwd {
 		return &u, nil
 	}
 	return nil, errors.New("Invalid password")
@@ -107,7 +157,12 @@ func init() {
 	//register driver
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	//set default database
-	orm.RegisterDataBase("default", "mysql", "hxy:hxy@tcp(10.0.48.50:3306)/hxydb?charset=utf8", 30)
+	user := beego.AppConfig.String("mysqluser")
+	pwd := beego.AppConfig.String("mysqlpass")
+	url := beego.AppConfig.String("mysqlurls")
+	db := beego.AppConfig.String("mysqldb")
+	connection := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8", user, pwd, url, db)
+	orm.RegisterDataBase("default", "mysql", connection, 30)
 
 	/*
 		//max idle connections

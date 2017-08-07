@@ -17,8 +17,8 @@ func (this *UserManagerImpl) Register(u *user.User) (int64, bool) {
 }
 
 //Login signedToken is for SSO and authorization
-func (this *UserManagerImpl) Login(name, passwd string) (signedToken string, err error) {
-	user, err := user.Login(name, passwd)
+func (this *UserManagerImpl) Login(ss *user.Secret) (signedToken string, err error) {
+	user, err := user.Login(ss)
 	if err != nil {
 		appLogger.Debugf("User Login failed [%v]\n", err)
 		return "", err
@@ -32,7 +32,16 @@ func (this *UserManagerImpl) Login(name, passwd string) (signedToken string, err
 	return signedToken, nil
 }
 
-func (this *UserManagerImpl) UpdateInfo(u *user.User) error {
+func (this *UserManagerImpl) VerifyUser(ss *user.Secret) error {
+	_, err := user.Login(ss)
+	if err != nil {
+		appLogger.Debugf("Verify user failed [%v]\n", err)
+		return err
+	}
+	return nil
+}
+
+func (this *UserManagerImpl) UpdateInfo(u *user.UpdateUserArgs) error {
 	err := user.UpdateUser(u)
 	if err != nil {
 		appLogger.Debugf("User UpdateInfo err [%v]\n", err)
@@ -41,7 +50,33 @@ func (this *UserManagerImpl) UpdateInfo(u *user.User) error {
 	return nil
 }
 
-func (this *UserManagerImpl) UpdatePasswd(username, passwd string) bool {
-	appLogger.Debug("Not implemented")
-	return false
+func (this *UserManagerImpl) UpdatePwd(name string, oldPwd string, newPwd string) error {
+	err := user.UpdatePasswd(name, oldPwd, newPwd)
+	if err != nil {
+		appLogger.Debugf("User UpdatePwd err [%v]\n", err)
+		return err
+	}
+	return nil
 }
+
+func (this *UserManagerImpl) GetUserInfoByName(username string) (*user.User, error) {
+	userInfo, err := user.GetUserByName(username)
+	if err != nil {
+		appLogger.Debugf("User GetUserByName err [%v]\n", err)
+		return nil, err
+	}
+	return userInfo, nil
+}
+
+func (this *UserManagerImpl) GetUserInfoById(userid int) (*user.User, error) {
+	userInfo, err := user.GetUserById(userid)
+	if err != nil {
+		appLogger.Debugf("User GetUserById err [%v]\n", err)
+		return nil, err
+	}
+	return userInfo, nil
+}
+
+/*func (this *UserManagerImpl) Logout() error {
+
+}*/
