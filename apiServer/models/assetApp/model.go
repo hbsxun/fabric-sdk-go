@@ -1,7 +1,7 @@
 package assetApp
 
 import (
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/chaincode"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/chaincode"
 )
 
 const (

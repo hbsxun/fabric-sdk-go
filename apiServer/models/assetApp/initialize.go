@@ -3,11 +3,11 @@ package assetApp
 import (
 	"time"
 
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/chaincode"
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/channel"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/chaincode"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/channel"
 )
 
-var chaincodePath = "github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/src/github.com/model_cc"
+var chaincodePath = "github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric/fixtures/src/github.com/model_cc"
 
 func Initialize() error {
 	err := InitChannel()

@@ -19,7 +19,7 @@
                         "description": "body for Ecert content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/cert.EnrollArgs"
+                            "$ref": "#/definitions/fabricca.EnrollArgs"
                         }
                     }
                 ],
@@ -47,7 +47,7 @@
                         "description": "body for Secret content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/cert.RegisterArgs"
+                            "$ref": "#/definitions/fabricca.RegisterArgs"
                         }
                     }
                 ],
@@ -827,57 +827,6 @@
                 }
             }
         },
-        "cert.Attribute": {
-            "title": "Attribute",
-            "type": "object",
-            "properties": {
-                "key": {
-                    "type": "string"
-                },
-                "value": {
-                    "type": "string"
-                }
-            }
-        },
-        "cert.EnrollArgs": {
-            "title": "EnrollArgs",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "secret": {
-                    "type": "string"
-                }
-            }
-        },
-        "cert.RegisterArgs": {
-            "title": "RegisterArgs",
-            "type": "object",
-            "properties": {
-                "affiliation": {
-                    "type": "string"
-                },
-                "attributes": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/cert.Attribute"
-                    }
-                },
-                "caName": {
-                    "type": "string"
-                },
-                "maxEnrollments": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
         "chaincode.ChaincodeInfoArgs": {
             "title": "ChaincodeInfoArgs",
             "type": "object",
@@ -918,12 +867,7 @@
             "title": "InstantiateArgs",
             "type": "object",
             "properties": {
-                "args": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
+                "args": {},
                 "chaincodeID": {
                     "type": "string"
                 },
@@ -945,12 +889,7 @@
             "title": "InvokeArgs",
             "type": "object",
             "properties": {
-                "args": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
+                "args": {},
                 "chaincodeId": {
                     "type": "string"
                 },
@@ -966,12 +905,7 @@
             "title": "QueryArgs",
             "type": "object",
             "properties": {
-                "args": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
+                "args": {},
                 "chaincodeId": {
                     "type": "string"
                 },
@@ -1009,6 +943,57 @@
                     "type": "string"
                 },
                 "peerUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "fabricca.Attribute": {
+            "title": "Attribute",
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "fabricca.EnrollArgs": {
+            "title": "EnrollArgs",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "fabricca.RegisterArgs": {
+            "title": "RegisterArgs",
+            "type": "object",
+            "properties": {
+                "affiliation": {
+                    "type": "string"
+                },
+                "attributes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/fabricca.Attribute"
+                    }
+                },
+                "caName": {
+                    "type": "string"
+                },
+                "maxEnrollments": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }

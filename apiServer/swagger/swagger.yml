@@ -14,7 +14,7 @@ paths:
         description: body for Ecert content
         required: true
         schema:
-          $ref: '#/definitions/cert.EnrollArgs'
+          $ref: '#/definitions/fabricca.EnrollArgs'
       responses:
         "200":
           description: '{string}'
@@ -32,7 +32,7 @@ paths:
         description: body for Secret content
         required: true
         schema:
-          $ref: '#/definitions/cert.RegisterArgs'
+          $ref: '#/definitions/fabricca.RegisterArgs'
       responses:
         "200":
           description: '{string} string'
@@ -534,40 +534,6 @@ definitions:
         type: string
       newOwner:
         type: string
-  cert.Attribute:
-    title: Attribute
-    type: object
-    properties:
-      key:
-        type: string
-      value:
-        type: string
-  cert.EnrollArgs:
-    title: EnrollArgs
-    type: object
-    properties:
-      name:
-        type: string
-      secret:
-        type: string
-  cert.RegisterArgs:
-    title: RegisterArgs
-    type: object
-    properties:
-      affiliation:
-        type: string
-      attributes:
-        type: array
-        items:
-          $ref: '#/definitions/cert.Attribute'
-      caName:
-        type: string
-      maxEnrollments:
-        type: string
-      name:
-        type: string
-      type:
-        type: string
   chaincode.ChaincodeInfoArgs:
     title: ChaincodeInfoArgs
     type: object
@@ -596,10 +562,7 @@ definitions:
     title: InstantiateArgs
     type: object
     properties:
-      args:
-        type: array
-        items:
-          type: string
+      args: {}
       chaincodeID:
         type: string
       chaincodePath:
@@ -614,10 +577,7 @@ definitions:
     title: InvokeArgs
     type: object
     properties:
-      args:
-        type: array
-        items:
-          type: string
+      args: {}
       chaincodeId:
         type: string
       channelId:
@@ -628,10 +588,7 @@ definitions:
     title: QueryArgs
     type: object
     properties:
-      args:
-        type: array
-        items:
-          type: string
+      args: {}
       chaincodeId:
         type: string
       channelID:
@@ -657,6 +614,40 @@ definitions:
       ordererUrl:
         type: string
       peerUrl:
+        type: string
+  fabricca.Attribute:
+    title: Attribute
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  fabricca.EnrollArgs:
+    title: EnrollArgs
+    type: object
+    properties:
+      name:
+        type: string
+      secret:
+        type: string
+  fabricca.RegisterArgs:
+    title: RegisterArgs
+    type: object
+    properties:
+      affiliation:
+        type: string
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/fabricca.Attribute'
+      caName:
+        type: string
+      maxEnrollments:
+        type: string
+      name:
+        type: string
+      type:
         type: string
   query.QueryBlockArgs:
     title: QueryBlockArgs

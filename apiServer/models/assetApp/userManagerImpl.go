@@ -1,7 +1,7 @@
 package assetApp
 
 import (
-	"github.com/hyperledger/fabric-sdk-go/apiServer/models/hjwt"
+	"github.com/hyperledger/fabric-sdk-go/apiServer/models/assetApp/auth"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/user"
 )
 
@@ -28,7 +28,7 @@ func (this *UserManagerImpl) Login(ss *user.Secret) (signedToken string, err err
 	if user.Type == 0 {
 		isAdmin = true
 	}
-	signedToken = hjwt.CreateToken(user.Id, user.Name, isAdmin)
+	signedToken = auth.CreateToken(user.Id, user.Name, isAdmin)
 	return signedToken, nil
 }
 
