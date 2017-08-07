@@ -19,11 +19,11 @@ type BlockInfo struct {
 func QueryBlocks(queryBlocksArgs *query.QueryBlockArgs) ([]*BlockInfo, error) {
 	queryBlocksAction, err := query.NewQueryBlockAction(queryBlocksArgs)
 	if err != nil {
-		return nil, fmt.Errorf("NewQueryBlockAction err [%s]", err)
+		return nil, fmt.Errorf("NewQueryBlockAction failed[%s]", err.Error())
 	}
 	blocks, err := queryBlocksAction.Execute()
 	if err != nil {
-		return nil, fmt.Errorf("queryBlocksAction err [%s]", err)
+		return nil, fmt.Errorf("QueryBlocks Execute failed [%s]", err.Error())
 	}
 	var blockInfo *BlockInfo
 	var blocksInfo []*BlockInfo

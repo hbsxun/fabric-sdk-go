@@ -89,11 +89,11 @@ type ConfigPolicyInfo struct {
 func QueryTX(queryTxArgs *query.QueryTxArgs) (*TxInfo, error) {
 	queryTxAction, err := query.NewQueryTXAction(queryTxArgs)
 	if err != nil {
-		return nil, fmt.Errorf("NewQueryTXAction err [%s]", err)
+		return nil, fmt.Errorf("NewQueryTXAction failed [%s]", err)
 	}
 	processedTransaction, err := queryTxAction.Execute()
 	if err != nil {
-		return nil, fmt.Errorf("queryTxAction err [%s]", err)
+		return nil, fmt.Errorf("QueryTX failed [%s]", err)
 	}
 	/*transactionInfo, err := parseProcessedTransaction(processedTransaction)
 	if err != nil {

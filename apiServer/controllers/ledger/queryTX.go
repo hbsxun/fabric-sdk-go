@@ -24,22 +24,24 @@ type LedgerController struct {
 func (u *LedgerController) QueryTX() {
 	var req query.QueryTxArgs
 	res := make(map[string]interface{})
+
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
-		res["status"] = 307
-		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
+		res["status"] = 80401
+		res["message"] = err.Error()
 	} else {
 		fmt.Println(req)
 		txInfo, err := ledger.QueryTX(&req)
 		if err != nil {
-			res["status"] = 330
-			res["message"] = fmt.Sprintf("QueryTX failed [%s]", err)
+			res["status"] = 80402
+			res["message"] = err.Error()
 		} else {
-			res["status"] = 200
+			res["status"] = 80200
 			res["message"] = txInfo
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }

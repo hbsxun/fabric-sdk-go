@@ -49,6 +49,42 @@ paths:
           description: '{string} install and instantiate chaincode successfully'
         "403":
           description: body is empty
+  /ledger/QueryBlocks:
+    post:
+      tags:
+      - ledger
+      description: Query blocks
+      operationId: LedgerController.QueryBlocks
+      parameters:
+      - in: body
+        name: body
+        description: body for querytx Description
+        required: true
+        schema:
+          $ref: '#/definitions/query.QueryBlockArgs'
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: body is empty
+  /ledger/QueryTX:
+    post:
+      tags:
+      - ledger
+      description: Query transaction
+      operationId: LedgerController.QueryTX
+      parameters:
+      - in: body
+        name: body
+        description: body for querytx Description
+        required: true
+        schema:
+          $ref: '#/definitions/query.QueryTxArgs'
+      responses:
+        "200":
+          description: '{string}'
+        "403":
+          description: body is empty
   /model/AddModel:
     post:
       tags:
@@ -352,6 +388,30 @@ definitions:
         type: string
       type:
         type: string
+  query.QueryBlockArgs:
+    title: QueryBlockArgs
+    type: object
+    properties:
+      blockHash:
+        type: string
+      blockNum:
+        type: string
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+      traverse:
+        type: string
+  query.QueryTxArgs:
+    title: QueryTxArgs
+    type: object
+    properties:
+      channelId:
+        type: string
+      peerUrl:
+        type: string
+      txId:
+        type: string
   user.Secret:
     title: Secret
     type: object
@@ -403,3 +463,6 @@ tags:
 - name: model
   description: |
     Operations about Invoke
+- name: ledger
+  description: |
+    Operations about Ledger
