@@ -18,21 +18,19 @@ func (u *ChannelController) JoinChannel() {
 	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
 		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := channel.NewChannelJoinAction(&req)
 		if err != nil {
-			fmt.Printf("ChannelJoin Initialize error...")
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("ChannelJoin action error [%s]", err)
+			res["message"] = fmt.Sprintf("NewChannelJoinAction failed [%s]", err)
 		} else {
 			err = action.Execute()
 			if err != nil {
 				res["status"] = 80403
-				res["message"] = fmt.Sprintf("ChannelJoin execute error [%s]", err)
+				res["message"] = fmt.Sprintf("ChannelJoin Execute failed [%s]", err)
 			} else {
 				res["status"] = 80200
 				if req.ChannelID == "" && req.PeerUrl == "" {
@@ -47,6 +45,8 @@ func (u *ChannelController) JoinChannel() {
 			}
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }

@@ -18,16 +18,14 @@ func (u *QueryController) QueryInstalledChaincodes() {
 	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
 		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
-		action, err := query.NewqueryInstalledAction(&req)
+		action, err := query.NewQueryInstalledAction(&req)
 		if err != nil {
-			fmt.Printf("QueryInstalledChaincode Initialize error...")
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("QueryInstalledChaincode action error [%s]", err)
+			res["message"] = fmt.Sprintf("NewQueryInstalledAction failed[%s]", err)
 		} else {
 			resp, err := action.Execute()
 			if err != nil {
@@ -39,6 +37,8 @@ func (u *QueryController) QueryInstalledChaincodes() {
 			}
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }

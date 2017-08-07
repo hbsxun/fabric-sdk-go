@@ -24,7 +24,6 @@ func (u *ChannelController) Post() {
 	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
 		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
@@ -33,12 +32,12 @@ func (u *ChannelController) Post() {
 		action, err := channel.NewChannelCreateAction(&req)
 		if err != nil {
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("CreateChannel action error [%s]", err)
+			res["message"] = fmt.Sprintf("NewCreateChannelAction failed [%s]", err)
 		} else {
 			err = action.Execute()
 			if err != nil {
 				res["status"] = 80403
-				res["message"] = fmt.Sprintf("CreateChannel execute error [%s]", err)
+				res["message"] = fmt.Sprintf("CreateChannel Execute error [%s]", err)
 			} else {
 				res["status"] = 80200
 				if req.ChannelID == "" {
@@ -49,6 +48,8 @@ func (u *ChannelController) Post() {
 			}
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }

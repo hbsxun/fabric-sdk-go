@@ -21,19 +21,23 @@ type AssetController struct {
 // @router /AddModel [post]
 func (u *AssetController) AddModel() {
 	var req assetApp.AddModelArgs
+	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
+		res["status"] = 80401
+		res["message"] = fmt.Sprintf("AddModelArgs Unmarshal failed [%s]", err)
 	}
 	fmt.Println(req)
 	resp, err := assetApp.AddModel(&req)
 	if err != nil {
-		fmt.Printf("Add model error:%s", err.Error())
-		u.Data["json"] = err.Error()
+		res["status"] = 80403
+		res["message"] = fmt.Sprintf("Add model error:%s", err.Error())
 	} else {
+
 		u.Data["json"] = fmt.Sprintf("Add model successfully, txid = %s", resp)
 	}
 
+	u.Data["json"] = res
 	u.ServeJSON()
 }
 

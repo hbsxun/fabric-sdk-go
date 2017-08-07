@@ -19,16 +19,14 @@ func (u *QueryController) QueryTx() {
 	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
 		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := query.NewQueryTXAction(&req)
 		if err != nil {
-			fmt.Printf("QueryTx Initialize error...")
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("QueryTx action error [%s]", err)
+			res["message"] = fmt.Sprintf("NewQueryTXAction failed[%s]", err)
 		} else {
 			resp, err := action.Execute()
 			if err != nil {
@@ -40,6 +38,8 @@ func (u *QueryController) QueryTx() {
 			}
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }

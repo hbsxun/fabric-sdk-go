@@ -53,7 +53,7 @@ type queryInstalledAction struct {
 	common.Action
 }
 
-func NewqueryInstalledAction(args *QueryInstalledArgs) (*queryInstalledAction, error) {
+func NewQueryInstalledAction(args *QueryInstalledArgs) (*queryInstalledAction, error) {
 	flags := &pflag.FlagSet{}
 	common.Config().InitPeerURL(flags, args.PeerUrl)
 

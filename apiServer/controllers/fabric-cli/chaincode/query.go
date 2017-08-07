@@ -18,16 +18,14 @@ func (u *ChaincodeController) QueryCC() {
 	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
 		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := chaincode.NewQueryAction(&req)
 		if err != nil {
-			fmt.Printf("Query Initialize error...")
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("QueryCC action error [%s]", err)
+			res["message"] = fmt.Sprintf("NewQueryAction failed[%s]", err)
 		} else {
 			resp, err := action.Query()
 			if err != nil {
@@ -39,6 +37,8 @@ func (u *ChaincodeController) QueryCC() {
 			}
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }

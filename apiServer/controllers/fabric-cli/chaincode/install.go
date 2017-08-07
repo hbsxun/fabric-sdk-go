@@ -18,16 +18,14 @@ func (u *ChaincodeController) InstallCC() {
 	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
 		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := chaincode.NewInstallAction(&req)
 		if err != nil {
-			fmt.Printf("InstallCC Initialize error...")
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("InstallCC action error [%s]", err)
+			res["message"] = fmt.Sprintf("NewInstallAction failed[%s]", err)
 		} else {
 			err = action.Execute()
 			if err != nil {
@@ -39,6 +37,8 @@ func (u *ChaincodeController) InstallCC() {
 			}
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }

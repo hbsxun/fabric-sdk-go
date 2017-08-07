@@ -25,18 +25,18 @@ func (u *CertController) Register() {
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	res := make(map[string]interface{})
 	if err != nil {
-		res["status"] = 10400
+		res["status"] = 80400
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := cert.NewRegisterAction(&req)
 		if err != nil {
-			res["status"] = 10401
-			res["message"] = fmt.Sprintf("RegisterAction Initialize, err [%s]", err.Error())
+			res["status"] = 80401
+			res["message"] = fmt.Sprintf("NewRegisterAction failed [%s]", err.Error())
 		}
 		resp, err := action.Execute()
 		if err != nil {
-			res["status"] = 10402
+			res["status"] = 80402
 			res["message"] = fmt.Sprintf("Register failed, err [%s]", err.Error())
 		} else {
 			res["status"] = 10200
@@ -44,6 +44,8 @@ func (u *CertController) Register() {
 			res["secret"] = resp
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }
@@ -59,21 +61,21 @@ func (u *CertController) Enroll() {
 	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		res["status"] = 10400
+		res["status"] = 80400
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := cert.NewEnrollAction(&req)
 		if err != nil {
-			res["status"] = 10401
+			res["status"] = 80401
 			res["message"] = fmt.Sprintf("EnrollAction Initialize failed, err [%s]", err.Error())
 		}
 		resp, err := action.Execute()
 		if err != nil {
-			res["status"] = 10402
+			res["status"] = 80402
 			res["message"] = fmt.Sprintf("Enroll failed, err [%s]", err.Error())
 		} else {
-			res["status"] = 10200
+			res["status"] = 80200
 			res["message"] = "User Enroll Successfully, returns base64-encoded key and cert"
 			keyCert := strings.Split(resp, ".")
 			res["key"] = keyCert[0]

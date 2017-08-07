@@ -24,27 +24,26 @@ func (u *ChaincodeController) Post() {
 	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
 		res["status"] = 80401
 		res["message"] = fmt.Sprintf("Unmarshal failed [%s]", err)
 	} else {
 		fmt.Println(req)
 		action, err := chaincode.NewChaincodeInfoAction(&req)
 		if err != nil {
-			fmt.Printf("Query Initialize error...")
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("GetChaincodeInfo action error [%s]", err)
+			res["message"] = fmt.Sprintf("NewChaincodeInfoAction failed [%s]", err)
 		} else {
 			resp, err := action.Execute()
 			if err != nil {
 				res["status"] = 80403
-				res["message"] = fmt.Sprintf("GetChaincodeInfo execute error [%s]", err)
+				res["message"] = fmt.Sprintf("GetChaincodeInfo Execute error [%s]", err)
 			} else {
 				res["status"] = 80200
 				res["message"] = resp
 			}
 		}
 	}
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }

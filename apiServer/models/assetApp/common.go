@@ -2,7 +2,7 @@ package assetApp
 
 import "github.com/op/go-logging"
 
-var appLogger = logging.MustGetLogger("AssetApp")
+var appLogger = logging.MustGetLogger("SANSEC models/AssetApp")
 
 /*
 type UserManager interface {
