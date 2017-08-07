@@ -34,11 +34,12 @@ func main() {
 		} else if strings.Contains(uri, "/model/") { //********************should enroll
 			_, name := auth.GetIdAndName(ctx.Input.Cookie("Bearer"))
 			enrollments := ctx.Input.Cookie(name)
+			//fmt.Println("Enrollments: ", enrollments)
 			identity, err := auth.UnSerialize(enrollments)
 			_ = identity
 			if err != nil {
-				fmt.Println("Don't have a valid Ecert, please go to `enroll`")
-				ctx.ResponseWriter.Write([]byte("Enroll first to get your certificate :-()"))
+				fmt.Printf("Get Enrollment Identity, failed [%s]\n", err)
+				ctx.ResponseWriter.Write([]byte("Enroll first to get your certificate :-( "))
 				return
 			}
 			if strings.HasPrefix(uri, "/fabric/model/AddModel") || strings.HasPrefix(uri, "/fabric/model/DeleteModel") {

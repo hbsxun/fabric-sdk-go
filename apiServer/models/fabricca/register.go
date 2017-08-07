@@ -76,34 +76,33 @@ type registerAction struct {
 func NewRegisterAction(args *RegisterArgs) (*registerAction, error) {
 	action, flags := &registerAction{}, &pflag.FlagSet{}
 
-	/*
-		var attrs []fabricCAClient.Attribute
-		for _, attr := range args.Attributes {
-			attrs = append(attrs, fabricCAClient.Attribute{
-				Key:   attr.Key,
-				Value: attr.Value,
-			})
-		}
-	*/
 	if args.Name == "" {
 		return nil, errors.New("Must specify a user name")
 	}
 	if args.Type != "user" && args.Type != "admin" {
 		args.Type = "user"
 	}
-	if args.Affiliation == "" {
+	if args.Affiliation != "org1.department1" {
 		args.Affiliation = "org1.department1"
 	}
-	if args.CAName == "" {
+	if args.CAName != "ca-org1" && args.CAName != "ca-org2" {
 		args.CAName = "ca-org1"
 	}
+	var attrs []ca.Attribute
+	for _, attr := range args.Attributes {
+		attrs = append(attrs, ca.Attribute{
+			Key:   attr.Key,
+			Value: attr.Value,
+		})
+	}
+
 	action.req = &ca.RegistrationRequest{
 		Name:           args.Name,
 		Type:           args.Type,
 		Affiliation:    args.Affiliation,
 		CAName:         args.CAName,
 		MaxEnrollments: 0,
-		//Attributes: attrs,
+		Attributes:     attrs,
 	}
 
 	err := action.Initialize(flags)

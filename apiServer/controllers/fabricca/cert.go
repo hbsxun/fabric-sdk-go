@@ -3,7 +3,6 @@ package fabricca
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabricca"
@@ -37,10 +36,10 @@ func (u *CertController) Register() {
 		resp, err := action.Execute()
 		if err != nil {
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("Register failed, err [%s]", err.Error())
+			res["message"] = fmt.Sprintf("Register Execute failed [%s]", err.Error())
 		} else {
-			res["status"] = 10200
-			res["message"] = "Register Successfully, return an EnrollmentSecret"
+			res["status"] = 80200
+			res["message"] = "Register Successfully, return an EnrollmentSecret [secret]"
 			res["secret"] = resp
 		}
 	}
@@ -68,20 +67,20 @@ func (u *CertController) Enroll() {
 		action, err := fabricca.NewEnrollAction(&req)
 		if err != nil {
 			res["status"] = 80401
-			res["message"] = fmt.Sprintf("EnrollAction Initialize failed, err [%s]", err.Error())
+			res["message"] = fmt.Sprintf("NewEnrollAction failed, err [%s]", err.Error())
 		}
 		resp, err := action.Execute()
 		if err != nil {
 			res["status"] = 80402
-			res["message"] = fmt.Sprintf("Enroll failed, err [%s]", err.Error())
+			res["message"] = fmt.Sprintf("Enroll Execute failed, err [%s]", err.Error())
 		} else {
 			res["status"] = 80200
-			res["message"] = "User Enroll Successfully, returns base64-encoded key and cert"
-			keyCert := strings.Split(resp, ".")
-			res["key"] = keyCert[0]
-			res["cert"] = keyCert[1]
+			res["message"] = "User Enroll Successfully, returns base64(key) and base64(cert) contacted by '.'"
+			res["key.cert"] = resp
 		}
 	}
+	fmt.Println(res)
+
 	u.Data["json"] = res
 	u.ServeJSON()
 }
