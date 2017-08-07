@@ -26,16 +26,18 @@ func (u *AssetController) AddModel() {
 	if err != nil {
 		res["status"] = 80401
 		res["message"] = fmt.Sprintf("AddModelArgs Unmarshal failed [%s]", err)
-	}
-	fmt.Println(req)
-	resp, err := assetApp.AddModel(&req)
-	if err != nil {
-		res["status"] = 80403
-		res["message"] = fmt.Sprintf("Add model error:%s", err.Error())
 	} else {
-
-		u.Data["json"] = fmt.Sprintf("Add model successfully, txid = %s", resp)
+		fmt.Println(req)
+		err = assetApp.AddModel(&req)
+		if err != nil {
+			res["status"] = 80403
+			res["message"] = fmt.Sprintf("AddModel failed[%s]", err.Error())
+		} else {
+			res["status"] = 80200
+			res["message"] = fmt.Sprintf("AddModel successfully")
+		}
 	}
+	fmt.Println(res)
 
 	u.Data["json"] = res
 	u.ServeJSON()
@@ -50,16 +52,27 @@ func (u *AssetController) AddModel() {
 func (u *AssetController) QueryModel() {
 	name := u.GetString(":ModelName")
 	fmt.Println("name: ", name)
+	res := make(map[string]interface{})
 	if name != "" {
 		resp, err := assetApp.QueryModel(name)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			res["message"] = fmt.Sprintf("QueryModel failed[%s]", err.Error())
+			res["status"] = 80403
 		} else {
 			var modelJSON assetApp.AddModelArgs
 			err = json.Unmarshal([]byte(resp), &modelJSON)
-			u.Data["json"] = modelJSON
+			if err != nil {
+				res["message"] = fmt.Sprintf("QueryModelRes Unmarshal failed[%s]", err.Error())
+				res["status"] = 80401
+			} else {
+				res["status"] = 80200
+				res["message"] = modelJSON
+			}
 		}
 	}
+	fmt.Println(res)
+
+	u.Data["json"] = res
 	u.ServeJSON()
 }
 
@@ -71,19 +84,24 @@ func (u *AssetController) QueryModel() {
 // @router /TransferModel [put]
 func (u *AssetController) TransferModel() {
 	var req assetApp.TransferModelArgs
+	res := make(map[string]interface{})
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
 	if err != nil {
-		fmt.Printf("Unmarshal failed [%s]", err)
+		res["status"] = 80401
+		res["message"] = fmt.Sprintf("TransferModelArgs Unmarshal failed[%s]", err.Error())
 	}
 	fmt.Println(req)
-	resp, err := assetApp.TransferModel(&req)
+	err = assetApp.TransferModel(&req)
 	if err != nil {
-		fmt.Printf("Transfer model error:%s", err.Error())
-		u.Data["json"] = err.Error()
+		res["status"] = 8043
+		res["message"] = fmt.Sprintf("TransferModel failed[%s]", err.Error())
 	} else {
-		u.Data["json"] = fmt.Sprintf("Transfer model successfully, txid = %s", resp)
+		res["status"] = 80200
+		res["message"] = fmt.Sprintf("TransferModel successfully")
 	}
+	fmt.Println(res)
 
+	u.Data["json"] = res
 	u.ServeJSON()
 }
 
@@ -95,15 +113,21 @@ func (u *AssetController) TransferModel() {
 // @router /QueryModelsByOwner/:owner [get]
 func (u *AssetController) QueryModelsByOwner() {
 	owner := u.GetString(":owner")
+	res := make(map[string]interface{})
 	fmt.Println("owner:", owner)
 	if owner != "" {
 		resp, err := assetApp.QueryModelsByOwner(owner)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			res["status"] = 80403
+			res["message"] = fmt.Sprintf("QueryModelsByOwner failed[%s]", err.Error())
 		} else {
-			u.Data["json"] = resp
+			res["status"] = 80200
+			res["message"] = resp
 		}
 	}
+	fmt.Println(res)
+
+	u.Data["json"] = res
 	u.ServeJSON()
 }
 
@@ -116,14 +140,20 @@ func (u *AssetController) QueryModelsByOwner() {
 func (u *AssetController) GetHistoryForModel() {
 	name := u.GetString(":ModelName")
 	fmt.Println("name: ", name)
+	res := make(map[string]interface{})
 	if name != "" {
 		resp, err := assetApp.GetHistoryForModel(name)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			res["status"] = 80403
+			res["message"] = fmt.Sprintf("GetHistoryForModel failed[%s]", err.Error())
 		} else {
-			u.Data["json"] = resp
+			res["status"] = 80200
+			res["message"] = resp
 		}
 	}
+	fmt.Println(res)
+
+	u.Data["json"] = res
 	u.ServeJSON()
 }
 
@@ -136,14 +166,19 @@ func (u *AssetController) GetHistoryForModel() {
 func (u *AssetController) DeleteModel() {
 	name := u.GetString(":ModelName")
 	fmt.Println("name: ", name)
+	res := make(map[string]interface{})
 	if name != "" {
-		resp, err := assetApp.DelModel(name)
+		err := assetApp.DelModel(name)
 		if err != nil {
-			fmt.Println("Delete model error: ", err.Error())
-			u.Data["json"] = err.Error()
+			res["status"] = 80403
+			res["message"] = fmt.Sprintf("DeleteModel failed[%s]", err.Error())
 		} else {
-			u.Data["json"] = fmt.Sprintf("Delete model successfully, txid = %s", resp)
+			res["status"] = 80200
+			res["message"] = fmt.Sprintf("DeleteModel successfully")
 		}
 	}
+	fmt.Println(res)
+
+	u.Data["json"] = res
 	u.ServeJSON()
 }

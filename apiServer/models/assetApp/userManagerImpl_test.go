@@ -16,6 +16,8 @@ func TestUserManager(t *testing.T) {
 	register(name, t)
 	login(name, name, t) //passwd=name
 	updateUser(name, t)
+	getUserByName(name, t)
+	getUserById(3, t)
 }
 
 func register(name string, t *testing.T) {
@@ -38,7 +40,7 @@ func register(name string, t *testing.T) {
 
 func login(name, passwd string, t *testing.T) {
 	impl := UserManagerImpl{}
-	signedToken, err := impl.Login(name, passwd)
+	signedToken, err := impl.Login(&user.Secret{name, passwd})
 	if err != nil {
 		t.Fatal("Login failed", err)
 	} else {
@@ -58,5 +60,24 @@ func updateUser(name string, t *testing.T) {
 		t.Error("Update failed")
 	} else {
 		fmt.Println("update success")
+	}
+}
+
+func getUserByName(name string, t *testing.T) {
+	impl := UserManagerImpl{}
+	userInfo, err := impl.GetUserInfoByName(name)
+	if err != nil {
+		t.Errorf("getUserByName failed")
+	} else {
+		t.Log("user: ", userInfo)
+	}
+}
+func getUserById(id int, t *testing.T) {
+	impl := UserManagerImpl{}
+	userInfo, err := impl.GetUserInfoById(id)
+	if err != nil {
+		t.Errorf("getUserById failed")
+	} else {
+		t.Log("user: ", userInfo)
 	}
 }

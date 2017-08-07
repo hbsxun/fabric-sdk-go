@@ -7,13 +7,15 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/channel"
 )
 
+var chaincodePath = "github.com/hyperledger/fabric-sdk-go/apiServer/models/fabric-cli/fixtures/src/github.com/model_cc"
+
 func Initialize() error {
 	err := InitChannel()
 	if err != nil {
 		appLogger.Debugf("CreateChannel err [%v]\n", err)
 		return err
 	}
-	err = InitCC("model_cc", "v0", nil)
+	err = InitCC("model_cc", chaincodePath, "v0", []string{"Init", "init"})
 	if err != nil {
 		appLogger.Debugf("InitCC err [%v]\n", err)
 		return err
@@ -51,9 +53,9 @@ func InitChannel() error {
 }
 
 //InitCC install and Initialize cc
-func InitCC(chaincodeID, chaincodeVersion string, args []string) error {
+func InitCC(chaincodeID, chaincodePath, chaincodeVersion string, args []string) error {
 	//install chaincode on peers
-	installAction, err := chaincode.NewInstallAction(&chaincode.InstallCCArgs{chaincodeID, chaincodeVersion})
+	installAction, err := chaincode.NewInstallAction(&chaincode.InstallCCArgs{"", "mychannel", chaincodeID, chaincodePath, chaincodeVersion})
 	if err != nil {
 		appLogger.Debugf("NewInstallAction err [%v]\n", err)
 		return err
@@ -67,14 +69,18 @@ func InitCC(chaincodeID, chaincodeVersion string, args []string) error {
 
 	//initialize chaincode on primary peer
 	initAction, err := chaincode.NewInstantiateAction(&chaincode.InstantiateArgs{
-		ChaincodeID: chaincodeID,
-		Args:        args,
+		PeerUrl:          "localhost:7051",
+		ChannelID:        "mychannel",
+		ChaincodeID:      chaincodeID,
+		ChaincodePath:    chaincodePath,
+		ChaincodeVersion: chaincodeVersion,
+		Args:             args,
 	})
 	if err != nil {
 		appLogger.Debugf("NewInstantiateAction err [%v]\n", err)
 		return err
 	}
-	if _, err = initAction.Execute(); err != nil {
+	if err = initAction.Execute(); err != nil {
 		appLogger.Debugf("initAction err [%v]\n", err)
 		return err
 	}

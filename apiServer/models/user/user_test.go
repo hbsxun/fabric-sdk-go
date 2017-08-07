@@ -3,11 +3,14 @@ package user
 import "testing"
 
 func TestUser(t *testing.T) {
-	login("hxy", "hxy", t)
+	login(&Secret{
+		"hxy",
+		"hxy",
+	}, t)
 }
 
-func login(name, passwd string, t *testing.T) {
-	u, err := Login(name, passwd)
+func login(ss *Secret, t *testing.T) {
+	u, err := Login(ss)
 	if err != nil {
 		t.Fatal(err)
 	}
