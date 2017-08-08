@@ -22,7 +22,7 @@ type Claims struct {
 func CreateToken(id int, name string, isAdmin bool) string {
 	claims := Claims{id, name, isAdmin, jwt.StandardClaims{
 		NotBefore: int64(time.Now().Unix()),
-		ExpiresAt: int64(time.Now().Unix() + 1000),
+		ExpiresAt: int64(time.Now().Unix() + 10000),
 		Issuer:    "apiServer",
 	},
 	}

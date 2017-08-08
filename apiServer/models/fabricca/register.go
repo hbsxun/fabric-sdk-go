@@ -110,8 +110,6 @@ func NewRegisterAction(args *RegisterArgs) (*registerAction, error) {
 }
 
 func (action *registerAction) Execute() (string, error) {
-	fmt.Printf("Registering user [%s]\n", action.req.Name)
-
 	var fabricCAConfig apiconfig.Config
 	fabricCAConfig, err := config.InitConfig(common.Config().ConfigFile())
 	if err != nil {
