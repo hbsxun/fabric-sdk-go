@@ -49,7 +49,7 @@ client:
   # ap of member organizations forming the network
   organizations:
     # Org1 name
-    org1:
+    peerorg1:
       # Membership Service Provider ID for this organization
       mspID: "Org1MSP"
       # CA config defines the fabric-ca instance that issues identities for this org
@@ -81,7 +81,7 @@ client:
          certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/cacerts/org1.example.com-cert.pem"
          serverHostOverride: "peer0.org1.example.com"
     # Org2
-    org2:
+    peerorg2:
       mspID: "Org2MSP"
       ca:
        tlsEnabled: true

@@ -113,11 +113,12 @@ const (
 var (
 	configFileFlag        = "config"
 	configFileDescription = "The path of the config.yaml file"
-	defaultConfigFile     = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/config/config_test.yaml"
+	defaultConfigFile     = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/explorer-solo/config/config_test.yaml"
 
 	txFileFlag        = "txfile"
 	txFileDescription = "The path of the channel.tx file"
-	defaultTxFile     = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/channel/mychannel.tx"
+	//defaultTxFile     = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/channel/mychannel.tx"
+	defaultTxFile = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/explorer-solo/channel-artifacts/mychannel.tx"
 )
 
 var configInstance *cliConfig

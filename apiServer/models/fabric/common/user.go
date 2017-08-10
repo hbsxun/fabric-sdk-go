@@ -18,23 +18,23 @@ import (
 
 // getOrdererAdmin returns a pre-enrolled orderer admin user
 func getOrdererAdmin(c apifabclient.FabricClient, orgName string) (apifabca.User, error) {
-	keyDir := "ordererOrganizations/example.com/users/Admin@example.com/keystore"
-	certDir := "ordererOrganizations/example.com/users/Admin@example.com/signcerts"
+	keyDir := "ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
+	certDir := "ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts"
 	return getDefaultImplPreEnrolledUser(c, keyDir, certDir, "ordererAdmin", orgName)
 }
 
 // getAdmin returns a pre-enrolled org admin user
 func getAdmin(c apifabclient.FabricClient, orgName string) (apifabca.User, error) {
-	keyDir := fmt.Sprintf("peerOrganizations/%s.example.com/users/Admin@%s.example.com/keystore", orgName, orgName)
-	certDir := fmt.Sprintf("peerOrganizations/%s.example.com/users/Admin@%s.example.com/signcerts", orgName, orgName)
+	keyDir := fmt.Sprintf("peerOrganizations/%s.example.com/users/Admin@%s.example.com/msp/keystore", orgName, orgName)
+	certDir := fmt.Sprintf("peerOrganizations/%s.example.com/users/Admin@%s.example.com/msp/signcerts", orgName, orgName)
 	username := fmt.Sprintf("peer%sAdmin", orgName)
 	return getDefaultImplPreEnrolledUser(c, keyDir, certDir, username, orgName)
 }
 
 // getUser returns a pre-enrolled org user
 func getUser(c apifabclient.FabricClient, orgName string) (apifabca.User, error) {
-	keyDir := fmt.Sprintf("peerOrganizations/%s.example.com/users/User1@%s.example.com/keystore", orgName, orgName)
-	certDir := fmt.Sprintf("peerOrganizations/%s.example.com/users/User1@%s.example.com/signcerts", orgName, orgName)
+	keyDir := fmt.Sprintf("peerOrganizations/%s.example.com/users/User1@%s.example.com/msp/keystore", orgName, orgName)
+	certDir := fmt.Sprintf("peerOrganizations/%s.example.com/users/User1@%s.example.com/msp/signcerts", orgName, orgName)
 	username := fmt.Sprintf("peer%sUser1", orgName)
 	return getDefaultImplPreEnrolledUser(c, keyDir, certDir, username, orgName)
 }

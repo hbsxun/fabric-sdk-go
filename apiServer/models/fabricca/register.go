@@ -120,7 +120,6 @@ func (action *registerAction) Execute() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	//Note 1 ********************************
 	//Default return peerorg1User1, role for register should be admin of orgx
 	/*
