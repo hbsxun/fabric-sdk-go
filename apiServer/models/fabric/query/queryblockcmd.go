@@ -72,6 +72,7 @@ func NewQueryBlockAction(args *QueryBlockArgs) (*queryBlockAction, error) {
 	common.Config().InitBlockHash(flags, args.BlockHash)
 	common.Config().InitTraverse(flags, args.Traverse)
 	common.Config().InitPeerURL(flags, args.PeerUrl, "The URL of the peer on which to install the chaincode, e.g. localhost:7051")
+	blocksSlice = make([]*fabricCommon.Block, 1)
 
 	action := &queryBlockAction{}
 	err := action.Initialize(flags)

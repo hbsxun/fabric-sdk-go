@@ -8,6 +8,7 @@ package chaincode
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sync/atomic"
 	"time"
@@ -113,12 +114,14 @@ func (action *invokeAction) Execute() error {
 	} else {
 		if err := action.doInvoke(channelClient, args.Func, args.Args); err != nil {
 			fmt.Printf("Error invoking chaincode: %v\n", err)
+			return fmt.Errorf("Error invoking chaincode: %v\n", err)
 		} else {
 			fmt.Println("Invocation successful!")
+			return nil
 		}
 	}
 
-	return nil
+	return errors.New("Error invoking chaincode...")
 }
 
 func (action *invokeAction) invokeMultiple(chain apifabclient.Channel, fctn string, args []string, iterations int) {
